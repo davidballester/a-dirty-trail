@@ -21,10 +21,10 @@ noun
 
 // Verb
 verb
-    = vbp:VBP preposition:PREPOSITION? { return { verb: lemmatize.verb(vbp) }; }
-    / vbz:VBZ prp:PRP? preposition:PREPOSITION? { return { verb: lemmatize.verb(vbz) }; }
-    / vb:VB preposition:PREPOSITION?  { return { verb: lemmatize.verb(vb) }; }
-    / md:MD verb:verb { return {modal: lemmatize.verb(md), ...verb}; }
+    = vbp:VBP preposition:PREPOSITION? { return { name: vbp }; }
+    / vbz:VBZ prp:PRP? preposition:PREPOSITION? { return { name: vbz }; }
+    / vb:VB preposition:PREPOSITION?  { return { name: vb }; }
+    / md:MD verb:verb { return {modal: md, ...verb}; }
 
 // Target
 targets

@@ -11,16 +11,16 @@ export const getRulesStructure = (rules: NLTaggedRule[]): Rule[] => {
             encoding: 'utf-8',
         }
     );
-    const parser = peg.generate(grammar, {
-        dependencies: {
-            lemmatize: 'wink-lemmatizer',
-        },
-        format: 'commonjs',
-    });
+    const parser = peg.generate(grammar);
     return rules.map(
         (rule): Rule => {
             const rawRuleStructure = rule.taggedWords
-                .map((taggedWord) => `${taggedWord[1]}/${taggedWord[0]}`)
+                .map(
+                    (taggedWord) =>
+                        `${taggedWord.pos}/${
+                            taggedWord.lemma || taggedWord.normal
+                        }`
+                )
                 .join(' ');
             try {
                 const ruleStructure = parser.parse(rawRuleStructure);

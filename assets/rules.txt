@@ -1,0 +1,86 @@
+#
+# World mechanics
+#
+
+A living creature can die.
+Attacking a beast turns it into a hostile beast.
+Attacking a person turns it into a hostile person.
+
+
+#
+# Player
+#
+
+A player is a living creature.
+A player can attack actors.
+A player can change scenes.
+A player can interact with actors.
+
+
+
+#
+# Places
+#
+
+# Tbox
+A scene occurs in a place.
+A place can have an actor.
+An interior is a place.
+An exterior is a place.
+
+# Abox
+A cave is an interior
+A forest is an exterior
+A valley is an exterior
+A farm is an exterior
+A barn is an interior
+
+
+
+#
+# Actors
+#
+
+# Tbox
+An actor is a living creature.
+
+# Abox
+A person is a living creature.
+
+
+
+#
+# Beasts
+#
+
+# Tbox
+An beast is a living creature.
+Beasts can be friendly beast or hostile beast.
+
+# Abox
+A dog can be friendly beast or hostile beast.
+A cat is a friendly beast.
+A bear is a hostile beast.
+A horse is a friendly beast.
+A wolf is a hostile beast.
+
+A cave can have a bear.
+A forest can have a bear.
+A forest can have a wolf.
+A valley can have a wolf.
+An interior can have a dog.
+An interior can have a cat.
+An exterior can have a horse.
+
+
+
+#
+# Beast behaviors
+#
+
+# Tbox
+A hostile beast attacks an actor.
+
+# Abox
+A dog attacks with a bite.
+A bear attacks with a bite or claw.

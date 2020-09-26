@@ -2,7 +2,6 @@ import peg from 'pegjs';
 import fs from 'fs';
 import path from 'path';
 import createPosTagger from 'wink-pos-tagger';
-import { getRulesStructure } from '../rulesStructure';
 import { NLTaggedRule } from './model';
 import { Rule, RulesGraphs } from '../model';
 import { buildGraphs } from '../rulesGraph';
@@ -11,7 +10,7 @@ const posTagger = createPosTagger();
 posTagger.updateLexicon({
     living: ['JJ'],
     attack: ['VB'],
-    attacks: ['VB'],
+    attacks: ['VBZ'],
 });
 
 const readRawRules = (): NLTaggedRule[] => {
@@ -44,6 +43,41 @@ const readRawRules = (): NLTaggedRule[] => {
 const getRules = (rawRules: NLTaggedRule[]): Rule[] => {
     const rules = getRulesStructure(rawRules);
     return rules;
+};
+
+const getRulesStructure = (rules: NLTaggedRule[]): Rule[] => {
+    const grammar = fs.readFileSync(
+        path.resolve(__dirname, '../../assets/rulesStructure.grammar.pegjs'),
+        {
+            encoding: 'utf-8',
+        }
+    );
+    const parser = peg.generate(grammar);
+    return rules.map(
+        (rule): Rule => {
+            const rawRuleStructure = rule.taggedWords
+                .map(
+                    (taggedWord) =>
+                        `${taggedWord.pos}/${
+                            taggedWord.lemma || taggedWord.normal
+                        }`
+                )
+                .join(' ');
+            try {
+                const ruleStructure = parser.parse(rawRuleStructure);
+                return {
+                    id: rule.id,
+                    ...ruleStructure,
+                };
+            } catch (err) {
+                console.log(rule.id);
+                console.log(new Array(rule.id.length).fill('-').join(''));
+                console.log(rawRuleStructure);
+                console.log(err);
+                throw err;
+            }
+        }
+    );
 };
 
 export const getRulesGraph = (): RulesGraphs => {

@@ -29,6 +29,7 @@ const buildGraph = (rules: Rule[]): Graph => {
 
 export const buildGraphs = (rules: Rule[]): RulesGraphs => {
     const uniqueVerbs = new Set(rules.map(({ verb }) => verb.name));
+    console.log(uniqueVerbs);
     const rulesGraphs = { global: new Graph({ multigraph: true }) };
     uniqueVerbs.forEach((verb) => {
         const verbRules = rules.filter(({ verb: { name } }) => name === verb);

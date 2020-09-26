@@ -18,6 +18,7 @@ adjective
 noun
     = nns:NNS { return nns; }
     / nn:NN { return nn; }
+    / nnp:NNP { return nnp; }
 
 // Verb
 verb
@@ -28,8 +29,8 @@ verb
 
 // Target
 targets
-    = subject:subject CC targets:targets { return subject ? [ subject, ...targets ] : targets; }
-    / target:subject { return target ? [ target ] : null; }
+    = subject:subject CC targets:targets { return subject ? [ subject.actor, ...targets ] : targets; }
+    / target:subject { return target ? [ target.actor ] : null; }
 
 // Tags
 DT
@@ -38,6 +39,8 @@ NN
     = "NN" separator word:word __ { return word; }
 NNS
     = "NNS" separator word:word __ { return word; }
+NNP
+    = "NNP" separator word:word __ { return word; }
 JJ
     = "JJ" separator word:word __ { return word; }
 JJR

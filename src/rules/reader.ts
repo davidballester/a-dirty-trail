@@ -4,7 +4,8 @@ import path from 'path';
 import createPosTagger from 'wink-pos-tagger';
 import { getRulesStructure } from '../rulesStructure';
 import { NLTaggedRule } from './model';
-import { Rule } from '../model';
+import { Rule, RulesGraphs } from '../model';
+import { buildGraphs } from '../rulesGraph';
 
 const posTagger = createPosTagger();
 posTagger.updateLexicon({
@@ -32,10 +33,6 @@ const readRawRules = (): NLTaggedRule[] => {
     return rules.map(
         (rule): NLTaggedRule => {
             const taggedWords = posTagger.tagSentence(rule);
-            console.log(rule);
-            console.log(new Array(rule.length).fill('-').join(''));
-            console.log(JSON.stringify({ taggedWords }, null, 4));
-            console.log();
             return {
                 id: rule,
                 taggedWords,
@@ -44,8 +41,13 @@ const readRawRules = (): NLTaggedRule[] => {
     );
 };
 
-export const getRules = (): Rule[] => {
-    const rawRules = readRawRules();
+const getRules = (rawRules: NLTaggedRule[]): Rule[] => {
     const rules = getRulesStructure(rawRules);
     return rules;
+};
+
+export const getRulesGraph = (): RulesGraphs => {
+    const rawRules = readRawRules();
+    const rules = getRules(rawRules);
+    return buildGraphs(rules);
 };

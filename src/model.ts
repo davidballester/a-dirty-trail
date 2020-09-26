@@ -1,3 +1,5 @@
+import { Graph } from 'graphlib';
+
 export interface Actor {
     name: string;
     modifier?: string;
@@ -21,7 +23,13 @@ export interface Verb {
 }
 
 export interface Rule {
+    id: string;
     subject: Subject;
     verb: Verb;
     targets: Target[];
+}
+
+export interface RulesGraphs {
+    global: Graph;
+    [verb: string]: Graph;
 }

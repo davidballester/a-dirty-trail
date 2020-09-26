@@ -2,7 +2,6 @@
 # World mechanics
 #
 
-A living creature can die.
 Attacking a beast turns it into a hostile beast.
 Attacking a person turns it into a hostile person.
 
@@ -84,3 +83,33 @@ A hostile beast attacks an actor.
 # Abox
 A dog attacks with a bite.
 A bear attacks with a bite or claw.
+
+
+
+#
+# Tools
+#
+
+An axe is a tool.
+
+A barn can contain tools.
+Cartridges are tools.
+Shells are tools.
+
+
+#
+# Weapons
+#
+
+A weapon is a tool.
+
+A revolver is a weapon.
+A revolver needs cartridges.
+
+A shotgun is a weapon.
+A shotgun needs shells.
+
+A rifle is a weapon.
+A rifle needs cartridges.
+
+A knife is a weapon.

@@ -1,5 +1,5 @@
-import { getRules } from './rules';
+import { getRulesGraph } from './rules';
 import { buildScene } from './builder';
 
-const rules = getRules();
-buildScene(rules);
+const rulesGraphs = getRulesGraph();
+buildScene(rulesGraphs);

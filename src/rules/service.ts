@@ -41,11 +41,6 @@ const readRawRules = (): NLTaggedRule[] => {
 };
 
 const getRules = (rawRules: NLTaggedRule[]): Rule[] => {
-    const rules = getRulesStructure(rawRules);
-    return rules;
-};
-
-const getRulesStructure = (rules: NLTaggedRule[]): Rule[] => {
     const grammar = fs.readFileSync(
         path.resolve(__dirname, '../../assets/rulesStructure.grammar.pegjs'),
         {
@@ -53,7 +48,7 @@ const getRulesStructure = (rules: NLTaggedRule[]): Rule[] => {
         }
     );
     const parser = peg.generate(grammar);
-    return rules.map(
+    return rawRules.map(
         (rule): Rule => {
             const rawRuleStructure = rule.taggedWords
                 .map(
@@ -74,7 +69,7 @@ const getRulesStructure = (rules: NLTaggedRule[]): Rule[] => {
                 console.log(new Array(rule.id.length).fill('-').join(''));
                 console.log(rawRuleStructure);
                 console.log(err);
-                throw err;
+                process.exit(-1);
             }
         }
     );

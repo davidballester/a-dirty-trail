@@ -1,6 +1,5 @@
 import { Graph } from 'graphlib';
-import { buildPlayer, buildScene } from '../builder';
-import { getAppliedFacts } from '../builder/tboxService';
+import { buildPlayer, buildScene, getPlayerActions } from '../builder';
 import { RulesGraphs } from '../model';
 import { mergeGraphs } from '../rulesGraph';
 import { Game } from './model';
@@ -17,5 +16,4 @@ export const startNewGame = (rulesGraphs: RulesGraphs): Game => {
     };
 };
 
-export const getPossibleActions = (game: Game): Graph =>
-    getAppliedFacts('player', game);
+export const getPossibleActions = (game: Game): Graph => getPlayerActions(game);

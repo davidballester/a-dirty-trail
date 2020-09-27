@@ -9,10 +9,11 @@ rule
 
 // Language
 word
-    = letters:$letter+ { return letters.toLowerCase(); }
-letter
+    = characters:$character+ { return characters.toLowerCase(); }
+character
     = [a-z]
     / [A-Z]
+    / [0-9]
 
 // Skipped
 __

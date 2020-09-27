@@ -5,7 +5,9 @@ export interface Actor {
     modifier?: string;
 }
 
-export interface Target extends Actor {}
+export interface Target extends Actor {
+    range?: number[];
+}
 
 export interface Action {
     name: string;
@@ -31,5 +33,7 @@ export interface Rule {
 
 export interface RulesGraphs {
     global: Graph;
+    be: Graph;
+    beReverse: Graph;
     [verb: string]: Graph;
 }

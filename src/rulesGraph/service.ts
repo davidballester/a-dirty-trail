@@ -29,14 +29,16 @@ const buildGraph = (rules: Rule[]): Graph => {
 
 export const buildGraphs = (rules: Rule[]): RulesGraphs => {
     const uniqueVerbs = new Set(rules.map(({ verb }) => verb.name));
-    const rulesGraphs = { global: new Graph({ multigraph: true }) };
+    const rulesGraphs = {
+        global: new Graph({ multigraph: true }),
+    } as RulesGraphs;
     uniqueVerbs.forEach((verb) => {
         const verbRules = rules.filter(({ verb: { name } }) => name === verb);
         const graph = buildGraph(verbRules);
         mergeGraphs(rulesGraphs.global, graph);
         rulesGraphs[verb] = graph;
     });
-    rulesGraphs['be-reverse'] = reverseGraph(rulesGraphs['be']);
+    rulesGraphs.beReverse = reverseGraph(rulesGraphs.be);
     return rulesGraphs;
 };
 
@@ -47,7 +49,7 @@ export const getEdgeLabel = (
     source: string,
     target: string,
     verb: Verb
-): string => `${source}-${target}-${verb.name}`;
+): string => `${source}-${verb.name}-${target}`;
 
 export const mergeGraphs = (target: Graph, source: Graph): void => {
     mergeNodes(target, source);

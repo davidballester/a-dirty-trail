@@ -30,6 +30,7 @@ verb
 // Target
 targets
     = subject:subject CC targets:targets { return subject ? [ subject.actor, ...targets ] : targets; }
+    / startRange:CD CC endRange:CD subject:subject { return [{ ...subject.actor, range: [startRange, endRange] }]; }
     / target:subject { return target ? [ target.actor ] : null; }
 
 // Tags
@@ -65,6 +66,8 @@ RB
     = "RB" separator word:word __ { return word; }
 PRP
     = "PRP" separator word:word __
+CD
+    = "CD" separator number:number __ { return number; }
 
 separator
     = "/"
@@ -73,6 +76,8 @@ word
 letter
     = [a-z]
     / [A-Z]
+number
+    = quantity:$[0-9]+ {return parseInt(quantity); }
 
 // Skipped
 __

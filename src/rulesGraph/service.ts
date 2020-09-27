@@ -1,5 +1,5 @@
-import { Graph } from 'graphlib';
-import { Actor, Rule, RulesGraphs } from '../model';
+import { alg, Graph } from 'graphlib';
+import { Actor, Rule, RulesGraphs, Verb } from '../model';
 
 const buildGraph = (rules: Rule[]): Graph => {
     const graph = new Graph();
@@ -29,7 +29,6 @@ const buildGraph = (rules: Rule[]): Graph => {
 
 export const buildGraphs = (rules: Rule[]): RulesGraphs => {
     const uniqueVerbs = new Set(rules.map(({ verb }) => verb.name));
-    console.log(uniqueVerbs);
     const rulesGraphs = { global: new Graph({ multigraph: true }) };
     uniqueVerbs.forEach((verb) => {
         const verbRules = rules.filter(({ verb: { name } }) => name === verb);
@@ -44,6 +43,12 @@ export const buildGraphs = (rules: Rule[]): RulesGraphs => {
 export const getActorLabel = ({ name, modifier }: Actor): string =>
     !modifier ? name : `${modifier}-${name}`;
 
+export const getEdgeLabel = (
+    source: string,
+    target: string,
+    verb: Verb
+): string => `${source}-${target}-${verb.name}`;
+
 export const mergeGraphs = (target: Graph, source: Graph): void => {
     mergeNodes(target, source);
     source.edges().forEach((edgeLabel) => {
@@ -52,8 +57,18 @@ export const mergeGraphs = (target: Graph, source: Graph): void => {
             edgeLabel.v,
             edgeLabel.w,
             edge,
-            `${edgeLabel.v}-${edgeLabel.w}-${edge.name}`
+            getEdgeLabel(edgeLabel.v, edgeLabel.w, edge)
         );
+    });
+};
+
+export const getLeaves = (node: string, graph: Graph): string[] => {
+    if (!graph.hasNode(node)) {
+        return [];
+    }
+    return alg.preorder(graph, [node]).filter((instanceCandidate) => {
+        const ancestors = graph.successors(instanceCandidate);
+        return !ancestors || !ancestors.length;
     });
 };
 

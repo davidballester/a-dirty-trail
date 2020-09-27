@@ -1,5 +1,21 @@
 import { getRulesGraph } from './rules';
-import { buildScene } from './builder';
+import { getPossibleActions, startNewGame } from './game';
 
 const rulesGraphs = getRulesGraph();
-buildScene(rulesGraphs);
+new Array(50).fill(null).forEach(() => {
+    const game = startNewGame(rulesGraphs);
+    const possibleActions = getPossibleActions(game);
+    console.log(
+        JSON.stringify(
+            {
+                actors: game.persistentWorld.nodes(),
+                possibleActions: possibleActions
+                    .edges()
+                    .map((edge) => edge.name),
+            },
+            null,
+            4
+        )
+    );
+    console.log();
+});

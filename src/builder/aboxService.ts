@@ -1,6 +1,6 @@
 import { RulesGraphs } from '../model';
 import { alg, Edge, Graph } from 'graphlib';
-import { mergeGraphs } from '../rulesGraph';
+import { getLeaves, mergeGraphs } from '../rulesGraph';
 
 export const instantiate = (node: string, rulesGraphs: RulesGraphs): Graph => {
     const instance = new Graph({ multigraph: true });
@@ -23,10 +23,7 @@ export const instantiate = (node: string, rulesGraphs: RulesGraphs): Graph => {
             rulesGraphs.global
         );
         edges.forEach((outEdge) => {
-            const allPossibleTargets = getAllPossibleInstances(
-                outEdge.w,
-                rulesGraphs['be']
-            );
+            const allPossibleTargets = getLeaves(outEdge.w, rulesGraphs['be']);
             if (allPossibleTargets.length) {
                 const target = getRandomItem(allPossibleTargets);
                 if (!instance.hasNode(target)) {
@@ -77,16 +74,6 @@ const pickEdgesForInstantiation = (
         .filter((outEdge) => gloablGraph.edge(outEdge).modal === 'can')
         .filter(() => Math.random() < 0.5),
 ];
-
-const getAllPossibleInstances = (node: string, beGraph: Graph): string[] => {
-    if (!beGraph.hasNode(node)) {
-        return [];
-    }
-    return alg.preorder(beGraph, [node]).filter((instanceCandidate) => {
-        const successors = beGraph.successors(instanceCandidate);
-        return !successors || !successors.length;
-    });
-};
 
 const getRandomItem = (items: any[] = []) =>
     items[Math.floor(Math.random() * items.length)];

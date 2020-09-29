@@ -46,7 +46,7 @@ A barn is an interior
 An actor is a living creature.
 
 # Abox
-A person is a living creature.
+A person is an actor.
 
 
 
@@ -55,7 +55,7 @@ A person is a living creature.
 #
 
 # Tbox
-An beast is an actor.
+A beast is an actor.
 A friendly beast is a beast.
 A hostile beast is a beast.
 

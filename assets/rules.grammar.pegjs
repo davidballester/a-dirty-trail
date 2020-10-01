@@ -14,6 +14,7 @@ character
     = [a-z]
     / [A-Z]
     / [0-9]
+    / ","
 
 // Skipped
 __

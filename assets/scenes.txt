@@ -1,0 +1,25 @@
+Barns, valleys, caves, huts, forests, plains and campfires are scenes.
+Racks, trunks, boxes, sacks and closets are containers.
+Trees, streams, rocks, tracks, clearings and ponds are scenary.
+Chairs and tables are scenary.
+
+In a barn there can be racks, trunks and boxes.
+In a barn there can be people.
+
+In a valley there can be trees, streams, rocks and a campfire.
+In a valley there can be people and animals.
+
+In a cave there can be rocks and a campfire.
+In a cave there can be people and animals.
+
+In a hut there can be racks, trunks, boxes, chairs, tables and closets.
+In a hut there can be people.
+
+In a forest there can be trees, rocks, tracks, ponds and clearings.
+In a forest there can be people and animals.
+
+In a plain there can be tracks, trees and ponds.
+In a plain there can be people and animals.
+
+In a campfire there can be trunks and sacks.
+In a campfire there can be people.

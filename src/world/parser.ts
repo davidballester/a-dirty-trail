@@ -2,18 +2,27 @@ import peg from 'pegjs';
 import fs from 'fs';
 import path from 'path';
 import createPosTagger from 'wink-pos-tagger';
-import { NLTaggedRule } from './model';
-import { Rule, RulesGraphs } from '../model';
-import { buildGraphs } from '../rulesGraph';
 
 const posTagger = createPosTagger();
 posTagger.updateLexicon({
-    living: ['JJ'],
-    attack: ['VB'],
-    attacks: ['VBZ'],
+    tracks: ['NNS'],
+    plain: ['NN'],
+    deals: ['VBZ'],
+    close: ['JJ'],
 });
 
-const readRawRules = (): NLTaggedRule[] => {
+interface TaggedWord {
+    normal: string;
+    pos: string;
+    lemma?: string;
+}
+
+export interface NLTaggedRule {
+    id: string;
+    taggedWords: TaggedWord[];
+}
+
+const parseNLTaggedRules = (rulesFilePath: string): NLTaggedRule[] => {
     const grammar = fs.readFileSync(
         path.resolve(__dirname, '../../assets/rules.grammar.pegjs'),
         {
@@ -21,14 +30,10 @@ const readRawRules = (): NLTaggedRule[] => {
         }
     );
     const parser = peg.generate(grammar);
-
-    const input = fs.readFileSync(
-        path.resolve(__dirname, '../../assets/rules.txt'),
-        {
-            encoding: 'utf-8',
-        }
-    );
-    const rules = parser.parse(input) as string[];
+    const rulesFileContents = fs.readFileSync(rulesFilePath, {
+        encoding: 'utf-8',
+    });
+    const rules = parser.parse(rulesFileContents) as string[];
     return rules.map(
         (rule): NLTaggedRule => {
             const taggedWords = posTagger.tagSentence(rule);
@@ -40,16 +45,33 @@ const readRawRules = (): NLTaggedRule[] => {
     );
 };
 
-const getRules = (rawRules: NLTaggedRule[]): Rule[] => {
-    const grammar = fs.readFileSync(
-        path.resolve(__dirname, '../../assets/rulesStructure.grammar.pegjs'),
+export const parse = <T>(
+    rulesFilePath: string,
+    rulesGrammarPath: string
+): T[] => {
+    const nlTaggedRules = parseNLTaggedRules(rulesFilePath);
+    const posGrammarContents = fs.readFileSync(
+        path.resolve(__dirname, '../../assets/pos.grammar.pegjs'),
         {
             encoding: 'utf-8',
         }
     );
-    const parser = peg.generate(grammar);
-    return rawRules.map(
-        (rule): Rule => {
+    const commonMechanicsGrammarContents = fs.readFileSync(
+        path.resolve(__dirname, '../../assets/common-mechanics.grammar.pegjs'),
+        {
+            encoding: 'utf-8',
+        }
+    );
+    const rulesGrammarContents = fs.readFileSync(rulesGrammarPath, {
+        encoding: 'utf-8',
+    });
+    const parser = peg.generate(
+        rulesGrammarContents +
+            posGrammarContents +
+            commonMechanicsGrammarContents
+    );
+    return nlTaggedRules.map(
+        (rule): T => {
             const rawRuleStructure = rule.taggedWords
                 .map(
                     (taggedWord) =>
@@ -73,10 +95,4 @@ const getRules = (rawRules: NLTaggedRule[]): Rule[] => {
             }
         }
     );
-};
-
-export const getRulesGraph = (): RulesGraphs => {
-    const rawRules = readRawRules();
-    const rules = getRules(rawRules);
-    return buildGraphs(rules);
 };

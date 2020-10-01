@@ -1,0 +1,4 @@
+Marauders, brigands, plunderers, riders, pillagers, highwaymen and reavers are hostile people.
+Farmers, tinkerers, peddlers, hucksters, packmen, travelers, hawkers and costers are friendly people.
+
+People have between 1 and 3 health points.

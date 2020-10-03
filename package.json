@@ -2,18 +2,26 @@
     "name": "a-dirty-trail",
     "version": "1.0.0",
     "description": "A humble text-based game with a limitless ambition.",
+    "author": "David Ballester Mena",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/davidballester/a-dirty-trail"
+    },
     "main": "build/index.js",
     "types": "build/index.d.js",
+    "files": [
+        "/dist"
+    ],
     "scripts": {
+        "prebuildAssets": "npm run build",
+        "buildAssets": "node ./build/buildAssets.js",
         "build": "rimraf ./build && tsc",
         "predev": "npm run build",
         "dev": "node ./build/dev.js",
-        "prebuildAssets": "npm run build",
-        "buildAssets": "node ./build/buildAssets.js",
+        "prepare": "npm run build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "",
-    "license": "ISC",
     "dependencies": {
         "graphlib": "^2.1.8",
         "pegjs": "^0.10.0",

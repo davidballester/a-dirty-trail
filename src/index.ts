@@ -1,13 +1,9 @@
 import { getSceneGenerator } from './world/scenes';
 import { getWeaponAndAmmunitionGenerators } from './world/attack';
 import { getActorGenerator } from './world/actors';
-import {
-    buildGame,
-    buildOponentsActions,
-    buildPlayerActions,
-    executeAction,
-} from './game';
+import { Game } from './game';
 import { getRandomItem } from './world/common';
+import { Narrator } from './narrator';
 
 const {
     ammunitionGenerator,
@@ -20,18 +16,39 @@ const sceneGenerator = getSceneGenerator(
     actorGenerator
 );
 
-let game = buildGame(sceneGenerator, actorGenerator);
+const game = new Game(sceneGenerator, actorGenerator);
+const narrator = new Narrator(game.player);
+console.log(narrator.tellIntroduction());
+console.log();
 while (game.player.isAlive()) {
-    const playerAction = getRandomItem(buildPlayerActions(game));
+    console.log(narrator.describeSetup(game.scene));
+    const playerAction = getRandomItem(game.buildPlayerActions());
     if (!playerAction) {
         break;
     }
-    executeAction(playerAction, game);
-    const oponentsActions = buildOponentsActions(game);
-    Object.keys(oponentsActions).forEach((oponentId) => {
-        const action = getRandomItem(oponentsActions[oponentId]);
-        if (action) {
-            executeAction(action, game);
+    if (game.canExecuteAction(playerAction)) {
+        console.log(narrator.describeAction(playerAction));
+        const outcome = game.executeAction(playerAction);
+        console.log(narrator.describeActionOutcome(playerAction, outcome));
+    }
+    const oponentsActions = game.buildOponentsActions();
+    for (let oponentId of Object.keys(oponentsActions)) {
+        if (!game.player.isAlive()) {
+            break;
         }
-    });
+        const oponentAction = getRandomItem(oponentsActions[oponentId]);
+        if (oponentAction && game.canExecuteAction(oponentAction)) {
+            console.log(narrator.describeAction(oponentAction));
+            const oponentActionOutcome = game.executeAction(oponentAction);
+            console.log(
+                narrator.describeActionOutcome(
+                    oponentAction,
+                    oponentActionOutcome
+                )
+            );
+        }
+    }
 }
+console.log();
+console.log(narrator.tellEnding());
+console.log();

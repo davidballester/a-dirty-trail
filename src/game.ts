@@ -7,203 +7,218 @@ import {
     ReloadAction,
 } from './mechanics/actions';
 import { Actor, ActorStatus } from './mechanics/actor';
-import { Ammunition, Weapon } from './mechanics/attack';
-import { Inventory } from './mechanics/inventory';
+import {
+    Ammunition,
+    AttackOutcome,
+    AttackOutcomeStatus,
+    Weapon,
+} from './mechanics/attack';
 import { canChangeScene, Scene } from './mechanics/scene';
-import { describeAction, describeScene } from './narrator';
 import { ActorGenerator } from './world/actors';
 import { SceneGenerator } from './world/scenes';
 
-export interface Generators {
-    sceneGenerator: SceneGenerator;
-    actorGenerator: ActorGenerator;
-}
-
-export interface Game {
+export class Game {
     player: Actor;
     scene: Scene;
-    generators: Generators;
-}
+    generators: {
+        sceneGenerator: SceneGenerator;
+        actorGenerator: ActorGenerator;
+    };
+    lastScene?: Scene;
 
-export const buildGame = (
-    sceneGenerator: SceneGenerator,
-    actorGenerator: ActorGenerator
-): Game => {
-    return {
-        player: buildPlayer(actorGenerator),
-        scene: sceneGenerator(),
-        generators: {
+    constructor(
+        sceneGenerator: SceneGenerator,
+        actorGenerator: ActorGenerator
+    ) {
+        this.generators = {
             sceneGenerator,
             actorGenerator,
-        },
-    };
-};
+        };
+        this.lastScene = undefined;
+        this.player = this.buildPlayer();
+        this.scene = sceneGenerator();
+    }
 
-export const buildPlayerActions = (game: Game): Action<any>[] => {
-    const actions = [] as Action<any>[];
-    actions.push(...buildPacifyActions(game.player, game.scene.actors));
-    actions.push(...buildAttackActions(game.player, game.scene.actors));
-    actions.push(
-        ...buildLootActions(
-            game.player,
-            game.scene.containers,
-            game.scene.actors
-        )
-    );
-    actions.push(...buildReloadActions(game.player));
-    if (canChangeScene(game.scene)) {
-        actions.push(
-            buildLeaveAction(game.player, game.generators.sceneGenerator)
+    buildPlayerActions(): Action<any>[] {
+        const actions = [] as Action<any>[];
+        actions.push(...this.buildPacifyActions());
+        actions.push(...this.buildAttackActions());
+        actions.push(...this.buildLootActions());
+        actions.push(...this.buildReloadActions(this.player));
+        if (canChangeScene(this.scene)) {
+            actions.push(this.buildLeaveAction());
+        }
+        return actions;
+    }
+
+    buildOponentsActions(): { [actorId: string]: Action<any>[] } {
+        return this.scene.actors
+            .filter((actor) => actor.is(ActorStatus.hostile))
+            .map((actor) => {
+                const attackActions = this.buildOponentAttackActions(actor);
+                const reloadActions = this.buildReloadActions(actor);
+                return {
+                    actorId: actor.id,
+                    actions: [...attackActions, ...reloadActions],
+                };
+            })
+            .reduce(
+                (actorsActions, actorActions) => ({
+                    ...actorsActions,
+                    [actorActions.actorId]: actorActions.actions,
+                }),
+                {}
+            );
+    }
+
+    canExecuteAction(action: Action<any>): boolean {
+        const isActorInScene =
+            this.player.id === action.player.id ||
+            !!this.scene.actors.find(({ id }) => id === action.player.id);
+        const isOponentInScene =
+            !(action as any).oponent ||
+            this.player.id === (action as any).oponent.id ||
+            !!this.scene.actors.find(
+                ({ id }) => id === (action as any).oponent.id
+            );
+        return isActorInScene && isOponentInScene;
+    }
+
+    executeAction(action: Action<any>): any {
+        const result = action.execute();
+        if (action instanceof LeaveAction) {
+            const newScene = result as Scene;
+            this.lastScene = this.scene;
+            this.scene = newScene;
+        } else if (action instanceof LootAction) {
+            this.scene.containers = this.scene.containers.filter(
+                (container) => container.id !== action.inventory.id
+            );
+        } else if (action instanceof AttackAction) {
+            if (
+                (result as AttackOutcome).status ===
+                AttackOutcomeStatus.oponentDead
+            ) {
+                this.scene.actors = this.scene.actors.filter(
+                    (actor) => actor.id !== action.oponent.id
+                );
+                this.scene.containers.push(action.oponent.inventory);
+            }
+        } else if (action instanceof PacifyAction) {
+            if (!!result) {
+                this.scene.actors = this.scene.actors.filter(
+                    (actor) => actor.id !== action.oponent.id
+                );
+            }
+        }
+        return result;
+    }
+
+    private buildPacifyActions(): PacifyAction[] {
+        return this.scene.actors
+            .filter(
+                (actor) =>
+                    actor.is(ActorStatus.hostile) && !actor.is(ActorStatus.wild)
+            )
+            .map(
+                (pacifiableActor) =>
+                    new PacifyAction(this.player, pacifiableActor)
+            );
+    }
+
+    private buildAttackActions(): AttackAction[] {
+        return this.scene.actors
+            .map((oponent) =>
+                this.player.inventory.items
+                    .filter((item) => item instanceof Weapon)
+                    .filter((item) => {
+                        const weapon = item as Weapon;
+                        return (
+                            !weapon.ammunition || !weapon.ammunition.isSpent()
+                        );
+                    })
+                    .map(
+                        (weapon) =>
+                            new AttackAction(
+                                this.player,
+                                weapon as Weapon,
+                                oponent
+                            )
+                    )
+            )
+            .reduce(
+                (allAttackActions, attackActionsAgainstHostile) => [
+                    ...allAttackActions,
+                    ...attackActionsAgainstHostile,
+                ],
+                []
+            );
+    }
+
+    private buildLootActions(): LootAction[] {
+        return this.scene.containers.map(
+            (container) => new LootAction(this.player, container)
         );
     }
-    return actions;
-};
 
-export const buildOponentsActions = (
-    game: Game
-): { [actorId: string]: Action<any>[] } => {
-    return game.scene.actors
-        .filter((actor) => actor.is(ActorStatus.hostile))
-        .map((actor) => {
-            const attackActions = buildOponentAttackActions(actor, game.player);
-            const reloadActions = buildReloadActions(actor);
-            return {
-                actorId: actor.id,
-                actions: [...attackActions, ...reloadActions],
-            };
-        })
-        .reduce(
-            (actorsActions, actorActions) => ({
-                ...actorsActions,
-                [actorActions.actorId]: actorActions.actions,
-            }),
-            {}
-        );
-};
-
-export const executeAction = (action: Action<any>, game: Game): void => {
-    console.log(describeScene(game.player, game.scene));
-    console.log(describeAction(action));
-    const result = action.execute();
-    if (action instanceof LeaveAction) {
-        const newScene = result as Scene;
-        game.scene = newScene;
+    private buildReloadActions(actor: Actor): ReloadAction[] {
+        return actor.inventory.items
+            .filter((item) => item instanceof Ammunition)
+            .map((ammunition) =>
+                actor.inventory.items
+                    .filter((item) => item instanceof Weapon)
+                    .map((weapon) => weapon as Weapon)
+                    .filter((weapon) => !!weapon.ammunition)
+                    .filter(
+                        (weapon) => weapon.ammunition!.name === ammunition.name
+                    )
+                    .filter(
+                        (weapon) =>
+                            weapon.ammunition!.quantity <
+                            weapon.ammunition!.maxAmmunition
+                    )
+                    .map(
+                        (weapon) =>
+                            new ReloadAction(
+                                actor,
+                                weapon as Weapon,
+                                ammunition as Ammunition,
+                                actor.inventory
+                            )
+                    )
+            )
+            .reduce(
+                (allReloadActions, ammunitionReloadActions) => [
+                    ...allReloadActions,
+                    ...ammunitionReloadActions,
+                ],
+                []
+            );
     }
-    console.log('Final state: ', JSON.stringify(game));
-    console.log('--------------------------------------------');
-    console.log();
-};
 
-const buildPacifyActions = (
-    actor: Actor,
-    oponents: Actor[]
-): PacifyAction[] => {
-    return oponents
-        .filter(
-            (actor) =>
-                actor.is(ActorStatus.hostile) && !actor.is(ActorStatus.wild)
-        )
-        .map((pacifiableActor) => new PacifyAction(actor, pacifiableActor));
-};
+    private buildLeaveAction(): LeaveAction {
+        return new LeaveAction(this.player, this.generators.sceneGenerator);
+    }
 
-const buildAttackActions = (
-    actor: Actor,
-    oponents: Actor[]
-): AttackAction[] => {
-    return oponents
-        .map((oponent) =>
-            actor.inventory.items
-                .filter((item) => item instanceof Weapon)
-                .filter((item) => {
-                    const weapon = item as Weapon;
-                    return !weapon.ammunition || !weapon.ammunition.isSpent();
-                })
-                .map(
-                    (weapon) =>
-                        new AttackAction(actor, weapon as Weapon, oponent)
-                )
-        )
-        .reduce(
-            (allAttackActions, attackActionsAgainstHostile) => [
-                ...allAttackActions,
-                ...attackActionsAgainstHostile,
-            ],
-            []
-        );
-};
+    private buildOponentAttackActions(actor: Actor): AttackAction[] {
+        return actor.inventory.items
+            .filter((item) => item instanceof Weapon)
+            .filter((item) => {
+                const weapon = item as Weapon;
+                return !weapon.ammunition || !weapon.ammunition.isSpent();
+            })
+            .map(
+                (weapon) =>
+                    new AttackAction(actor, weapon as Weapon, this.player)
+            );
+    }
 
-const buildLootActions = (
-    actor: Actor,
-    containers: Inventory[],
-    oponents: Actor[]
-): LootAction[] => {
-    const containersLootActions = containers.map(
-        (container) => new LootAction(actor, container)
-    );
-    const deadActorsLootActions = oponents
-        .filter((oponent) => !oponent.isAlive())
-        .map((oponent) => new LootAction(actor, oponent.inventory));
-    return [...containersLootActions, ...deadActorsLootActions];
-};
-
-const buildReloadActions = (actor: Actor): ReloadAction[] => {
-    return actor.inventory.items
-        .filter((item) => item instanceof Ammunition)
-        .map((ammunition) =>
-            actor.inventory.items
-                .filter((item) => item instanceof Weapon)
-                .map((weapon) => weapon as Weapon)
-                .filter((weapon) => !!weapon.ammunition)
-                .filter((weapon) => weapon.ammunition!.name === ammunition.name)
-                .filter(
-                    (weapon) =>
-                        weapon.ammunition!.quantity <
-                        weapon.ammunition!.maxAmmunition
-                )
-                .map(
-                    (weapon) =>
-                        new ReloadAction(
-                            actor,
-                            weapon as Weapon,
-                            ammunition as Ammunition,
-                            actor.inventory
-                        )
-                )
-        )
-        .reduce(
-            (allReloadActions, ammunitionReloadActions) => [
-                ...allReloadActions,
-                ...ammunitionReloadActions,
-            ],
-            []
-        );
-};
-
-const buildLeaveAction = (
-    actor: Actor,
-    sceneGenerator: SceneGenerator
-): LeaveAction => {
-    return new LeaveAction(actor, sceneGenerator);
-};
-
-const buildOponentAttackActions = (
-    actor: Actor,
-    oponent: Actor
-): AttackAction[] => {
-    return actor.inventory.items
-        .filter((item) => item instanceof Weapon)
-        .filter((item) => {
-            const weapon = item as Weapon;
-            return !weapon.ammunition || !weapon.ammunition.isSpent();
-        })
-        .map((weapon) => new AttackAction(actor, weapon as Weapon, oponent));
-};
-
-const buildPlayer = (actorGenerator: ActorGenerator) => {
-    const actor = actorGenerator();
-    actor.name = 'the player';
-    actor.health.currentHitpoints = actor.health.maxHitpoints;
-    actor.inventory.name = 'pouch';
-    actor.status = [];
-    return actor;
-};
+    private buildPlayer(): Actor {
+        const actor = this.generators.actorGenerator();
+        actor.name = 'the player';
+        actor.health.currentHitpoints = actor.health.maxHitpoints;
+        actor.inventory.name = 'pouch';
+        actor.status = [];
+        return actor;
+    }
+}

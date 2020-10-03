@@ -3,7 +3,7 @@ import { Actor } from './actor';
 import { Ammunition, attack, AttackOutcome, Weapon } from './attack';
 import { Inventory, takeItems } from './inventory';
 import { pacify } from './pacify';
-import { canChangeScene, Scene } from './scene';
+import { Scene } from './scene';
 
 export abstract class Action<OutcomeType> {
     player: Actor;

@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class Item {
     name: string;
 
@@ -7,10 +9,12 @@ export class Item {
 }
 
 export class Inventory {
+    id: string;
     name: string;
     items: Item[];
 
     constructor(name: string, items: Item[] = []) {
+        this.id = uuidv4();
         this.name = name;
         this.items = items;
     }

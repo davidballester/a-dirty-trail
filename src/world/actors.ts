@@ -109,7 +109,7 @@ export const getActorGenerator = (
     return () => {
         const possibleActors = isAGraph.predecessors('people') || [];
         const actorName = getRandomItem(possibleActors);
-        const status = isAGraph.edge('people', actorName);
+        const status = isAGraph.edge(actorName, 'people');
         const healthPointsRange = healthPointsGraph.node(actorName) as {
             min: number;
             max: number;

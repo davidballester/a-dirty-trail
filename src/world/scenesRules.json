@@ -1,0 +1,220 @@
+[
+    {
+        "id": "barns, valleys, caves, huts, forests, plains and campfires are scenes",
+        "type": "isA",
+        "subjects": [
+            "barn",
+            "valley",
+            "cave",
+            "hut",
+            "forest",
+            "plain",
+            "campfire"
+        ],
+        "targets": [
+            "scene"
+        ]
+    },
+    {
+        "id": "racks, trunks, boxes, sacks and closets are containers",
+        "type": "isA",
+        "subjects": [
+            "rack",
+            "trunk",
+            "box",
+            "sack",
+            "closet"
+        ],
+        "targets": [
+            "container"
+        ]
+    },
+    {
+        "id": "trees, streams, rocks, tracks, clearings and ponds are scenary",
+        "type": "isA",
+        "subjects": [
+            "tree",
+            "stream",
+            "rock",
+            "track",
+            "clearing",
+            "pond"
+        ],
+        "targets": [
+            "scenary"
+        ]
+    },
+    {
+        "id": "chairs and tables are scenary",
+        "type": "isA",
+        "subjects": [
+            "chair",
+            "table"
+        ],
+        "targets": [
+            "scenary"
+        ]
+    },
+    {
+        "id": "in a barn there can be racks, trunks and boxes",
+        "type": "contains",
+        "subjects": [
+            "barn"
+        ],
+        "targets": [
+            "rack",
+            "trunk",
+            "box"
+        ]
+    },
+    {
+        "id": "in a barn there can be people",
+        "type": "contains",
+        "subjects": [
+            "barn"
+        ],
+        "targets": [
+            "people"
+        ]
+    },
+    {
+        "id": "in a valley there can be trees, streams, rocks and a campfire",
+        "type": "contains",
+        "subjects": [
+            "valley"
+        ],
+        "targets": [
+            "tree",
+            "stream",
+            "rock",
+            "campfire"
+        ]
+    },
+    {
+        "id": "in a valley there can be people and animals",
+        "type": "contains",
+        "subjects": [
+            "valley"
+        ],
+        "targets": [
+            "people",
+            "animal"
+        ]
+    },
+    {
+        "id": "in a cave there can be rocks and a campfire",
+        "type": "contains",
+        "subjects": [
+            "cave"
+        ],
+        "targets": [
+            "rock",
+            "campfire"
+        ]
+    },
+    {
+        "id": "in a cave there can be people and animals",
+        "type": "contains",
+        "subjects": [
+            "cave"
+        ],
+        "targets": [
+            "people",
+            "animal"
+        ]
+    },
+    {
+        "id": "in a hut there can be racks, trunks, boxes, chairs, tables and closets",
+        "type": "contains",
+        "subjects": [
+            "hut"
+        ],
+        "targets": [
+            "rack",
+            "trunk",
+            "box",
+            "chair",
+            "table",
+            "closet"
+        ]
+    },
+    {
+        "id": "in a hut there can be people",
+        "type": "contains",
+        "subjects": [
+            "hut"
+        ],
+        "targets": [
+            "people"
+        ]
+    },
+    {
+        "id": "in a forest there can be trees, rocks, tracks, ponds and clearings",
+        "type": "contains",
+        "subjects": [
+            "forest"
+        ],
+        "targets": [
+            "tree",
+            "rock",
+            "track",
+            "pond",
+            "clearing"
+        ]
+    },
+    {
+        "id": "in a forest there can be people and animals",
+        "type": "contains",
+        "subjects": [
+            "forest"
+        ],
+        "targets": [
+            "people",
+            "animal"
+        ]
+    },
+    {
+        "id": "in a plain there can be tracks, trees and ponds",
+        "type": "contains",
+        "subjects": [
+            "plain"
+        ],
+        "targets": [
+            "track",
+            "tree",
+            "pond"
+        ]
+    },
+    {
+        "id": "in a plain there can be people and animals",
+        "type": "contains",
+        "subjects": [
+            "plain"
+        ],
+        "targets": [
+            "people",
+            "animal"
+        ]
+    },
+    {
+        "id": "in a campfire there can be trunks and sacks",
+        "type": "contains",
+        "subjects": [
+            "campfire"
+        ],
+        "targets": [
+            "trunk",
+            "sack"
+        ]
+    },
+    {
+        "id": "in a campfire there can be people",
+        "type": "contains",
+        "subjects": [
+            "campfire"
+        ],
+        "targets": [
+            "people"
+        ]
+    }
+]

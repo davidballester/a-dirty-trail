@@ -1,0 +1,143 @@
+[
+    {
+        "id": "knives, hammers, axes, shotguns, rifles and revolvers are weapons",
+        "type": "isA",
+        "subjects": [
+            "knife",
+            "hammer",
+            "ax",
+            "shotgun",
+            "rifle",
+            "revolver"
+        ],
+        "target": "weapon"
+    },
+    {
+        "id": "shells and cartridges are ammunitions",
+        "type": "isA",
+        "subjects": [
+            "shell",
+            "cartridge"
+        ],
+        "target": "ammunition"
+    },
+    {
+        "id": "a shotgun deals between 1 and 3 damage points",
+        "type": "damage",
+        "subjects": [
+            "shotgun"
+        ],
+        "damage": {
+            "min": 1,
+            "max": 3
+        }
+    },
+    {
+        "id": "a rifle deals 1 or 2 damage points",
+        "type": "damage",
+        "subjects": [
+            "rifle"
+        ],
+        "damage": {
+            "min": 1,
+            "max": 2
+        }
+    },
+    {
+        "id": "a revolver deals 1 damage points",
+        "type": "damage",
+        "subjects": [
+            "revolver"
+        ],
+        "damage": {
+            "min": 1,
+            "max": 1
+        }
+    },
+    {
+        "id": "axes deal between 0 and 2 damage points",
+        "type": "damage",
+        "subjects": [
+            "ax"
+        ],
+        "damage": {
+            "min": 0,
+            "max": 2
+        }
+    },
+    {
+        "id": "a knife deals 0 or 1 damage points",
+        "type": "damage",
+        "subjects": [
+            "knife"
+        ],
+        "damage": {
+            "min": 0,
+            "max": 1
+        }
+    },
+    {
+        "id": "a hammer deals 0 or 1 damage points",
+        "type": "damage",
+        "subjects": [
+            "hammer"
+        ],
+        "damage": {
+            "min": 0,
+            "max": 1
+        }
+    },
+    {
+        "id": "a shotgun can carry 2 shells",
+        "type": "ammunition",
+        "subjects": [
+            "shotgun"
+        ],
+        "ammunition": {
+            "max": 2,
+            "type": "shell"
+        }
+    },
+    {
+        "id": "a rifle can carry 7 cartridges",
+        "type": "ammunition",
+        "subjects": [
+            "rifle"
+        ],
+        "ammunition": {
+            "max": 7,
+            "type": "cartridge"
+        }
+    },
+    {
+        "id": "a revolver can carry 6 cartridges",
+        "type": "ammunition",
+        "subjects": [
+            "revolver"
+        ],
+        "ammunition": {
+            "max": 6,
+            "type": "cartridge"
+        }
+    },
+    {
+        "id": "knives, hammers and axes require close combat skill",
+        "type": "skill",
+        "subjects": [
+            "knife",
+            "hammer",
+            "ax"
+        ],
+        "target": "closeCombat"
+    },
+    {
+        "id": "shotguns, rifles and revolvers require distance combat skill",
+        "type": "skill",
+        "subjects": [
+            "shotgun",
+            "rifle",
+            "revolver"
+        ],
+        "target": "distanceCombat"
+    }
+]

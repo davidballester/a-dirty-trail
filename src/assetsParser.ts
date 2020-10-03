@@ -24,7 +24,7 @@ export interface NLTaggedRule {
 
 const parseNLTaggedRules = (rulesFilePath: string): NLTaggedRule[] => {
     const grammar = fs.readFileSync(
-        path.resolve(__dirname, '../../assets/rules.grammar.pegjs'),
+        path.resolve(__dirname, '../assets/rules.grammar.pegjs'),
         {
             encoding: 'utf-8',
         }
@@ -51,13 +51,13 @@ export const parse = <T>(
 ): T[] => {
     const nlTaggedRules = parseNLTaggedRules(rulesFilePath);
     const posGrammarContents = fs.readFileSync(
-        path.resolve(__dirname, '../../assets/pos.grammar.pegjs'),
+        path.resolve(__dirname, '../assets/pos.grammar.pegjs'),
         {
             encoding: 'utf-8',
         }
     );
     const commonMechanicsGrammarContents = fs.readFileSync(
-        path.resolve(__dirname, '../../assets/common-mechanics.grammar.pegjs'),
+        path.resolve(__dirname, '../assets/common-mechanics.grammar.pegjs'),
         {
             encoding: 'utf-8',
         }

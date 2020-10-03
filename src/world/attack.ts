@@ -1,35 +1,11 @@
 import { Graph } from 'graphlib';
-import path from 'path';
 import { Ammunition, Weapon } from '../mechanics/attack';
 import { getSkillName } from '../mechanics/skill';
 import { getRandomItem } from './common';
-import { parse } from './parser';
+import attacksRulesJson from './attacksRules.json';
+import { AttackRule, AttackRuleType, Damage } from './rules';
 
-type AttackRuleType = 'isA' | 'skill' | 'damage' | 'ammunition';
-
-interface Damage {
-    min: number;
-    max: number;
-}
-
-interface AttackRule {
-    id: string;
-    type: AttackRuleType;
-    subjects: string[];
-    target?: string;
-    damage?: Damage;
-    ammunition?: {
-        max: number;
-        type: string;
-    };
-}
-
-const getAttackRules = (): AttackRule[] => {
-    return parse<AttackRule>(
-        path.resolve(__dirname, '../../assets/attack.txt'),
-        path.resolve(__dirname, '../../assets/attack.grammar.pegjs')
-    );
-};
+const attacksRules = (attacksRulesJson as unknown) as AttackRule[];
 
 const buildGraph = (attackRules: AttackRule[], type: AttackRuleType): Graph => {
     const graph = new Graph();
@@ -95,11 +71,10 @@ export const getWeaponAndAmmunitionGenerators = (): {
     weaponGenerator: WeaponGenerator;
     ammunitionGenerator: AmmunitionGenerator;
 } => {
-    const attackRules = getAttackRules();
-    const isAGraph = buildIsAGraph(attackRules);
-    const skillGraph = buildSkillGraph(attackRules);
-    const damageGraph = buildDamageGraph(attackRules);
-    const ammunitionGraph = buildAmmunitionGraph(attackRules);
+    const isAGraph = buildIsAGraph(attacksRules);
+    const skillGraph = buildSkillGraph(attacksRules);
+    const damageGraph = buildDamageGraph(attacksRules);
+    const ammunitionGraph = buildAmmunitionGraph(attacksRules);
     return {
         weaponGenerator: () => {
             const possibleWeapons = isAGraph.predecessors('weapon') || [];

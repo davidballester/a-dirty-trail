@@ -1,34 +1,14 @@
 import { Graph } from 'graphlib';
-import path from 'path';
 import { Actor, getActorStatus } from '../mechanics/actor';
 import { Health } from '../mechanics/health';
 import { Inventory, Item } from '../mechanics/inventory';
 import { allSkills, Skill, SkillLevel } from '../mechanics/skill';
 import { AmmunitionGenerator, WeaponGenerator } from './attack';
 import { getRandomItem } from './common';
-import { parse } from './parser';
+import { ActorRule } from './rules';
+import actorsRulesJson from './actorsRules.json';
 
-interface ActorRule {
-    id: string;
-    type: 'isA' | 'healthPoints';
-    subjects?: string[];
-    target?: {
-        type: string;
-        status: string;
-    };
-    actorType?: string;
-    range?: {
-        min: number;
-        max: number;
-    };
-}
-
-const getActorsRules = (): ActorRule[] => {
-    return parse<ActorRule>(
-        path.resolve(__dirname, '../../assets/actors.txt'),
-        path.resolve(__dirname, '../../assets/actors.grammar.pegjs')
-    );
-};
+const actorsRules = ((actorsRulesJson as unknown) as unknown) as ActorRule[];
 
 const buildIsAGraph = (actorRules: ActorRule[]): Graph => {
     const graph = new Graph();
@@ -103,9 +83,8 @@ export const getActorGenerator = (
     weaponGenerator: WeaponGenerator,
     ammunitionGenerator: AmmunitionGenerator
 ): ActorGenerator => {
-    const actorRules = getActorsRules();
-    const isAGraph = buildIsAGraph(actorRules);
-    const healthPointsGraph = buildHealthPointsGraph(actorRules, isAGraph);
+    const isAGraph = buildIsAGraph(actorsRules);
+    const healthPointsGraph = buildHealthPointsGraph(actorsRules, isAGraph);
     return () => {
         const possibleActors = isAGraph.predecessors('people') || [];
         const actorName = getRandomItem(possibleActors);

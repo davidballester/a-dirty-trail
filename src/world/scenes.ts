@@ -1,26 +1,14 @@
 import { Graph } from 'graphlib';
-import path from 'path';
 import { Actor } from '../mechanics/actor';
 import { Inventory } from '../mechanics/inventory';
 import { Scene } from '../mechanics/scene';
 import { ActorGenerator } from './actors';
 import { AmmunitionGenerator, WeaponGenerator } from './attack';
 import { getRandomItem, getRandomItems } from './common';
-import { parse } from './parser';
+import { SceneRule } from './rules';
+import scenesRulesJson from './scenesRules.json';
 
-interface SceneRule {
-    id: string;
-    type: 'isA' | 'contains';
-    subjects: string[];
-    targets: string[];
-}
-
-const getSceneRules = (): SceneRule[] => {
-    return parse<SceneRule>(
-        path.resolve(__dirname, '../../assets/scenes.txt'),
-        path.resolve(__dirname, '../../assets/scenes.grammar.pegjs')
-    );
-};
+const scenesRules = (scenesRulesJson as unknown) as SceneRule[];
 
 const buildIsAGraph = (sceneRules: SceneRule[]): Graph => {
     const graph = new Graph();
@@ -69,9 +57,8 @@ export const getSceneGenerator = (
     ammunitionGenerator: AmmunitionGenerator,
     actorGenerator: ActorGenerator
 ): SceneGenerator => {
-    const sceneRules = getSceneRules();
-    const isAGraph = buildIsAGraph(sceneRules);
-    const containsGraph = buildContainsGraph(sceneRules);
+    const isAGraph = buildIsAGraph(scenesRules);
+    const containsGraph = buildContainsGraph(scenesRules);
     return () => {
         const possibleScenes = isAGraph.predecessors('scene') || [];
         const randomScene = getRandomItem(possibleScenes);

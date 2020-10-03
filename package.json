@@ -1,12 +1,13 @@
 {
-    "name": "grammars",
+    "name": "a-dirty-trail",
     "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
+    "description": "A humble text-based game with a limitless ambition.",
+    "main": "build/index.js",
+    "types": "build/index.d.js",
     "scripts": {
         "build": "rimraf ./build && tsc",
-        "prestart": "npm run build",
-        "start": "node ./build/index.js",
+        "predev": "npm run build",
+        "dev": "node ./build/dev.js",
         "prebuildAssets": "npm run build",
         "buildAssets": "node ./build/buildAssets.js",
         "test": "echo \"Error: no test specified\" && exit 1"

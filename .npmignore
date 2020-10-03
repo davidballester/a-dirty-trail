@@ -1,0 +1,5 @@
+tsconfig.json
+src
+.prettierrc.json
+.gitignore
+assets

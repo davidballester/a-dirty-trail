@@ -1,11 +1,10 @@
-# Grammars
+# A dirty trail
 
-## Key concepts
+A humble text-based game with a limitless ambition.
 
-### Tbox
+## TODO
 
-Rules about the world, such as _A scene occurs in a place_.
-
-### Abox
-
-Rules about the specifics, the instances and applications of the Tbox, such as _A cave is a place_.
+-   Enrich the world.
+-   Add scaling.
+-   Add narratives.
+-   Build a persistent world as the game progresses.

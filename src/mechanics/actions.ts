@@ -1,7 +1,7 @@
 import { SceneGenerator } from '../world/scenes';
 import { Actor } from './actor';
 import { Ammunition, attack, AttackOutcome, Weapon } from './attack';
-import { Inventory, takeItems } from './inventory';
+import { Inventory, Item, takeItems } from './inventory';
 import { pacify } from './pacify';
 import { Scene } from './scene';
 
@@ -94,8 +94,10 @@ export class LootAction extends Action<void> {
         return `Loot ${this.inventory.name}`;
     }
 
-    execute(): void {
-        return takeItems(this.inventory, this.player.inventory);
+    execute(): Item[] {
+        const inventoryItems = this.inventory.items;
+        takeItems(this.inventory, this.player.inventory);
+        return inventoryItems;
     }
 }
 

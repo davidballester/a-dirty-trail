@@ -9,6 +9,7 @@ import {
 } from './mechanics/actions';
 import { Actor, ActorStatus } from './mechanics/actor';
 import { AttackOutcome, AttackOutcomeStatus } from './mechanics/attack';
+import { Item } from './mechanics/inventory';
 import { Scene } from './mechanics/scene';
 import { SkillName } from './mechanics/skill';
 
@@ -114,7 +115,7 @@ export class Narrator {
             );
         }
         if (action instanceof LootAction) {
-            return this.describeLootActionOutcome(action as LootAction);
+            return this.describeLootActionOutcome(actionOutcome as Item[]);
         }
         if (action instanceof LeaveAction) {
             return this.describeLeaveActionOutcome();
@@ -178,7 +179,7 @@ export class Narrator {
                 return `${description} missed.`;
             }
             case AttackOutcomeStatus.oponentDead: {
-                return `${description} hit ${action.oponent.name}, who dropped to the ground, never to raise again.`;
+                return `${description} hit ${action.oponent.name}, who dropped to the ground, never to rise again.`;
             }
             case AttackOutcomeStatus.outOfAmmo: {
                 return 'Out of ammo!';
@@ -210,8 +211,7 @@ export class Narrator {
         )} wouldn't be convinced that easily.`;
     }
 
-    private describeLootActionOutcome(action: LootAction): string {
-        const items = action.inventory.items;
+    private describeLootActionOutcome(items: Item[]): string {
         if (!items.length) {
             return 'There was nothing of value.';
         }
@@ -219,9 +219,10 @@ export class Narrator {
         if (items.length === 1) {
             itemsDescription = items[0].name;
         } else {
-            itemsDescription = `${items.slice(0, -2).join(', ')} and ${
-                items[items.length - 1]
-            }`;
+            itemsDescription = `${items
+                .slice(0, -1)
+                .map((item) => item.name)
+                .join(', ')} and ${items[items.length - 1].name}`;
         }
         return `They found ${itemsDescription}.`;
     }

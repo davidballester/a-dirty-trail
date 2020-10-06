@@ -1,5 +1,5 @@
 import { Game } from './game';
-import { getRandomItem } from './world/common';
+import { getRandomItem } from './generators/common';
 import { Narrator } from './narrator';
 import { LeaveAction, LootAction } from './models';
 

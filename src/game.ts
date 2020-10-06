@@ -16,9 +16,9 @@ import {
     Scene,
     Weapon,
 } from './models';
-import { ActorGenerator, getActorGenerator } from './world/actors';
-import { getWeaponAndAmmunitionGenerators } from './world/attack';
-import { getSceneGenerator, SceneGenerator } from './world/scenes';
+import { ActorGenerator, getActorGenerator } from './generators/actors';
+import { getWeaponAndAmmunitionGenerators } from './generators/attack';
+import { getSceneGenerator, SceneGenerator } from './generators/scenes';
 
 export class Game {
     player: Actor;

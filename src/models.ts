@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { SceneGenerator } from './world/scenes';
+import { SceneGenerator } from './generators/scenes';
 
 export class Item {
     id: string;

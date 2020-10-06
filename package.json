@@ -15,7 +15,7 @@
     ],
     "scripts": {
         "prebuildAssets": "npm run build",
-        "buildAssets": "node ./build/buildAssets.js",
+        "buildAssets": "node ./build/build/buildAssets.js",
         "build": "rimraf ./build && tsc",
         "predev": "npm run build",
         "dev": "node ./build/dev.js",

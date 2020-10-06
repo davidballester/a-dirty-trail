@@ -1,23 +1,9 @@
-import { getSceneGenerator } from './world/scenes';
-import { getWeaponAndAmmunitionGenerators } from './world/attack';
-import { getActorGenerator } from './world/actors';
 import { Game } from './game';
 import { getRandomItem } from './world/common';
 import { Narrator } from './narrator';
 import { LeaveAction, LootAction } from './models';
 
-const {
-    ammunitionGenerator,
-    weaponGenerator,
-} = getWeaponAndAmmunitionGenerators();
-const actorGenerator = getActorGenerator(weaponGenerator, ammunitionGenerator);
-const sceneGenerator = getSceneGenerator(
-    weaponGenerator,
-    ammunitionGenerator,
-    actorGenerator
-);
-
-const game = new Game(sceneGenerator, actorGenerator);
+const game = new Game();
 const narrator = new Narrator(game.player);
 console.log(narrator.tellIntroduction());
 console.log();

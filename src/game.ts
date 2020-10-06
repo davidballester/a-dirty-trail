@@ -16,8 +16,9 @@ import {
     Scene,
     Weapon,
 } from './models';
-import { ActorGenerator } from './world/actors';
-import { SceneGenerator } from './world/scenes';
+import { ActorGenerator, getActorGenerator } from './world/actors';
+import { getWeaponAndAmmunitionGenerators } from './world/attack';
+import { getSceneGenerator, SceneGenerator } from './world/scenes';
 
 export class Game {
     player: Actor;
@@ -28,10 +29,20 @@ export class Game {
     };
     lastScene?: Scene;
 
-    constructor(
-        sceneGenerator: SceneGenerator,
-        actorGenerator: ActorGenerator
-    ) {
+    constructor() {
+        const {
+            ammunitionGenerator,
+            weaponGenerator,
+        } = getWeaponAndAmmunitionGenerators();
+        const actorGenerator = getActorGenerator(
+            weaponGenerator,
+            ammunitionGenerator
+        );
+        const sceneGenerator = getSceneGenerator(
+            weaponGenerator,
+            ammunitionGenerator,
+            actorGenerator
+        );
         this.generators = {
             sceneGenerator,
             actorGenerator,

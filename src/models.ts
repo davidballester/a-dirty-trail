@@ -88,12 +88,12 @@ export enum ActorStatus {
     wild,
 }
 
-export const getActorStatus = (string: string): ActorStatus => {
+export const getActorStatus = (string: string) => {
     switch (string) {
         case 'hostile': {
             return ActorStatus.hostile;
         }
-        default: {
+        case 'wild': {
             return ActorStatus.wild;
         }
     }

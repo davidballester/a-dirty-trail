@@ -5,6 +5,7 @@ import { ActorRule } from './rules';
 import actorsRulesJson from './actorsRules.json';
 import {
     Actor,
+    ActorStatus,
     allSkills,
     getActorStatus,
     Health,
@@ -113,7 +114,9 @@ export const getActorGenerator = (
             actorName,
             new Health(healthPoints, healthPointsRange.max),
             inventory,
-            [getActorStatus(status)],
+            [getActorStatus(status)].filter(
+                (status) => status !== undefined
+            ) as ActorStatus[],
             skills
         );
     };

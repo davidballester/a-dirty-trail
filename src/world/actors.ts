@@ -1,12 +1,18 @@
 import { Graph } from 'graphlib';
-import { Actor, getActorStatus } from '../mechanics/actor';
-import { Health } from '../mechanics/health';
-import { Inventory, Item } from '../mechanics/inventory';
-import { allSkills, Skill, SkillLevel } from '../mechanics/skill';
 import { AmmunitionGenerator, WeaponGenerator } from './attack';
 import { getRandomItem } from './common';
 import { ActorRule } from './rules';
 import actorsRulesJson from './actorsRules.json';
+import {
+    Actor,
+    allSkills,
+    getActorStatus,
+    Health,
+    Inventory,
+    Item,
+    Skill,
+    SkillLevel,
+} from '../models';
 
 const actorsRules = ((actorsRulesJson as unknown) as unknown) as ActorRule[];
 

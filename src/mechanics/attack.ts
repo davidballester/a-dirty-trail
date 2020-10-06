@@ -1,86 +1,24 @@
-import { Actor, ActorStatus } from './actor';
-import { Item } from './inventory';
-import { SkillName } from './skill';
+import {
+    Ammunition,
+    AttackOutcome,
+    AttackOutcomeStatus,
+    Weapon,
+    Actor,
+    ActorStatus,
+} from '../models';
+import { isSkillSuccessful } from './skill';
 
-export class Ammunition extends Item {
-    quantity: number;
-    maxAmmunition: number;
-
-    constructor(name: string, quantity: number, maxAmmunition: number) {
-        super(name);
-        this.quantity = quantity;
-        this.maxAmmunition = maxAmmunition;
+export const reloadWeapon = (weapon: Weapon, ammunition: Ammunition) => {
+    if (!weapon.ammunition || !ammunition || !ammunition.quantity) {
+        return false;
     }
-
-    modifyAmmunition(delta: number) {
-        this.quantity += delta;
-        this.quantity = Math.max(0, this.quantity);
-        this.quantity = Math.min(this.maxAmmunition, this.quantity);
+    if (weapon.ammunition.name !== ammunition.name) {
+        return false;
     }
-
-    isSpent(): boolean {
-        return this.quantity === 0;
-    }
-}
-
-export class Weapon extends Item {
-    static outOfAmmunitionErrorKey = 'out-of-ammunition';
-
-    minDamage: number;
-    maxDamage: number;
-    skillName: SkillName;
-    ammunition?: Ammunition;
-
-    constructor(
-        name: string,
-        minDamage: number,
-        maxDamage: number,
-        skillName: SkillName,
-        ammunition?: Ammunition
-    ) {
-        super(name);
-        this.minDamage = minDamage;
-        this.maxDamage = maxDamage;
-        this.skillName = skillName;
-        this.ammunition = ammunition;
-    }
-
-    attack(): number {
-        if (this.ammunition && this.ammunition.quantity === 0) {
-            throw new Error(Weapon.outOfAmmunitionErrorKey);
-        }
-        if (this.ammunition) {
-            this.ammunition.modifyAmmunition(-1);
-        }
-        const damageRange = this.maxDamage - this.minDamage;
-        const damage = Math.round(Math.random() * damageRange) + this.minDamage;
-        return damage;
-    }
-
-    reload(ammunition: Ammunition): boolean {
-        if (!this.ammunition || !ammunition || !ammunition.quantity) {
-            return false;
-        }
-        if (this.ammunition.name !== ammunition.name) {
-            return false;
-        }
-        this.ammunition.modifyAmmunition(ammunition.quantity);
-        ammunition.modifyAmmunition(-ammunition.quantity);
-        return true;
-    }
-}
-
-export enum AttackOutcomeStatus {
-    missed,
-    outOfAmmo,
-    hit,
-    oponentDead,
-}
-
-export interface AttackOutcome {
-    status: AttackOutcomeStatus;
-    damage?: number;
-}
+    weapon.ammunition.modifyAmmunition(ammunition.quantity);
+    ammunition.modifyAmmunition(-ammunition.quantity);
+    return true;
+};
 
 export const attack = (
     player: Actor,
@@ -90,14 +28,14 @@ export const attack = (
     oponent.set(ActorStatus.hostile);
     let damage;
     try {
-        damage = weapon.attack();
+        damage = useWeapon(weapon);
     } catch (error) {
         return {
             status: AttackOutcomeStatus.outOfAmmo,
         };
     }
     const skill = player.getSkill(weapon.skillName);
-    if (!skill.isSuccessful()) {
+    if (!isSkillSuccessful(skill)) {
         return {
             status: AttackOutcomeStatus.missed,
         };
@@ -109,4 +47,16 @@ export const attack = (
             : AttackOutcomeStatus.oponentDead,
         damage,
     };
+};
+
+const useWeapon = (weapon: Weapon) => {
+    if (weapon.ammunition && weapon.ammunition.quantity === 0) {
+        throw new Error(Weapon.outOfAmmunitionErrorKey);
+    }
+    if (weapon.ammunition) {
+        weapon.ammunition.modifyAmmunition(-1);
+    }
+    const damageRange = weapon.maxDamage - weapon.minDamage;
+    const damage = Math.round(Math.random() * damageRange) + weapon.minDamage;
+    return damage;
 };

@@ -1,17 +1,18 @@
-import { Game } from './game';
 import {
     Action,
+    Actor,
+    ActorStatus,
     AttackAction,
+    AttackOutcome,
+    AttackOutcomeStatus,
+    Item,
     LeaveAction,
     LootAction,
     PacifyAction,
     ReloadAction,
-} from './mechanics/actions';
-import { Actor, ActorStatus } from './mechanics/actor';
-import { AttackOutcome, AttackOutcomeStatus } from './mechanics/attack';
-import { Item } from './mechanics/inventory';
-import { Scene } from './mechanics/scene';
-import { SkillName } from './mechanics/skill';
+    Scene,
+    SkillName,
+} from './models';
 
 export class Narrator {
     player: Actor;

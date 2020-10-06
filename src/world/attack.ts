@@ -1,9 +1,8 @@
 import { Graph } from 'graphlib';
-import { Ammunition, Weapon } from '../mechanics/attack';
-import { getSkillName } from '../mechanics/skill';
 import { getRandomItem } from './common';
 import attacksRulesJson from './attacksRules.json';
 import { AttackRule, AttackRuleType, Damage } from './rules';
+import { Ammunition, getSkillName, Weapon } from '../models';
 
 const attacksRules = (attacksRulesJson as unknown) as AttackRule[];
 

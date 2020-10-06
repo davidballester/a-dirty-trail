@@ -4,7 +4,7 @@ import { getActorGenerator } from './world/actors';
 import { Game } from './game';
 import { getRandomItem } from './world/common';
 import { Narrator } from './narrator';
-import { LeaveAction, LootAction } from './mechanics/actions';
+import { LeaveAction, LootAction } from './models';
 
 const {
     ammunitionGenerator,
@@ -30,7 +30,7 @@ while (game.player.isAlive()) {
     if (!playerAction) {
         break;
     }
-    let outcome = false;
+    let outcome;
     if (game.canExecuteAction(playerAction)) {
         console.log(narrator.describeAction(playerAction));
         outcome = game.executeAction(playerAction);

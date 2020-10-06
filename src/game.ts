@@ -1,19 +1,21 @@
+import { attack, reloadWeapon } from './mechanics/attack';
+import { takeItems } from './mechanics/inventory';
+import { pacify } from './mechanics/pacify';
+import { canChangeScene } from './mechanics/scene';
 import {
     Action,
+    Actor,
+    ActorStatus,
+    Ammunition,
     AttackAction,
+    AttackOutcomeStatus,
     LeaveAction,
     LootAction,
     PacifyAction,
     ReloadAction,
-} from './mechanics/actions';
-import { Actor, ActorStatus } from './mechanics/actor';
-import {
-    Ammunition,
-    AttackOutcome,
-    AttackOutcomeStatus,
+    Scene,
     Weapon,
-} from './mechanics/attack';
-import { canChangeScene, Scene } from './mechanics/scene';
+} from './models';
 import { ActorGenerator } from './world/actors';
 import { SceneGenerator } from './world/scenes';
 
@@ -84,34 +86,51 @@ export class Game {
         return isActorInScene && isOponentInScene;
     }
 
-    executeAction(action: Action<any>): any {
-        const result = action.execute();
-        if (action instanceof LeaveAction) {
-            const newScene = result as Scene;
-            this.lastScene = this.scene;
-            this.scene = newScene;
-        } else if (action instanceof LootAction) {
-            this.scene.containers = this.scene.containers.filter(
-                (container) => container.id !== action.inventory.id
+    executeAction(action: Action<any>) {
+        if (action instanceof AttackAction) {
+            const attackOutcome = attack(
+                action.player,
+                action.weapon,
+                action.oponent
             );
-        } else if (action instanceof AttackAction) {
-            if (
-                (result as AttackOutcome).status ===
-                AttackOutcomeStatus.oponentDead
-            ) {
+            if (attackOutcome.status === AttackOutcomeStatus.oponentDead) {
                 this.scene.actors = this.scene.actors.filter(
                     (actor) => actor.id !== action.oponent.id
                 );
                 this.scene.containers.push(action.oponent.inventory);
             }
-        } else if (action instanceof PacifyAction) {
-            if (!!result) {
+            return attackOutcome;
+        }
+        if (action instanceof ReloadAction) {
+            const isSuccess = reloadWeapon(action.weapon, action.ammunition);
+            if (isSuccess && action.ammunition.isSpent()) {
+                action.player.inventory.removeItem(action.ammunition.id);
+            }
+            return isSuccess;
+        }
+        if (action instanceof PacifyAction) {
+            const isSuccess = pacify(action.player, action.oponent);
+            if (!!isSuccess) {
                 this.scene.actors = this.scene.actors.filter(
                     (actor) => actor.id !== action.oponent.id
                 );
             }
+            return isSuccess;
         }
-        return result;
+        if (action instanceof LootAction) {
+            const inventoryItems = action.inventory.items;
+            takeItems(action.inventory, action.player.inventory);
+            this.scene.containers = this.scene.containers.filter(
+                (container) => container.id !== action.inventory.id
+            );
+            return inventoryItems;
+        }
+        if (action instanceof LeaveAction) {
+            const newScene = action.sceneGenerator();
+            this.lastScene = this.scene;
+            this.scene = newScene;
+            return newScene;
+        }
     }
 
     private buildPacifyActions(): PacifyAction[] {
@@ -182,8 +201,7 @@ export class Game {
                             new ReloadAction(
                                 actor,
                                 weapon as Weapon,
-                                ammunition as Ammunition,
-                                actor.inventory
+                                ammunition as Ammunition
                             )
                     )
             )

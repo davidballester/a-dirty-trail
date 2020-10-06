@@ -1,7 +1,5 @@
 import { Graph } from 'graphlib';
-import { Actor } from '../mechanics/actor';
-import { Inventory } from '../mechanics/inventory';
-import { Scene } from '../mechanics/scene';
+import { Actor, Inventory, Scene } from '../models';
 import { ActorGenerator } from './actors';
 import { AmmunitionGenerator, WeaponGenerator } from './attack';
 import { getRandomItem, getRandomItems } from './common';

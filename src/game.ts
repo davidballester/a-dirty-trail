@@ -6,6 +6,7 @@ import {
     Action,
     Actor,
     ActorStatus,
+    AdvanceToSceneAction,
     Ammunition,
     AttackAction,
     AttackOutcomeStatus,
@@ -52,8 +53,8 @@ export class Game {
         this.scene = sceneGenerator();
     }
 
-    buildPlayerActions(): Action<any>[] {
-        const actions = [] as Action<any>[];
+    buildPlayerActions(): Action[] {
+        const actions = [] as Action[];
         actions.push(...this.buildPacifyActions());
         actions.push(...this.buildAttackActions());
         actions.push(...this.buildLootActions());
@@ -64,7 +65,7 @@ export class Game {
         return actions;
     }
 
-    buildOponentsActions(): { [actorId: string]: Action<any>[] } {
+    buildOponentsActions(): { [actorId: string]: Action[] } {
         return this.scene.actors
             .filter((actor) => actor.is(ActorStatus.hostile))
             .map((actor) => {
@@ -84,7 +85,7 @@ export class Game {
             );
     }
 
-    canExecuteAction(action: Action<any>): boolean {
+    canExecuteAction(action: Action): boolean {
         const isActorInScene =
             this.player.id === action.player.id ||
             !!this.scene.actors.find(({ id }) => id === action.player.id);
@@ -97,7 +98,7 @@ export class Game {
         return isActorInScene && isOponentInScene;
     }
 
-    executeAction(action: Action<any>) {
+    executeAction(action: Action) {
         if (action instanceof AttackAction) {
             const attackOutcome = attack(
                 action.player,
@@ -137,11 +138,11 @@ export class Game {
             );
             return inventoryItems;
         }
-        if (action instanceof LeaveAction) {
-            const newScene = action.sceneGenerator();
+        if (action instanceof AdvanceToSceneAction) {
+            const nextScene = action.nextScene;
             this.lastScene = this.scene;
-            this.scene = newScene;
-            return newScene;
+            this.scene = nextScene;
+            return nextScene;
         }
     }
 

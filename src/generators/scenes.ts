@@ -90,6 +90,6 @@ export const getSceneGenerator = (
         for (let i = 0; i < numberOfActors; i++) {
             actors.push(actorGenerator());
         }
-        return new Scene(randomScene, actors, containers, scenary);
+        return new Scene(randomScene, scenary.join(', '), actors, containers);
     };
 };

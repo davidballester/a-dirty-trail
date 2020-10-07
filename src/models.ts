@@ -180,21 +180,24 @@ export class Actor {
 export class Scene {
     id: string;
     name: string;
+    setup: string;
     actors: Actor[];
     containers: Inventory[];
-    scenary: string[];
+    actions: Action[];
 
     constructor(
         name: string,
+        setup: string,
         actors: Actor[] = [],
         containers: Inventory[] = [],
-        scenary: string[] = []
+        actions: Action[] = []
     ) {
         this.id = uuidv4();
         this.name = name;
+        this.setup = setup;
         this.actors = actors;
         this.containers = containers;
-        this.scenary = scenary;
+        this.actions = actions;
     }
 }
 
@@ -241,7 +244,7 @@ export class Skill {
     }
 }
 
-export abstract class Action<OutcomeType> {
+export abstract class Action {
     player: Actor;
     constructor(player: Actor) {
         this.player = player;
@@ -249,7 +252,7 @@ export abstract class Action<OutcomeType> {
     abstract getName(): string;
 }
 
-export class AttackAction extends Action<AttackOutcome> {
+export class AttackAction extends Action {
     weapon: Weapon;
     oponent: Actor;
 
@@ -264,7 +267,7 @@ export class AttackAction extends Action<AttackOutcome> {
     }
 }
 
-export class ReloadAction extends Action<boolean> {
+export class ReloadAction extends Action {
     weapon: Weapon;
     ammunition: Ammunition;
 
@@ -279,7 +282,7 @@ export class ReloadAction extends Action<boolean> {
     }
 }
 
-export class PacifyAction extends Action<boolean> {
+export class PacifyAction extends Action {
     oponent: Actor;
 
     constructor(player: Actor, oponent: Actor) {
@@ -292,7 +295,7 @@ export class PacifyAction extends Action<boolean> {
     }
 }
 
-export class LootAction extends Action<void> {
+export class LootAction extends Action {
     inventory: Inventory;
 
     constructor(player: Actor, inventory: Inventory) {
@@ -305,15 +308,21 @@ export class LootAction extends Action<void> {
     }
 }
 
-export class LeaveAction extends Action<Scene> {
-    sceneGenerator: SceneGenerator;
+export class AdvanceToSceneAction extends Action {
+    nextScene: Scene;
 
-    constructor(player: Actor, sceneGenerator: SceneGenerator) {
+    constructor(player: Actor, nextScene: Scene) {
         super(player);
-        this.sceneGenerator = sceneGenerator;
+        this.nextScene = nextScene;
     }
 
     getName() {
-        return 'Leave';
+        return `Go to ${this.nextScene.name}`;
+    }
+}
+
+export class LeaveAction extends AdvanceToSceneAction {
+    constructor(player: Actor, sceneGenerator: SceneGenerator) {
+        super(player, sceneGenerator());
     }
 }

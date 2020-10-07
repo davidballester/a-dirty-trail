@@ -31,53 +31,12 @@ export class Narrator {
     describeSetup(scene: Scene): string {
         if (this.lastSceneDescribedId !== scene.id) {
             this.lastSceneDescribedId = scene.id;
-            let description = `${this.capitalizedPlayerName} found themself in a ${scene.name}. `;
-            if (scene.scenary.length) {
-                if (scene.scenary.length === 1) {
-                    description += `They could see a ${scene.scenary[0]} there. `;
-                } else {
-                    description += `They could see ${scene.scenary
-                        .slice(0, -1)
-                        .map((thing) => `a ${thing}`)
-                        .join(', ')} and a ${
-                        scene.scenary[scene.scenary.length - 1]
-                    } there. `;
-                }
-            }
-            if (scene.actors.length) {
-                description += `${this.capitalizedPlayerName} was not alone. `;
-                scene.actors.forEach((actor) => {
-                    let status = 'peaceful and kind hearted';
-                    if (actor.is(ActorStatus.hostile)) {
-                        status = `${
-                            actor.is(ActorStatus.wild) ? 'wild eyed, ' : ''
-                        }eager to get ${this.capitalizedPlayerName} belongings`;
-                    }
-                    description += `${this.capitalize(
-                        actor.name
-                    )}, was there, ${status}. `;
-                });
-            }
-            if (scene.containers.length) {
-                if (scene.containers.length === 1) {
-                    description += `${this.capitalizedPlayerName} could see a ${scene.containers[0].name} not far away. `;
-                } else {
-                    description += `${
-                        this.capitalizedPlayerName
-                    } could see ${scene.containers
-                        .slice(0, -1)
-                        .map((container) => `a ${container.name}`)
-                        .join(', ')} and a ${
-                        scene.containers[scene.containers.length - 1].name
-                    } not far away. `;
-                }
-            }
-            return description.trim();
+            return scene.setup;
         }
         return '';
     }
 
-    describeAction(action: Action<any>): string {
+    describeAction(action: Action): string {
         if (action instanceof AttackAction) {
             return this.describeAttackAction(action as AttackAction);
         }
@@ -96,7 +55,7 @@ export class Narrator {
         return '';
     }
 
-    describeActionOutcome(action: Action<any>, actionOutcome: any): string {
+    describeActionOutcome(action: Action, actionOutcome: any): string {
         if (action instanceof AttackAction) {
             return this.describeAttackActionOutcome(
                 action as AttackAction,

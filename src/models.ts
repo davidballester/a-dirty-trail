@@ -4,10 +4,12 @@ import { SceneGenerator } from './generators/scenes';
 export class Item {
     id: string;
     name: string;
+    untransferable: boolean;
 
-    constructor(name: string) {
+    constructor(name: string, untransferable = false) {
         this.id = uuidv4();
         this.name = name;
+        this.untransferable = untransferable;
     }
 }
 
@@ -24,6 +26,14 @@ export class Inventory {
 
     removeItem(id: string) {
         this.items = this.items.filter((item) => item.id !== id);
+    }
+
+    removeUntransferableItems() {
+        this.items = this.items.filter((item) => !item.untransferable);
+    }
+
+    getWeapons() {
+        return this.items.filter((item) => item instanceof Weapon) as Weapon[];
     }
 }
 
@@ -49,8 +59,6 @@ export class Ammunition extends Item {
 }
 
 export class Weapon extends Item {
-    static outOfAmmunitionErrorKey = 'out-of-ammunition';
-
     minDamage: number;
     maxDamage: number;
     skillName: SkillName;
@@ -61,9 +69,10 @@ export class Weapon extends Item {
         minDamage: number,
         maxDamage: number,
         skillName: SkillName,
-        ammunition?: Ammunition
+        ammunition?: Ammunition,
+        untransferable = false
     ) {
-        super(name);
+        super(name, untransferable);
         this.minDamage = minDamage;
         this.maxDamage = maxDamage;
         this.skillName = skillName;
@@ -216,10 +225,10 @@ export const getSkillName = (string: string): SkillName => {
 };
 
 export enum SkillLevel {
-    poor,
-    mediocre,
-    good,
-    master,
+    poor = 0.25,
+    mediocre = 0.5,
+    good = 0.75,
+    master = 0.95,
 }
 
 export class Skill {

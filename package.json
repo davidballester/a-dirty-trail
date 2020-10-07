@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "graphlib": "^2.1.8",
+        "ts-node": "^9.0.0",
         "uuid": "^8.3.0"
     },
     "devDependencies": {

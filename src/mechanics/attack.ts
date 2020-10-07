@@ -51,7 +51,7 @@ export const attack = (
 
 const useWeapon = (weapon: Weapon) => {
     if (weapon.ammunition && weapon.ammunition.quantity === 0) {
-        throw new Error(Weapon.outOfAmmunitionErrorKey);
+        throw new Error('out-of-ammunition');
     }
     if (weapon.ammunition) {
         weapon.ammunition.modifyAmmunition(-1);

@@ -1,7 +1,10 @@
 import { Ammunition, Inventory } from '../models';
 
 export const takeItems = (source: Inventory, target: Inventory) => {
-    target.items = [...target.items, ...source.items];
+    target.items = [
+        ...target.items.filter((item) => !item.untransferable),
+        ...source.items,
+    ];
     source.items = [];
     mergeAmmunitions(target);
     target.items = target.items.filter(

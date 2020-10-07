@@ -108,6 +108,7 @@ export class Game {
                 this.scene.actors = this.scene.actors.filter(
                     (actor) => actor.id !== action.oponent.id
                 );
+                action.oponent.inventory.removeUntransferableItems();
                 this.scene.containers.push(action.oponent.inventory);
             }
             return attackOutcome;
@@ -159,14 +160,12 @@ export class Game {
     private buildAttackActions(): AttackAction[] {
         return this.scene.actors
             .map((oponent) =>
-                this.player.inventory.items
-                    .filter((item) => item instanceof Weapon)
-                    .filter((item) => {
-                        const weapon = item as Weapon;
-                        return (
+                this.player.inventory
+                    .getWeapons()
+                    .filter(
+                        (weapon) =>
                             !weapon.ammunition || !weapon.ammunition.isSpent()
-                        );
-                    })
+                    )
                     .map(
                         (weapon) =>
                             new AttackAction(
@@ -195,9 +194,8 @@ export class Game {
         return actor.inventory.items
             .filter((item) => item instanceof Ammunition)
             .map((ammunition) =>
-                actor.inventory.items
-                    .filter((item) => item instanceof Weapon)
-                    .map((weapon) => weapon as Weapon)
+                actor.inventory
+                    .getWeapons()
                     .filter((weapon) => !!weapon.ammunition)
                     .filter(
                         (weapon) => weapon.ammunition!.name === ammunition.name
@@ -230,12 +228,11 @@ export class Game {
     }
 
     private buildOponentAttackActions(actor: Actor): AttackAction[] {
-        return actor.inventory.items
-            .filter((item) => item instanceof Weapon)
-            .filter((item) => {
-                const weapon = item as Weapon;
-                return !weapon.ammunition || !weapon.ammunition.isSpent();
-            })
+        return actor.inventory
+            .getWeapons()
+            .filter(
+                (weapon) => !weapon.ammunition || !weapon.ammunition.isSpent()
+            )
             .map(
                 (weapon) =>
                     new AttackAction(actor, weapon as Weapon, this.player)

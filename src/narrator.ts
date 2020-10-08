@@ -1,12 +1,11 @@
 import {
     Action,
     Actor,
-    ActorStatus,
     AttackAction,
     AttackOutcome,
     AttackOutcomeStatus,
     Item,
-    LeaveAction,
+    AdvanceToSceneAction,
     LootAction,
     PacifyAction,
     ReloadAction,
@@ -24,35 +23,16 @@ export class Narrator {
         this.lastSceneDescribedId = undefined;
     }
 
-    tellIntroduction(): string {
-        return `On a day like any other, ${this.capitalizedPlayerName} began their journey.`;
-    }
-
     describeSetup(scene: Scene): string {
         if (this.lastSceneDescribedId !== scene.id) {
             this.lastSceneDescribedId = scene.id;
-            return scene.setup;
+            return scene.setup.join('\n');
         }
         return '';
     }
 
     describeAction(action: Action): string {
-        if (action instanceof AttackAction) {
-            return this.describeAttackAction(action as AttackAction);
-        }
-        if (action instanceof ReloadAction) {
-            return this.describeReloadAction(action as ReloadAction);
-        }
-        if (action instanceof PacifyAction) {
-            return this.describePacifyAction(action as PacifyAction);
-        }
-        if (action instanceof LootAction) {
-            return this.describeLootAction(action as LootAction);
-        }
-        if (action instanceof LeaveAction) {
-            return this.describeLeaveAction(action as LeaveAction);
-        }
-        return '';
+        return `> ${action.getName()}`;
     }
 
     describeActionOutcome(action: Action, actionOutcome: any): string {
@@ -77,48 +57,11 @@ export class Narrator {
         if (action instanceof LootAction) {
             return this.describeLootActionOutcome(actionOutcome as Item[]);
         }
-        if (action instanceof LeaveAction) {
-            return this.describeLeaveActionOutcome();
-        }
         return '';
     }
 
-    tellEnding(): string {
+    tellSadEnding(): string {
         return `That is the sad tale of ${this.capitalizedPlayerName}. But bear with me, for I know many others.`;
-    }
-
-    private describeAttackAction(attackAction: AttackAction): string {
-        return `${this.capitalize(attackAction.player.name)} ${
-            attackAction.weapon.skillName === SkillName.closeCombat
-                ? 'charged forward with their'
-                : 'shot their'
-        } ${attackAction.weapon.name} at ${attackAction.oponent.name}.`;
-    }
-
-    private describeReloadAction(reloadAction: ReloadAction): string {
-        return `${this.capitalize(reloadAction.player.name)} put ${
-            reloadAction.ammunition.quantity
-        } ${reloadAction.ammunition.name} in their ${
-            reloadAction.weapon.name
-        }.`;
-    }
-
-    private describePacifyAction(pacifyAction: PacifyAction): string {
-        return `${this.capitalize(pacifyAction.player.name)} tried to calm ${
-            pacifyAction.oponent.name
-        } down.`;
-    }
-
-    private describeLootAction(lootAction: LootAction): string {
-        return `${this.capitalize(
-            lootAction.player.name
-        )} went through the contents of ${lootAction.inventory.name}.`;
-    }
-
-    private describeLeaveAction(leaveAction: LeaveAction): string {
-        return `With nothing else to do, ${this.capitalize(
-            leaveAction.player.name
-        )} continued their journey.`;
     }
 
     private describeAttackActionOutcome(
@@ -185,10 +128,6 @@ export class Narrator {
                 .join(', ')} and ${items[items.length - 1].name}`;
         }
         return `They found ${itemsDescription}.`;
-    }
-
-    private describeLeaveActionOutcome(): string {
-        return '';
     }
 
     private capitalize(string: string): string {

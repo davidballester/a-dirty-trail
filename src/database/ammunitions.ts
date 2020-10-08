@@ -1,4 +1,4 @@
-import * as weapons from '../database/weapons';
+import * as weapons from './weapons';
 import { getWeaponChallengeRate } from '../mechanics/challengeRate';
 import { Ammunition, Weapon } from '../models';
 

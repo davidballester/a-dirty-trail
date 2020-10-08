@@ -1,11 +1,16 @@
 import { Actor, ActorStatus, SkillName } from '../models';
-import { isSkillSuccessful } from './skill';
+import { isOpposedSkillCheckSuccessful } from './skill';
 
 export const pacify = (actor: Actor, oponent: Actor): boolean => {
     if (oponent.is(ActorStatus.wild)) {
         return false;
     }
-    if (isSkillSuccessful(actor.getSkill(SkillName.pacify))) {
+    if (
+        isOpposedSkillCheckSuccessful(
+            actor.getSkill(SkillName.charisma),
+            oponent.getSkill(SkillName.charisma)
+        )
+    ) {
         oponent.remove(ActorStatus.hostile);
         return true;
     }

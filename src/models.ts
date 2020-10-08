@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { SceneGenerator } from './generators/scenes';
 
 export class Item {
     id: string;
@@ -180,18 +179,24 @@ export class Actor {
 export class Scene {
     id: string;
     name: string;
-    setup: string;
+    setup: string[];
     actors: Actor[];
     containers: Inventory[];
     actions: Action[];
 
-    constructor(
-        name: string,
-        setup: string,
-        actors: Actor[] = [],
-        containers: Inventory[] = [],
-        actions: Action[] = []
-    ) {
+    constructor({
+        name,
+        setup,
+        actors = [],
+        containers = [],
+        actions = [],
+    }: {
+        name: string;
+        setup: string[];
+        actors?: Actor[];
+        containers?: Inventory[];
+        actions?: Action[];
+    }) {
         this.id = uuidv4();
         this.name = name;
         this.setup = setup;
@@ -199,24 +204,30 @@ export class Scene {
         this.containers = containers;
         this.actions = actions;
     }
+
+    getHostileActors() {
+        return (this.actors || ([] as Actor[])).filter((actor) =>
+            actor.is(ActorStatus.hostile)
+        );
+    }
 }
 
 export enum SkillName {
-    pacify,
+    charisma,
     distanceCombat,
     closeCombat,
 }
 
 export const allSkills = [
-    SkillName.pacify,
+    SkillName.charisma,
     SkillName.distanceCombat,
     SkillName.closeCombat,
 ];
 
 export const getSkillName = (string: string): SkillName => {
     switch (string) {
-        case 'pacify': {
-            return SkillName.pacify;
+        case 'charisma': {
+            return SkillName.charisma;
         }
         case 'distanceCombat': {
             return SkillName.distanceCombat;
@@ -263,7 +274,7 @@ export class AttackAction extends Action {
     }
 
     getName() {
-        return `Attack ${this.oponent.name}`;
+        return `Attack ${this.oponent.name} with ${this.weapon.name}`;
     }
 }
 
@@ -309,20 +320,67 @@ export class LootAction extends Action {
 }
 
 export class AdvanceToSceneAction extends Action {
+    name: string;
     nextScene: Scene;
 
-    constructor(player: Actor, nextScene: Scene) {
+    constructor(player: Actor, name: string, nextScene: Scene) {
         super(player);
+        this.name = name;
         this.nextScene = nextScene;
     }
 
     getName() {
-        return `Go to ${this.nextScene.name}`;
+        return this.name;
     }
 }
 
-export class LeaveAction extends AdvanceToSceneAction {
-    constructor(player: Actor, sceneGenerator: SceneGenerator) {
-        super(player, sceneGenerator());
+export class AdvanceToActAction extends Action {
+    name: string;
+    constructor(player: Actor, name: string) {
+        super(player);
+        this.name = name;
+    }
+    getName() {
+        return this.name;
+    }
+}
+
+export class CustomAction extends Action {
+    name: string;
+    canExecute: (scene: Scene) => boolean;
+    execute: (scene: Scene) => Action;
+
+    constructor(
+        player: Actor,
+        name: string,
+        canExecute: (scene: Scene) => boolean,
+        execute: (scene: Scene) => Action
+    ) {
+        super(player);
+        this.name = name;
+        this.canExecute = canExecute;
+        this.execute = execute;
+    }
+
+    getName() {
+        return this.name;
+    }
+}
+
+export class Narration {
+    title: string;
+    actGenerators: Array<(player: Actor) => Scene>;
+
+    constructor(title, actGenerators) {
+        this.title = title;
+        this.actGenerators = actGenerators;
+    }
+
+    getNextAct(player: Actor) {
+        if (this.actGenerators.length === 0) {
+            return;
+        }
+        const [actGenerator] = this.actGenerators.splice(0, 1);
+        return actGenerator(player);
     }
 }

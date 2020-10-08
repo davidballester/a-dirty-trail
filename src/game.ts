@@ -1,56 +1,38 @@
+import { generateNarration } from './database/narrations';
 import { attack, reloadWeapon } from './mechanics/attack';
 import { takeItems } from './mechanics/inventory';
 import { pacify } from './mechanics/pacify';
-import { canChangeScene } from './mechanics/scene';
 import {
     Action,
     Actor,
     ActorStatus,
+    AdvanceToActAction,
     AdvanceToSceneAction,
     Ammunition,
     AttackAction,
     AttackOutcomeStatus,
-    LeaveAction,
+    CustomAction,
     LootAction,
+    Narration,
     PacifyAction,
     ReloadAction,
     Scene,
+    SkillName,
     Weapon,
 } from './models';
-import { ActorGenerator, getActorGenerator } from './generators/actors';
-import { getWeaponAndAmmunitionGenerators } from './generators/attack';
-import { getSceneGenerator, SceneGenerator } from './generators/scenes';
 
 export class Game {
+    narration: Narration;
     player: Actor;
-    scene: Scene;
-    generators: {
-        sceneGenerator: SceneGenerator;
-        actorGenerator: ActorGenerator;
-    };
-    lastScene?: Scene;
+    currentScene: Scene;
+    finished: boolean;
 
-    constructor() {
-        const {
-            ammunitionGenerator,
-            weaponGenerator,
-        } = getWeaponAndAmmunitionGenerators();
-        const actorGenerator = getActorGenerator(
-            weaponGenerator,
-            ammunitionGenerator
-        );
-        const sceneGenerator = getSceneGenerator(
-            weaponGenerator,
-            ammunitionGenerator,
-            actorGenerator
-        );
-        this.generators = {
-            sceneGenerator,
-            actorGenerator,
-        };
-        this.lastScene = undefined;
-        this.player = this.buildPlayer();
-        this.scene = sceneGenerator();
+    constructor(narrationTitle: string) {
+        const { player, narration } = generateNarration(narrationTitle);
+        this.player = player;
+        this.narration = narration;
+        this.currentScene = narration.getNextAct(player)!;
+        this.finished = false;
     }
 
     buildPlayerActions(): Action[] {
@@ -59,14 +41,12 @@ export class Game {
         actions.push(...this.buildAttackActions());
         actions.push(...this.buildLootActions());
         actions.push(...this.buildReloadActions(this.player));
-        if (canChangeScene(this.scene)) {
-            actions.push(this.buildLeaveAction());
-        }
+        actions.push(...this.currentScene.actions);
         return actions;
     }
 
     buildOponentsActions(): { [actorId: string]: Action[] } {
-        return this.scene.actors
+        return this.currentScene.actors
             .filter((actor) => actor.is(ActorStatus.hostile))
             .map((actor) => {
                 const attackActions = this.buildOponentAttackActions(actor);
@@ -85,17 +65,44 @@ export class Game {
             );
     }
 
-    canExecuteAction(action: Action): boolean {
-        const isActorInScene =
-            this.player.id === action.player.id ||
-            !!this.scene.actors.find(({ id }) => id === action.player.id);
-        const isOponentInScene =
-            !(action as any).oponent ||
-            this.player.id === (action as any).oponent.id ||
-            !!this.scene.actors.find(
-                ({ id }) => id === (action as any).oponent.id
+    canExecuteAction(action: Action) {
+        if (!action.player.isAlive() || !this.isActorInScene(action.player)) {
+            return false;
+        }
+        if (
+            action instanceof AdvanceToSceneAction ||
+            action instanceof AdvanceToActAction
+        ) {
+            return this.currentScene.getHostileActors().length === 0;
+        }
+        if (action instanceof AttackAction) {
+            return (
+                this.isActorInScene(action.oponent) &&
+                action.oponent.isAlive() &&
+                (!action.weapon.ammunition ||
+                    !action.weapon.ammunition.isSpent())
             );
-        return isActorInScene && isOponentInScene;
+        }
+        if (action instanceof ReloadAction) {
+            return (
+                !!action.weapon.ammunition &&
+                action.weapon.ammunition.name === action.ammunition.name &&
+                action.weapon.ammunition.quantity <
+                    action.weapon.ammunition.maxAmmunition &&
+                !action.ammunition.isSpent()
+            );
+        }
+        if (action instanceof PacifyAction) {
+            return (
+                !action.oponent.is(ActorStatus.wild) &&
+                action.oponent.getSkill(SkillName.charisma).level <
+                    action.player.getSkill(SkillName.charisma).level
+            );
+        }
+        if (action instanceof CustomAction) {
+            return action.canExecute(this.currentScene);
+        }
+        return true;
     }
 
     executeAction(action: Action) {
@@ -106,11 +113,11 @@ export class Game {
                 action.oponent
             );
             if (attackOutcome.status === AttackOutcomeStatus.oponentDead) {
-                this.scene.actors = this.scene.actors.filter(
+                this.currentScene.actors = this.currentScene.actors.filter(
                     (actor) => actor.id !== action.oponent.id
                 );
                 action.oponent.inventory.removeUntransferableItems();
-                this.scene.containers.push(action.oponent.inventory);
+                this.currentScene.containers.push(action.oponent.inventory);
             }
             return attackOutcome;
         }
@@ -124,7 +131,7 @@ export class Game {
         if (action instanceof PacifyAction) {
             const isSuccess = pacify(action.player, action.oponent);
             if (!!isSuccess) {
-                this.scene.actors = this.scene.actors.filter(
+                this.currentScene.actors = this.currentScene.actors.filter(
                     (actor) => actor.id !== action.oponent.id
                 );
             }
@@ -133,21 +140,32 @@ export class Game {
         if (action instanceof LootAction) {
             const inventoryItems = action.inventory.items;
             takeItems(action.inventory, action.player.inventory);
-            this.scene.containers = this.scene.containers.filter(
+            this.currentScene.containers = this.currentScene.containers.filter(
                 (container) => container.id !== action.inventory.id
             );
             return inventoryItems;
         }
         if (action instanceof AdvanceToSceneAction) {
-            const nextScene = action.nextScene;
-            this.lastScene = this.scene;
-            this.scene = nextScene;
-            return nextScene;
+            this.currentScene = action.nextScene;
+            return this.currentScene;
+        }
+        if (action instanceof AdvanceToActAction) {
+            const nextScene = this.narration.getNextAct(this.player);
+            if (nextScene) {
+                this.currentScene = nextScene;
+            } else {
+                this.finished = true;
+            }
+            return this.currentScene;
+        }
+        if (action instanceof CustomAction) {
+            const nextAction = action.execute(this.currentScene);
+            return this.executeAction(nextAction);
         }
     }
 
     private buildPacifyActions(): PacifyAction[] {
-        return this.scene.actors
+        return this.currentScene.actors
             .filter(
                 (actor) =>
                     actor.is(ActorStatus.hostile) && !actor.is(ActorStatus.wild)
@@ -159,7 +177,7 @@ export class Game {
     }
 
     private buildAttackActions(): AttackAction[] {
-        return this.scene.actors
+        return this.currentScene.actors
             .map((oponent) =>
                 this.player.inventory
                     .getWeapons()
@@ -186,7 +204,7 @@ export class Game {
     }
 
     private buildLootActions(): LootAction[] {
-        return this.scene.containers.map(
+        return this.currentScene.containers.map(
             (container) => new LootAction(this.player, container)
         );
     }
@@ -224,10 +242,6 @@ export class Game {
             );
     }
 
-    private buildLeaveAction(): LeaveAction {
-        return new LeaveAction(this.player, this.generators.sceneGenerator);
-    }
-
     private buildOponentAttackActions(actor: Actor): AttackAction[] {
         return actor.inventory
             .getWeapons()
@@ -240,12 +254,10 @@ export class Game {
             );
     }
 
-    private buildPlayer(): Actor {
-        const actor = this.generators.actorGenerator();
-        actor.name = 'the player';
-        actor.health.currentHitpoints = actor.health.maxHitpoints;
-        actor.inventory.name = 'pouch';
-        actor.status = [];
-        return actor;
+    private isActorInScene(actor: Actor) {
+        return (
+            this.player.id === actor.id ||
+            !!this.currentScene.actors.find(({ id }) => id === actor.id)
+        );
     }
 }

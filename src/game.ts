@@ -1,5 +1,6 @@
 import { generateNarration } from './database/narrations';
 import { attack, reloadWeapon } from './mechanics/attack';
+import { buildOponentsActions } from './mechanics/combatStrategy';
 import { takeItems } from './mechanics/inventory';
 import { pacify } from './mechanics/pacify';
 import {
@@ -16,6 +17,7 @@ import {
     Narration,
     PacifyAction,
     ReloadAction,
+    ScapeAction,
     Scene,
     SkillName,
     Weapon,
@@ -26,6 +28,7 @@ export class Game {
     player: Actor;
     currentScene: Scene;
     finished: boolean;
+    oponentsActions: Action[] = [];
 
     constructor(narrationTitle: string) {
         const { player, narration } = generateNarration(narrationTitle);
@@ -33,9 +36,10 @@ export class Game {
         this.narration = narration;
         this.currentScene = narration.getNextAct(player)!;
         this.finished = false;
+        this.buildOponentsActions();
     }
 
-    buildPlayerActions(): Action[] {
+    getPlayerActions(): Action[] {
         const actions = [] as Action[];
         actions.push(...this.buildPacifyActions());
         actions.push(...this.buildAttackActions());
@@ -43,26 +47,6 @@ export class Game {
         actions.push(...this.buildReloadActions(this.player));
         actions.push(...this.currentScene.actions);
         return actions;
-    }
-
-    buildOponentsActions(): { [actorId: string]: Action[] } {
-        return this.currentScene.actors
-            .filter((actor) => actor.is(ActorStatus.hostile))
-            .map((actor) => {
-                const attackActions = this.buildOponentAttackActions(actor);
-                const reloadActions = this.buildReloadActions(actor);
-                return {
-                    actorId: actor.id,
-                    actions: [...attackActions, ...reloadActions],
-                };
-            })
-            .reduce(
-                (actorsActions, actorActions) => ({
-                    ...actorsActions,
-                    [actorActions.actorId]: actorActions.actions,
-                }),
-                {}
-            );
     }
 
     canExecuteAction(action: Action) {
@@ -118,6 +102,9 @@ export class Game {
                 );
                 action.oponent.inventory.removeUntransferableItems();
                 this.currentScene.containers.push(action.oponent.inventory);
+                this.oponentsActions = this.oponentsActions.filter(
+                    ({ player }) => player.id === action.oponent.id
+                );
             }
             return attackOutcome;
         }
@@ -147,12 +134,14 @@ export class Game {
         }
         if (action instanceof AdvanceToSceneAction) {
             this.currentScene = action.nextScene;
+            this.buildOponentsActions();
             return this.currentScene;
         }
         if (action instanceof AdvanceToActAction) {
             const nextScene = this.narration.getNextAct(this.player);
             if (nextScene) {
                 this.currentScene = nextScene;
+                this.buildOponentsActions();
             } else {
                 this.finished = true;
             }
@@ -162,13 +151,42 @@ export class Game {
             const nextAction = action.execute(this.currentScene);
             return this.executeAction(nextAction);
         }
+        if (action instanceof ScapeAction) {
+            this.currentScene.actors = this.currentScene.actors.filter(
+                (actor) => actor.id !== action.player.id
+            );
+        }
+    }
+
+    executeNextOponentAction() {
+        if (this.oponentsActions.length) {
+            const [nextAction] = this.oponentsActions.splice(0, 1);
+            const outcome = this.executeAction(nextAction);
+            if (!this.oponentsActions.length) {
+                this.buildOponentsActions();
+            }
+            return {
+                action: nextAction,
+                outcome,
+            };
+        }
+    }
+
+    private buildOponentsActions() {
+        this.oponentsActions = buildOponentsActions(
+            this.currentScene.getHostileActors(),
+            this.player
+        );
     }
 
     private buildPacifyActions(): PacifyAction[] {
-        return this.currentScene.actors
+        return this.currentScene
+            .getHostileActors()
             .filter(
                 (actor) =>
-                    actor.is(ActorStatus.hostile) && !actor.is(ActorStatus.wild)
+                    !actor.is(ActorStatus.wild) &&
+                    actor.getSkill(SkillName.charisma).level <
+                        this.player.getSkill(SkillName.charisma).level
             )
             .map(
                 (pacifiableActor) =>

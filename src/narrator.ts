@@ -11,6 +11,7 @@ import {
     ReloadAction,
     Scene,
     SkillName,
+    NonPlayableActor,
 } from './models';
 
 export class Narrator {
@@ -32,7 +33,15 @@ export class Narrator {
     }
 
     describeAction(action: Action): string {
-        return `> ${action.getName()}`;
+        return `> ${
+            action.player instanceof NonPlayableActor
+                ? this.capitalize(action.player.name)
+                : ''
+        } ${
+            action.player instanceof NonPlayableActor
+                ? action.getName().toLowerCase()
+                : action.getName()
+        }`;
     }
 
     describeActionOutcome(action: Action, actionOutcome: any): string {

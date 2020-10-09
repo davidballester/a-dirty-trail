@@ -7,42 +7,26 @@ const game = new Game('Find Timmy');
 const narrator = new Narrator(game.player);
 while (!game.finished && game.player.isAlive()) {
     console.log(narrator.describeSetup(game.currentScene));
-    const playerActions = game.buildPlayerActions();
+    const playerActions = game.getPlayerActions();
     const playerAction =
         playerActions[Math.floor(Math.random() * playerActions.length)];
     if (!playerAction) {
+        player.health.currentHitpoints = 0;
         break;
     }
     let outcome;
     if (game.canExecuteAction(playerAction)) {
-        console.log();
         console.log(narrator.describeAction(playerAction));
-        console.log();
         outcome = game.executeAction(playerAction);
         console.log(narrator.describeActionOutcome(playerAction, outcome));
+        console.log();
     }
     if (!(playerAction instanceof AdvanceToSceneAction) || !outcome) {
-        const oponentsActions = game.buildOponentsActions();
-        for (let oponentId of Object.keys(oponentsActions)) {
-            if (!game.player.isAlive()) {
-                break;
-            }
-            const oponentAction =
-                oponentsActions[oponentId][
-                    Math.floor(
-                        Math.random() * oponentsActions[oponentId].length
-                    )
-                ];
-            if (oponentAction && game.canExecuteAction(oponentAction)) {
-                console.log(narrator.describeAction(oponentAction));
-                const oponentActionOutcome = game.executeAction(oponentAction);
-                console.log(
-                    narrator.describeActionOutcome(
-                        oponentAction,
-                        oponentActionOutcome
-                    )
-                );
-            }
+        const { action, outcome } = game.executeNextOponentAction() || {};
+        if (action) {
+            console.log(narrator.describeAction(action));
+            console.log(narrator.describeActionOutcome(action, outcome));
+            console.log();
         }
     }
 }

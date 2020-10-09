@@ -1,4 +1,4 @@
-import { Action, Actor, Inventory } from '../../models';
+import { Action, Actor, Inventory, NonPlayableActor } from '../../models';
 
 export interface LinkToActScene {
     name: string;
@@ -10,7 +10,7 @@ export interface ActScene {
     setup: string[];
     linkToNextAct?: string;
     linksToActScenes?: LinkToActScene[];
-    actors?: (player: Actor) => Actor[];
+    actors?: (player: Actor) => NonPlayableActor[];
     containers?: (player: Actor) => Inventory[];
     customActions?: (player: Actor) => Action[];
 }

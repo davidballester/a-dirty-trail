@@ -176,11 +176,27 @@ export class Actor {
     }
 }
 
+export type CombatStategry = 'offensive' | 'defensive';
+export class NonPlayableActor extends Actor {
+    combatStrategy: CombatStategry;
+    constructor(
+        name: string,
+        combatStategry: CombatStategry,
+        health: Health,
+        inventory: Inventory,
+        status: ActorStatus[] = [],
+        skills: Skill[] = []
+    ) {
+        super(name, health, inventory, status, skills);
+        this.combatStrategy = combatStategry;
+    }
+}
+
 export class Scene {
     id: string;
     name: string;
     setup: string[];
-    actors: Actor[];
+    actors: NonPlayableActor[];
     containers: Inventory[];
     actions: Action[];
 
@@ -193,7 +209,7 @@ export class Scene {
     }: {
         name: string;
         setup: string[];
-        actors?: Actor[];
+        actors?: NonPlayableActor[];
         containers?: Inventory[];
         actions?: Action[];
     }) {
@@ -206,7 +222,7 @@ export class Scene {
     }
 
     getHostileActors() {
-        return (this.actors || ([] as Actor[])).filter((actor) =>
+        return (this.actors || ([] as NonPlayableActor[])).filter((actor) =>
             actor.is(ActorStatus.hostile)
         );
     }
@@ -256,8 +272,10 @@ export class Skill {
 }
 
 export abstract class Action {
+    id: string;
     player: Actor;
     constructor(player: Actor) {
+        this.id = uuidv4();
         this.player = player;
     }
     abstract getName(): string;
@@ -342,6 +360,15 @@ export class AdvanceToActAction extends Action {
     }
     getName() {
         return this.name;
+    }
+}
+
+export class ScapeAction extends Action {
+    constructor(player: Actor) {
+        super(player);
+    }
+    getName() {
+        return 'Scape';
     }
 }
 

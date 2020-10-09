@@ -1,10 +1,10 @@
 import { generateAmmunition } from './ammunitions';
 import { getActorChallengeRate } from '../mechanics/challengeRate';
 import {
-    Actor,
     ActorStatus,
     Health,
     Inventory,
+    NonPlayableActor,
     Skill,
     SkillLevel,
     SkillName,
@@ -12,10 +12,11 @@ import {
 import { club, derringer, knife, revolver, rifle, shotgun } from './weapons';
 
 // CR: 2.62
-export class Duellist extends Actor {
+export class Duellist extends NonPlayableActor {
     constructor() {
         super(
             'duellist',
+            'offensive',
             new Health(2, 2),
             new Inventory('duellist', [revolver]),
             [ActorStatus.hostile],
@@ -34,10 +35,11 @@ export class Duellist extends Actor {
 }
 
 // CR: 2.5
-export class Marauder extends Actor {
+export class Marauder extends NonPlayableActor {
     constructor() {
         super(
             'marauder',
+            'defensive',
             new Health(4, 4),
             new Inventory('marauder', [knife]),
             [ActorStatus.hostile],
@@ -50,10 +52,11 @@ export class Marauder extends Actor {
 }
 
 // CR: 1.25
-export class Goon extends Actor {
+export class Goon extends NonPlayableActor {
     constructor() {
         super(
             'goon',
+            'offensive',
             new Health(2, 2),
             new Inventory('goon', [club]),
             [ActorStatus.hostile],
@@ -66,10 +69,11 @@ export class Goon extends Actor {
 }
 
 // CR: 1.5
-export class Robber extends Actor {
+export class Robber extends NonPlayableActor {
     constructor() {
         super(
             'robber',
+            'defensive',
             new Health(2, 2),
             new Inventory('robber', [derringer]),
             [ActorStatus.hostile],
@@ -88,10 +92,11 @@ export class Robber extends Actor {
 }
 
 // CR: 3.14
-export class Highwayman extends Actor {
+export class Highwayman extends NonPlayableActor {
     constructor() {
         super(
             'highwayman',
+            'defensive',
             new Health(3, 3),
             new Inventory('highwayman', [rifle]),
             [ActorStatus.hostile],
@@ -110,10 +115,11 @@ export class Highwayman extends Actor {
 }
 
 // CR: 1.66
-export class Lunatic extends Actor {
+export class Lunatic extends NonPlayableActor {
     constructor() {
         super(
             'lunatic',
+            'offensive',
             new Health(1, 1),
             new Inventory('lunatic', [shotgun, knife]),
             [ActorStatus.hostile, ActorStatus.wild],
@@ -132,10 +138,11 @@ export class Lunatic extends Actor {
 }
 
 // CR: 2.66
-export class Brigand extends Actor {
+export class Brigand extends NonPlayableActor {
     constructor() {
         super(
             'brigand',
+            'defensive',
             new Health(3, 3),
             new Inventory('brigand', [shotgun, knife]),
             [ActorStatus.hostile, ActorStatus.wild],
@@ -154,10 +161,11 @@ export class Brigand extends Actor {
 }
 
 // CR: 4.25
-export class NightReaver extends Actor {
+export class NightReaver extends NonPlayableActor {
     constructor() {
         super(
             'night reaver',
+            'offensive',
             new Health(5, 5),
             new Inventory('night reaver', [shotgun, rifle, knife]),
             [ActorStatus.hostile, ActorStatus.wild],

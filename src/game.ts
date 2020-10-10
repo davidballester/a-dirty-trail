@@ -40,6 +40,9 @@ export class Game {
     }
 
     getPlayerActions(): Action[] {
+        if (!this.player.isAlive()) {
+            return [];
+        }
         const actions = [] as Action[];
         actions.push(...this.buildPacifyActions());
         actions.push(...this.buildAttackActions());

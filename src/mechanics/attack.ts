@@ -15,8 +15,12 @@ export const reloadWeapon = (weapon: Weapon, ammunition: Ammunition) => {
     if (weapon.ammunition.name !== ammunition.name) {
         return false;
     }
-    weapon.ammunition.modifyAmmunition(ammunition.quantity);
-    ammunition.modifyAmmunition(-ammunition.quantity);
+    const missingAmmunition = Math.min(
+        weapon.ammunition.maxAmmunition - weapon.ammunition.quantity,
+        ammunition.quantity
+    );
+    weapon.ammunition.modifyAmmunition(missingAmmunition);
+    ammunition.modifyAmmunition(-missingAmmunition);
     return true;
 };
 

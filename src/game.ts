@@ -164,14 +164,19 @@ export class Game {
     executeNextOponentAction() {
         if (this.oponentsActions.length) {
             const [nextAction] = this.oponentsActions.splice(0, 1);
-            const outcome = this.executeAction(nextAction);
+            let outcome;
+            if (this.canExecuteAction(nextAction)) {
+                outcome = this.executeAction(nextAction);
+            }
             if (!this.oponentsActions.length) {
                 this.buildOponentsActions();
             }
-            return {
-                action: nextAction,
-                outcome,
-            };
+            if (outcome !== undefined) {
+                return {
+                    action: nextAction,
+                    outcome,
+                };
+            }
         }
     }
 

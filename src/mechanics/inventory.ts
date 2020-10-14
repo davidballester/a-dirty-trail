@@ -1,16 +1,31 @@
-import { Ammunition, Inventory } from '../models';
+import { Ammunition, Inventory, Item, Weapon } from '../models';
 
-export const takeItems = (source: Inventory, target: Inventory) => {
-    target.items = [
-        ...target.items.filter((item) => !item.untransferable),
-        ...source.items,
-    ];
-    source.items = [];
-    mergeAmmunitions(target);
-    target.items = target.items.filter(
-        (item) => !(item instanceof Ammunition) || !item.isSpent()
+export const takeItems = (playerInventory: Inventory, container: Inventory) => {
+    let containerItemsToTake = discardUntransferableItems(container.items);
+    containerItemsToTake = discardWeaponsAlreadyAdquired(
+        containerItemsToTake,
+        playerInventory.getWeapons()
+    );
+    playerInventory.items = [...containerItemsToTake, ...playerInventory.items];
+    container.items = [];
+    mergeAmmunitions(playerInventory);
+    playerInventory.items = discardSpentAmmunitions(playerInventory.items);
+};
+
+const discardUntransferableItems = (items: Item[]) =>
+    items.filter((item) => !item.untransferable);
+
+const discardWeaponsAlreadyAdquired = (items: Item[], weapons: Weapon[]) => {
+    const weaponsAlreadyAdquiredNames = weapons.map((weapon) => weapon.name);
+    return items.filter(
+        (item) =>
+            !(item instanceof Weapon) ||
+            weaponsAlreadyAdquiredNames.indexOf(item.name) === -1
     );
 };
+
+const discardSpentAmmunitions = (items: Item[]) =>
+    items.filter((item) => !(item instanceof Ammunition) || !item.isSpent());
 
 const mergeAmmunitions = (inventory: Inventory) => {
     const ammunitionsByName: {

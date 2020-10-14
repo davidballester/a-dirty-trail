@@ -129,7 +129,7 @@ export class Game {
         }
         if (action instanceof LootAction) {
             const inventoryItems = action.inventory.items;
-            takeItems(action.inventory, action.player.inventory);
+            takeItems(action.player.inventory, action.inventory);
             this.currentScene.containers = this.currentScene.containers.filter(
                 (container) => container.id !== action.inventory.id
             );

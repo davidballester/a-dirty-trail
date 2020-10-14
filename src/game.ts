@@ -44,7 +44,6 @@ export class Game {
             return [];
         }
         const actions = [] as Action[];
-        actions.push(...this.buildPacifyActions());
         actions.push(...this.buildAttackActions());
         actions.push(...this.buildLootActions());
         actions.push(...this.buildReloadActions(this.player));
@@ -186,21 +185,6 @@ export class Game {
             this.currentScene.getHostileActors(),
             this.player
         );
-    }
-
-    private buildPacifyActions(): PacifyAction[] {
-        return this.currentScene
-            .getHostileActors()
-            .filter(
-                (actor) =>
-                    !actor.is(ActorStatus.wild) &&
-                    actor.getSkill(SkillName.charisma).level <
-                        this.player.getSkill(SkillName.charisma).level
-            )
-            .map(
-                (pacifiableActor) =>
-                    new PacifyAction(this.player, pacifiableActor)
-            );
     }
 
     private buildAttackActions(): AttackAction[] {

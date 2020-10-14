@@ -1,6 +1,6 @@
 import { Game } from './game';
 import { Narrator } from './narrator';
-import { AdvanceToSceneAction } from './models';
+import { AdvanceToActAction, AdvanceToSceneAction } from './models';
 import { player } from './database/narrations/findTimmy';
 
 const game = new Game('Find Timmy');
@@ -15,13 +15,14 @@ while (!game.finished && game.player.isAlive()) {
         break;
     }
     let outcome;
-    if (game.canExecuteAction(playerAction)) {
-        console.log(narrator.describeAction(playerAction));
-        outcome = game.executeAction(playerAction);
-        console.log(narrator.describeActionOutcome(playerAction, outcome));
-        console.log();
-    }
-    if (!(playerAction instanceof AdvanceToSceneAction) || !outcome) {
+    console.log(narrator.describeAction(playerAction));
+    outcome = game.executeAction(playerAction);
+    console.log(narrator.describeActionOutcome(playerAction, outcome));
+    console.log();
+    const isAbandonedScene =
+        playerAction instanceof AdvanceToSceneAction ||
+        playerAction instanceof AdvanceToActAction;
+    if (!isAbandonedScene) {
         const { action, outcome } = game.executeNextOponentAction() || {};
         if (action) {
             console.log(narrator.describeAction(action));

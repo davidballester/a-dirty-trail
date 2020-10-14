@@ -158,6 +158,7 @@ export class Game {
             this.currentScene.actors = this.currentScene.actors.filter(
                 (actor) => actor.id !== action.player.id
             );
+            return true;
         }
     }
 

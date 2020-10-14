@@ -49,7 +49,7 @@ export class Game {
         actions.push(...this.buildLootActions());
         actions.push(...this.buildReloadActions(this.player));
         actions.push(...this.currentScene.actions);
-        return actions;
+        return actions.filter((action) => this.canExecuteAction(action));
     }
 
     canExecuteAction(action: Action) {

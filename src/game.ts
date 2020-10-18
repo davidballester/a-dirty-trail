@@ -105,9 +105,6 @@ export class Game {
                 );
                 action.oponent.inventory.removeUntransferableItems();
                 this.currentScene.containers.push(action.oponent.inventory);
-                this.oponentsActions = this.oponentsActions.filter(
-                    ({ player }) => player.id === action.oponent.id
-                );
             }
             return attackOutcome;
         }

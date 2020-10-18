@@ -15,6 +15,7 @@ import {
     CustomAction,
     LootAction,
     Narration,
+    NonPlayableActor,
     PacifyAction,
     ReloadAction,
     ScapeAction,
@@ -168,9 +169,7 @@ export class Game {
             if (this.canExecuteAction(nextAction)) {
                 outcome = this.executeAction(nextAction);
             }
-            if (!this.oponentsActions.length) {
-                this.buildOponentsActions();
-            }
+            this.replenishOponentAction(nextAction.player as NonPlayableActor);
             if (outcome !== undefined) {
                 return {
                     action: nextAction,
@@ -185,6 +184,11 @@ export class Game {
             this.currentScene.getHostileActors(),
             this.player
         );
+    }
+
+    private replenishOponentAction(oponent: NonPlayableActor) {
+        const [oponentAction] = buildOponentsActions([oponent], this.player);
+        this.oponentsActions.push(oponentAction);
     }
 
     private buildAttackActions(): AttackAction[] {
@@ -250,18 +254,6 @@ export class Game {
                     ...ammunitionReloadActions,
                 ],
                 []
-            );
-    }
-
-    private buildOponentAttackActions(actor: Actor): AttackAction[] {
-        return actor.inventory
-            .getWeapons()
-            .filter(
-                (weapon) => !weapon.ammunition || !weapon.ammunition.isSpent()
-            )
-            .map(
-                (weapon) =>
-                    new AttackAction(actor, weapon as Weapon, this.player)
             );
     }
 

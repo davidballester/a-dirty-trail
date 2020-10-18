@@ -47,7 +47,7 @@ const buildOponentOffensiveActionRecursive = (
     oponent: NonPlayableActor,
     player: Actor,
     weapons: Weapon[]
-) => {
+): Action => {
     if (!weapons.length) {
         return new ScapeAction(oponent);
     }
@@ -102,7 +102,7 @@ const getWeaponWithHighestChallengeRate = (weapons: Weapon[]) => {
 const buildOponentDefensiveAction = (
     oponent: NonPlayableActor,
     player: Actor
-) =>
+): Action =>
     buildOponentDefensiveActionRecursive(
         oponent,
         player,

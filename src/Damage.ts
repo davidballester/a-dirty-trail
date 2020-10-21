@@ -1,6 +1,6 @@
 class Damage {
-    min: number;
-    max: number;
+    private min: number;
+    private max: number;
 
     constructor({ min, max }: { min: number; max: number }) {
         if (!Damage.isValidRange(min, max)) {
@@ -8,6 +8,14 @@ class Damage {
         }
         this.min = min;
         this.max = max;
+    }
+
+    getMin() {
+        return this.min;
+    }
+
+    getMax() {
+        return this.max;
     }
 
     getRandomDamage() {

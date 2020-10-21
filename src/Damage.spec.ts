@@ -26,6 +26,22 @@ describe('Damage', () => {
         } catch (err) {}
     });
 
+    describe('getMin', () => {
+        it('returns the min', () => {
+            const damage = new Damage({ min: 2, max: 4 });
+            const min = damage.getMin();
+            expect(min).toEqual(2);
+        });
+    });
+
+    describe('getMax', () => {
+        it('returns the max', () => {
+            const damage = new Damage({ min: 2, max: 4 });
+            const max = damage.getMax();
+            expect(max).toEqual(4);
+        });
+    });
+
     describe('isValidRange', () => {
         let mathRandom: jest.SpyInstance;
         let damage: Damage;

@@ -42,7 +42,7 @@ describe('Damage', () => {
         });
     });
 
-    describe('isValidRange', () => {
+    describe('getRandomDamage', () => {
         let mathRandom: jest.SpyInstance;
         let damage: Damage;
         beforeEach(() => {

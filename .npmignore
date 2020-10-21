@@ -3,3 +3,5 @@ src
 .prettierrc.json
 .gitignore
 assets
+jest.config.js
+babel.config.js

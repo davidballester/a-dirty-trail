@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import ThingWithId from './ThingWithId';
 
 export class Item {
     id: string;
@@ -409,5 +410,13 @@ export class Narration {
         }
         const [actGenerator] = this.actGenerators.splice(0, 1);
         return actGenerator(player);
+    }
+}
+
+export class Trinket extends ThingWithId {
+    name: string;
+    constructor(name: string) {
+        super();
+        this.name = name;
     }
 }

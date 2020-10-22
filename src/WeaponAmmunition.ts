@@ -43,6 +43,13 @@ class WeaponAmmunition {
         this.current = newCurrent;
     }
 
+    reload(ammunition: number): number {
+        const missingAmmunition = Math.min(this.max - this.current, ammunition);
+        this.modify(missingAmmunition);
+        const remainingAmmunition = ammunition - missingAmmunition;
+        return remainingAmmunition;
+    }
+
     private static isValidRange(current: number, max: number): boolean {
         const minIsPositive = current >= 0;
         const maxIsPositive = max >= 0;

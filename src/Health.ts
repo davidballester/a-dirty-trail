@@ -24,7 +24,7 @@ class Health {
 
     modify(delta: number) {
         this.current += delta;
-        this.current = Math.min(this.current, this.max);
+        this.current = Math.min(this.current, this.getMax());
         this.current = Math.max(this.current, 0);
     }
 

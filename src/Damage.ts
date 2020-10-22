@@ -19,9 +19,9 @@ class Damage {
     }
 
     getRandomDamage() {
-        const amplitude = this.max - this.min;
+        const amplitude = this.getMax() - this.getMin();
         const randomValueInAmplitude = Math.round(Math.random() * amplitude);
-        const randomDamage = randomValueInAmplitude + this.min;
+        const randomDamage = randomValueInAmplitude + this.getMin();
         return randomDamage;
     }
 

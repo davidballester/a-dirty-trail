@@ -1,8 +1,8 @@
 import ThingWithId from './ThingWithId';
 
 class Skill extends ThingWithId {
-    name: string;
-    probabilityOfSuccess: number;
+    private name: string;
+    private probabilityOfSuccess: number;
 
     constructor({
         name,
@@ -19,12 +19,20 @@ class Skill extends ThingWithId {
         this.probabilityOfSuccess = probabilityOfSuccess;
     }
 
+    getName() {
+        return this.name;
+    }
+
+    getProbabilityOfSuccess() {
+        return this.probabilityOfSuccess;
+    }
+
     rollSuccess(): boolean {
         return this.rollSuccessWithOpposition(0);
     }
 
     rollSuccessWithOpposition(opposition: number): boolean {
-        const level = this.probabilityOfSuccess - opposition;
+        const level = this.getProbabilityOfSuccess() - opposition;
         const random = Math.random();
         return random <= level;
     }

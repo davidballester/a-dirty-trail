@@ -1,3 +1,4 @@
+import { getNameOfDeclaration } from 'typescript';
 import Skill from './Skill';
 
 describe('Skill', () => {
@@ -17,6 +18,28 @@ describe('Skill', () => {
             new Skill({ name: 'charisma', probabilityOfSuccess: 1.5 });
             fail('expected an error');
         } catch (err) {}
+    });
+
+    describe('getName', () => {
+        it('returns the name', () => {
+            const skill = new Skill({
+                name: 'charisma',
+                probabilityOfSuccess: 0.5,
+            });
+            const name = skill.getName();
+            expect(name).toEqual('charisma');
+        });
+    });
+
+    describe('getProbabilityOfSuccess', () => {
+        it('returns the name', () => {
+            const skill = new Skill({
+                name: 'charisma',
+                probabilityOfSuccess: 0.5,
+            });
+            const probabilityOfSuccess = skill.getProbabilityOfSuccess();
+            expect(probabilityOfSuccess).toEqual(0.5);
+        });
     });
 
     describe('rollSuccess', () => {

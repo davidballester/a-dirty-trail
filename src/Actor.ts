@@ -40,7 +40,7 @@ class Actor extends ThingWithId {
     }
 
     isAlive() {
-        return this.health.isAlive();
+        return this.getHealth().isAlive();
     }
 
     getInventory() {
@@ -48,7 +48,7 @@ class Actor extends ThingWithId {
     }
 
     loot(inventory: Inventory) {
-        this.inventory.loot(inventory);
+        this.getInventory().loot(inventory);
     }
 
     getSkillSet() {
@@ -56,7 +56,7 @@ class Actor extends ThingWithId {
     }
 
     getSkill(skillName: string) {
-        return this.skillSet.getSkill(skillName);
+        return this.getSkillSet().getSkill(skillName);
     }
 }
 

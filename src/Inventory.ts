@@ -1,5 +1,6 @@
-import { Trinket, Weapon } from './models';
 import ThingWithId from './ThingWithId';
+import Trinket from './Trinket';
+import Weapon from './Weapon';
 
 class Inventory extends ThingWithId {
     private weapons: WeaponsInventory;

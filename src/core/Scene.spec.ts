@@ -1,4 +1,4 @@
-import Action from './Action';
+import Action from '../actions/Action';
 import Actor from './Actor';
 import Health from './Health';
 import Inventory from './Inventory';

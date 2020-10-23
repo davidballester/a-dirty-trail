@@ -1,12 +1,12 @@
-import Actor from './Actor';
-import Damage from './Damage';
-import Health from './Health';
-import Inventory from './Inventory';
+import Actor from '../core/Actor';
+import Damage from '../core/Damage';
+import Health from '../core/Health';
+import Inventory from '../core/Inventory';
 import ReloadAction from './ReloadAction';
-import Scene from './Scene';
-import SkillSet from './SkillSet';
-import Weapon from './Weapon';
-import WeaponAmmunition from './WeaponAmmunition';
+import Scene from '../core/Scene';
+import SkillSet from '../core/SkillSet';
+import Weapon from '../core/Weapon';
+import WeaponAmmunition from '../core/WeaponAmmunition';
 
 describe('ReloadAction', () => {
     let janeDoe: Actor;

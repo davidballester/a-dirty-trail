@@ -1,7 +1,7 @@
 import Action from './Action';
-import Actor from './Actor';
-import Scene from './Scene';
-import Weapon, { AttackOutcome } from './Weapon';
+import Actor from '../core/Actor';
+import Scene from '../core/Scene';
+import Weapon, { AttackOutcome } from '../core/Weapon';
 
 class AttackAction extends Action<AttackOutcome> {
     public static readonly TYPE = 'attack';

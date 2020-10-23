@@ -1,8 +1,8 @@
 import Action from './Action';
-import Actor from './Actor';
-import Inventory from './Inventory';
-import Scene from './Scene';
-import Weapon from './Weapon';
+import Actor from '../core/Actor';
+import Inventory from '../core/Inventory';
+import Scene from '../core/Scene';
+import Weapon from '../core/Weapon';
 
 class ReloadAction extends Action<void> {
     public static readonly TYPE = 'reload';

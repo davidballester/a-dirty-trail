@@ -1,32 +1,43 @@
 import { when } from 'jest-when';
-import Actor from './Actor';
-import LootAction from './LootAction';
-import Health from './Health';
-import Inventory from './Inventory';
-import NonPlayableActor from './NonPlayableActor';
-import Scene from './Scene';
-import SkillSet from './SkillSet';
+import Actor from '../core/Actor';
+import AttackAction from './AttackAction';
+import Damage from '../core/Damage';
+import Health from '../core/Health';
+import Inventory from '../core/Inventory';
+import NonPlayableActor from '../core/NonPlayableActor';
+import Scene from '../core/Scene';
+import SkillSet from '../core/SkillSet';
+import Weapon, { AttackOutcome } from '../core/Weapon';
+import WeaponAmmunition from '../core/WeaponAmmunition';
 
-describe('LootAction', () => {
-    let janeDoeInventory: Inventory;
+describe('AttackAction', () => {
     let janeDoe: Actor;
-    let johnDoeInventory: Inventory;
     let johnDoe: NonPlayableActor;
+    let revolver: Weapon;
     let scene: Scene;
     beforeEach(() => {
-        janeDoeInventory = new Inventory({});
         janeDoe = new Actor({
             name: 'Jane Doe',
             health: new Health({ current: 5, max: 5 }),
-            inventory: janeDoeInventory,
+            inventory: new Inventory({}),
             skillSet: new SkillSet({}),
         });
-        johnDoeInventory = new Inventory({});
         johnDoe = new NonPlayableActor({
             name: 'John Doe',
-            health: new Health({ current: 0, max: 5 }),
-            inventory: johnDoeInventory,
+            health: new Health({ current: 5, max: 5 }),
+            inventory: new Inventory({}),
             skillSet: new SkillSet({}),
+        });
+        revolver = new Weapon({
+            name: 'revolver',
+            type: 'gun',
+            skill: 'aiming',
+            damage: new Damage({ min: 1, max: 2 }),
+            ammunition: new WeaponAmmunition({
+                type: 'bullets',
+                current: 6,
+                max: 6,
+            }),
         });
         scene = new Scene({
             player: janeDoe,
@@ -37,20 +48,34 @@ describe('LootAction', () => {
     });
 
     it('initializes without errors', () => {
-        new LootAction({
+        new AttackAction({
             actor: janeDoe,
             oponent: johnDoe,
+            weapon: revolver,
         });
     });
 
     describe('getOponent', () => {
         it('returns the oponent', () => {
-            const action = new LootAction({
+            const action = new AttackAction({
                 actor: janeDoe,
                 oponent: johnDoe,
+                weapon: revolver,
             });
             const oponent = action.getOponent();
             expect(oponent).toEqual(johnDoe);
+        });
+    });
+
+    describe('getWeapon', () => {
+        it('returns the weapon', () => {
+            const action = new AttackAction({
+                actor: janeDoe,
+                oponent: johnDoe,
+                weapon: revolver,
+            });
+            const weapon = action.getWeapon();
+            expect(weapon).toEqual(revolver);
         });
     });
 
@@ -58,7 +83,8 @@ describe('LootAction', () => {
         let playerIsAlive: jest.SpyInstance;
         let sceneContainsActor: jest.SpyInstance;
         let oponentIsAlive: jest.SpyInstance;
-        let action: LootAction;
+        let weaponCanAttack: jest.SpyInstance;
+        let action: AttackAction;
         beforeEach(() => {
             playerIsAlive = jest
                 .spyOn(janeDoe, 'isAlive')
@@ -68,10 +94,14 @@ describe('LootAction', () => {
                 .mockReturnValue(true);
             oponentIsAlive = jest
                 .spyOn(johnDoe, 'isAlive')
-                .mockReturnValue(false);
-            action = new LootAction({
+                .mockReturnValue(true);
+            weaponCanAttack = jest
+                .spyOn(revolver, 'canAttack')
+                .mockReturnValue(true);
+            action = new AttackAction({
                 actor: janeDoe,
                 oponent: johnDoe,
+                weapon: revolver,
             });
         });
 
@@ -87,14 +117,20 @@ describe('LootAction', () => {
             expect(canExecute).toEqual(false);
         });
 
-        it('returns false if the oponent is alive', () => {
-            oponentIsAlive.mockReturnValue(true);
+        it('returns false if the oponent is not alive', () => {
+            oponentIsAlive.mockReturnValue(false);
             const canExecute = action.canExecute(scene);
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the oponent is not in the scene', () => {
             when(sceneContainsActor).calledWith(johnDoe).mockReturnValue(false);
+            const canExecute = action.canExecute(scene);
+            expect(canExecute).toEqual(false);
+        });
+
+        it('returns false if the weapon cannot attack', () => {
+            weaponCanAttack.mockReturnValue(false);
             const canExecute = action.canExecute(scene);
             expect(canExecute).toEqual(false);
         });
@@ -106,28 +142,29 @@ describe('LootAction', () => {
     });
 
     describe('execute', () => {
-        let inventoryLoot: jest.SpyInstance;
-        let loot: Inventory;
-        let action: LootAction;
+        let weaponAttack: jest.SpyInstance;
+        let attackOutcome: AttackOutcome;
+        let action: AttackAction;
         beforeEach(() => {
-            loot = new Inventory({});
-            inventoryLoot = jest
-                .spyOn(janeDoeInventory, 'loot')
-                .mockReturnValue(loot);
-            action = new LootAction({
+            attackOutcome = { type: 'hit', damage: 5 };
+            weaponAttack = jest
+                .spyOn(revolver, 'attack')
+                .mockReturnValue(attackOutcome);
+            action = new AttackAction({
                 actor: janeDoe,
                 oponent: johnDoe,
+                weapon: revolver,
             });
         });
 
-        it('calls the loot method of the actor inventory', () => {
+        it('calls the attack method of the weapon', () => {
             action.execute(scene);
-            expect(inventoryLoot).toHaveBeenCalledWith(johnDoeInventory);
+            expect(weaponAttack).toHaveBeenCalledWith(janeDoe, johnDoe);
         });
 
-        it('returns the loot', () => {
+        it('returns the attack outcome', () => {
             const response = action.execute(scene);
-            expect(response).toEqual(loot);
+            expect(response).toEqual(attackOutcome);
         });
     });
 });

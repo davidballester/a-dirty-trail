@@ -1,7 +1,7 @@
 import Action from './Action';
-import Actor from './Actor';
-import Inventory from './Inventory';
-import Scene from './Scene';
+import Actor from '../core/Actor';
+import Inventory from '../core/Inventory';
+import Scene from '../core/Scene';
 
 class LootAction extends Action<Inventory> {
     public static readonly TYPE = 'loot';

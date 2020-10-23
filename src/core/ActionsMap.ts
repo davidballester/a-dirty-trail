@@ -1,4 +1,4 @@
-import Action from './Action';
+import Action from '../actions/Action';
 
 class ActionsMap {
     private innerMap: InnerMap;

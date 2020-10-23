@@ -1,4 +1,4 @@
-import Action from './Action';
+import Action from '../actions/Action';
 import ActionsMap from './ActionsMap';
 import Actor from './Actor';
 import Health from './Health';

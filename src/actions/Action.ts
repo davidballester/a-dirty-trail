@@ -1,6 +1,6 @@
-import Actor from './Actor';
-import ThingWithId from './ThingWithId';
-import Scene from './Scene';
+import Actor from '../core/Actor';
+import ThingWithId from '../core/ThingWithId';
+import Scene from '../core/Scene';
 
 abstract class Action<T> extends ThingWithId {
     private type: string;

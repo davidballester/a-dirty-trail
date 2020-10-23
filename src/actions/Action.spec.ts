@@ -1,9 +1,9 @@
 import Action from './Action';
-import Actor from './Actor';
-import Health from './Health';
-import Inventory from './Inventory';
-import Scene from './Scene';
-import SkillSet from './SkillSet';
+import Actor from '../core/Actor';
+import Health from '../core/Health';
+import Inventory from '../core/Inventory';
+import Scene from '../core/Scene';
+import SkillSet from '../core/SkillSet';
 
 describe('Action', () => {
     class CustomAction extends Action<number> {

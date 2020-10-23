@@ -314,4 +314,45 @@ describe('Weapon', () => {
             });
         });
     });
+
+    describe('canAttack', () => {
+        it('can attack if it does not use ammunition', () => {
+            const club = new Weapon({
+                name: 'club',
+                type: 'hand-to-hand',
+                skill: 'swing',
+                damage,
+            });
+            const canAttack = club.canAttack();
+            expect(canAttack).toEqual(true);
+        });
+
+        it('can attack if it has ammunition', () => {
+            const revolver = new Weapon({
+                name: 'revolver',
+                type: 'gun',
+                skill: 'aiming',
+                ammunition,
+                damage,
+            });
+            const canAttack = revolver.canAttack();
+            expect(canAttack).toEqual(true);
+        });
+
+        it('can not attack if it has no ammunition', () => {
+            const revolver = new Weapon({
+                name: 'revolver',
+                type: 'gun',
+                skill: 'aiming',
+                ammunition: new WeaponAmmunition({
+                    type: 'bullets',
+                    current: 0,
+                    max: 6,
+                }),
+                damage,
+            });
+            const canAttack = revolver.canAttack();
+            expect(canAttack).toEqual(false);
+        });
+    });
 });

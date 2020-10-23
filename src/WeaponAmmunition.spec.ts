@@ -1,3 +1,4 @@
+import Weapon from './Weapon';
 import WeaponAmmunition from './WeaponAmmunition';
 
 describe('WeaponAmmunition', () => {
@@ -106,6 +107,28 @@ describe('WeaponAmmunition', () => {
             } catch (err) {}
             const current = weaponAmmunition.getCurrent();
             expect(current).toEqual(1);
+        });
+    });
+
+    describe('isSpent', () => {
+        it('returns true for current 0', () => {
+            const weaponAmmunition = new WeaponAmmunition({
+                type: 'bullets',
+                current: 0,
+                max: 1,
+            });
+            const isSpent = weaponAmmunition.isSpent();
+            expect(isSpent).toEqual(true);
+        });
+
+        it('returns false for current 1', () => {
+            const weaponAmmunition = new WeaponAmmunition({
+                type: 'bullets',
+                current: 1,
+                max: 1,
+            });
+            const isSpent = weaponAmmunition.isSpent();
+            expect(isSpent).toEqual(false);
         });
     });
 });

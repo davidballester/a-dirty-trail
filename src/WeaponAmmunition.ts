@@ -50,6 +50,10 @@ class WeaponAmmunition {
         return remainingAmmunition;
     }
 
+    isSpent(): boolean {
+        return this.current <= 0;
+    }
+
     private static isValidRange(current: number, max: number): boolean {
         const minIsPositive = current >= 0;
         const maxIsPositive = max >= 0;

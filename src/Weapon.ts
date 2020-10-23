@@ -55,6 +55,11 @@ class Weapon extends ThingWithId {
         return this.ammunition;
     }
 
+    canAttack(): boolean {
+        const ammunition = this.getAmmunition();
+        return !ammunition || !ammunition.isSpent();
+    }
+
     attack(actor: Actor, oponent: Actor): AttackOutcome {
         this.consumeAmmunition();
         const damage = this.getDamage().getRandomDamage();

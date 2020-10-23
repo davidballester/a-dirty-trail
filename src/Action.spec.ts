@@ -8,10 +8,10 @@ import SkillSet from './SkillSet';
 describe('Action', () => {
     class CustomAction extends Action<number> {
         canExecute(scene: Scene): boolean {
-            return true;
+            return super.canExecute(scene);
         }
         execute(scene: Scene): number {
-            return 1;
+            throw new Error('not supported');
         }
     }
 
@@ -55,6 +55,41 @@ describe('Action', () => {
         it('returns the actor', () => {
             const returnedActor = action.getActor();
             expect(returnedActor).toEqual(actor);
+        });
+    });
+
+    describe('canExecute', () => {
+        let scene: Scene;
+        let actorIsAlive: jest.SpyInstance;
+        let sceneContainsActor: jest.SpyInstance;
+        beforeEach(() => {
+            scene = new Scene({
+                player: actor,
+                setup: [],
+                actors: [],
+                actions: [],
+            });
+            actorIsAlive = jest.spyOn(actor, 'isAlive').mockReturnValue(true);
+            sceneContainsActor = jest
+                .spyOn(scene, 'containsActor')
+                .mockReturnValue(true);
+        });
+
+        it('returns false if the actor is not alive', () => {
+            actorIsAlive.mockReturnValue(false);
+            const canExecute = action.canExecute(scene);
+            expect(canExecute).toEqual(false);
+        });
+
+        it('returns false if the actor is not in the scene', () => {
+            sceneContainsActor.mockReturnValue(false);
+            const canExecute = action.canExecute(scene);
+            expect(canExecute).toEqual(false);
+        });
+
+        it('returns true otherwise', () => {
+            const canExecute = action.canExecute(scene);
+            expect(canExecute).toEqual(true);
         });
     });
 });

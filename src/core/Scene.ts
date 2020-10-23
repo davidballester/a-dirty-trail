@@ -44,8 +44,17 @@ class Scene extends ThingWithId {
         return this.actors;
     }
 
+    getAliveActors(): NonPlayableActor[] {
+        return this.getActors().filter((actor) => actor.isAlive());
+    }
+
     getActionsMap(): ActionsMap {
         return this.actionsMap;
+    }
+
+    isCombat(): boolean {
+        const aliveActors = this.getAliveActors();
+        return aliveActors.length > 0;
     }
 
     containsActor(actor: Actor): boolean {

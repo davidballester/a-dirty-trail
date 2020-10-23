@@ -85,6 +85,44 @@ describe('Scene', () => {
         });
     });
 
+    describe('getAliveActors', () => {
+        it('returns alive actors', () => {
+            const sussannah = new NonPlayableActor({
+                name: 'sussannah',
+                health: new Health({ current: 5, max: 5 }),
+                inventory: new Inventory({}),
+                skillSet: new SkillSet({}),
+            });
+            manInBlack = new NonPlayableActor({
+                name: 'walter',
+                health: new Health({ current: 0, max: 5 }),
+                inventory: new Inventory({}),
+                skillSet: new SkillSet({}),
+            });
+            scene = new Scene({
+                player: gunslinger,
+                setup,
+                actors: [sussannah, manInBlack],
+                actions,
+            });
+            const aliveActors = scene.getAliveActors();
+            expect(aliveActors).toEqual([sussannah]);
+        });
+    });
+
+    describe('isCombat', () => {
+        it('returns true when there are actors alive', () => {
+            const isCombat = scene.isCombat();
+            expect(isCombat).toBeTruthy();
+        });
+
+        it('returns false when there are actors alive', () => {
+            manInBlack.getHealth().modify(-100);
+            const isCombat = scene.isCombat();
+            expect(isCombat).toBeFalsy();
+        });
+    });
+
     describe('getActionsMap', () => {
         it('returns an actions map', () => {
             const actionsMap = scene.getActionsMap();

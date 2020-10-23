@@ -32,7 +32,7 @@ describe('ReloadAction', () => {
             }),
         });
         inventory = new Inventory({
-            ammunitionByType: {
+            ammunitionsByType: {
                 bullets: 10,
             },
         });

@@ -10,6 +10,10 @@ class ThingWithId {
     getId() {
         return this.id;
     }
+
+    equals(thingWithId: ThingWithId): boolean {
+        return this.getId() === thingWithId.getId();
+    }
 }
 
 export default ThingWithId;

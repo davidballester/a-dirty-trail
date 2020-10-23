@@ -9,16 +9,16 @@ class Inventory extends ThingWithId {
 
     constructor({
         weapons,
-        ammunitionByType,
+        ammunitionsByType,
         trinkets,
     }: {
         weapons?: Weapon[];
-        ammunitionByType?: AmmunitionByType;
+        ammunitionsByType?: AmmunitionByType;
         trinkets?: Trinket[];
     }) {
         super();
         this.weapons = new WeaponsInventory(weapons);
-        this.ammunitions = new AmmunitionsInventory(ammunitionByType);
+        this.ammunitions = new AmmunitionsInventory(ammunitionsByType);
         this.trinkets = new TrinketInventory(trinkets);
     }
 
@@ -34,10 +34,21 @@ class Inventory extends ThingWithId {
         return this.trinkets.getAll();
     }
 
-    loot(inventory: Inventory) {
-        this.weapons.loot(inventory.getWeapons());
-        this.ammunitions.loot(inventory.getAmmunitionsByType());
-        this.trinkets.loot(inventory.getTrinkets());
+    loot(inventory: Inventory): Inventory {
+        const lootableWeapons = inventory
+            .getWeapons()
+            .filter((weapon) => weapon.canBeLooted());
+        const ammunitionsByType = inventory.getAmmunitionsByType();
+        const trinkets = inventory.getTrinkets();
+        this.weapons.loot(lootableWeapons);
+        this.ammunitions.loot(ammunitionsByType);
+        this.trinkets.loot(trinkets);
+        const loot = new Inventory({
+            weapons: lootableWeapons,
+            ammunitionsByType,
+            trinkets,
+        });
+        return loot;
     }
 }
 

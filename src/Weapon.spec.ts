@@ -81,6 +81,26 @@ describe('Weapon', () => {
         });
     });
 
+    describe('canBeLooted', () => {
+        it('returns true by default', () => {
+            const canBeLooted = weapon.canBeLooted();
+            expect(canBeLooted).toEqual(true);
+        });
+
+        it('returns false if specified as such', () => {
+            weapon = new Weapon({
+                name: 'revolver',
+                type: 'gun',
+                skill: 'aiming',
+                damage,
+                ammunition,
+                canBeLooted: false,
+            });
+            const canBeLooted = weapon.canBeLooted();
+            expect(canBeLooted).toEqual(false);
+        });
+    });
+
     describe('attack', () => {
         let aiming: Skill;
         let skillSet: SkillSet;

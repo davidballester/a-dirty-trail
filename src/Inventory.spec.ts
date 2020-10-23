@@ -36,7 +36,7 @@ describe('Inventory', () => {
     });
 
     it('gets the ammunitions', () => {
-        const inventory = new Inventory({ ammunitionByType: { bullets: 5 } });
+        const inventory = new Inventory({ ammunitionsByType: { bullets: 5 } });
         const ammunitionsByType = inventory.getAmmunitionsByType();
         expect(ammunitionsByType).toEqual({ bullets: 5 });
     });
@@ -56,36 +56,85 @@ describe('Inventory', () => {
 
             inventory = new Inventory({
                 weapons: [revolver],
-                ammunitionByType: inventoryAmmunitions,
+                ammunitionsByType: inventoryAmmunitions,
                 trinkets: [watch],
             });
             lootInventory = new Inventory({
                 weapons: [rifle],
-                ammunitionByType: lootAmmunitions,
+                ammunitionsByType: lootAmmunitions,
                 trinkets: [boxOfMatches],
             });
-
-            inventory.loot(lootInventory);
         });
 
         it('now has both weapons', () => {
+            inventory.loot(lootInventory);
             const weapons = inventory.getWeapons();
             expect(weapons).toEqual([revolver, rifle]);
         });
 
         it('now has 10 bullets', () => {
+            inventory.loot(lootInventory);
             const ammunitionsByType = inventory.getAmmunitionsByType();
             expect(ammunitionsByType['bullets']).toEqual(10);
         });
 
         it('now has two shells', () => {
+            inventory.loot(lootInventory);
             const ammunitionByType = inventory.getAmmunitionsByType();
             expect(ammunitionByType['shells']).toEqual(2);
         });
 
         it('now has both trinkets', () => {
+            inventory.loot(lootInventory);
             const trinkets = inventory.getTrinkets();
             expect(trinkets).toEqual([watch, boxOfMatches]);
+        });
+
+        it('returns the looted weapons', () => {
+            const loot = inventory.loot(lootInventory);
+            const lootedWeapons = loot.getWeapons();
+            expect(lootedWeapons).toEqual([rifle]);
+        });
+
+        it('returns the looted ammunitions', () => {
+            const loot = inventory.loot(lootInventory);
+            const lootedAmmunitions = loot.getAmmunitionsByType();
+            expect(lootedAmmunitions).toEqual({ bullets: 5, shells: 2 });
+        });
+
+        it('returns the looted trinkets', () => {
+            const loot = inventory.loot(lootInventory);
+            const lootedTrinkets = loot.getTrinkets();
+            expect(lootedTrinkets).toEqual([boxOfMatches]);
+        });
+
+        describe('non lootable weapons', () => {
+            beforeEach(() => {
+                rifle = new Weapon({
+                    name: 'rifle',
+                    type: 'gun',
+                    skill: 'aiming',
+                    damage: new Damage({ min: 1, max: 2 }),
+                    canBeLooted: false,
+                });
+                lootInventory = new Inventory({
+                    weapons: [rifle],
+                    ammunitionsByType: { bullets: 5, shells: 2 },
+                    trinkets: [boxOfMatches],
+                });
+
+                it('does not loot non lootable weapons', () => {
+                    inventory.loot(lootInventory);
+                    const weapons = inventory.getWeapons();
+                    expect(weapons).toEqual([revolver]);
+                });
+
+                it('returns an empty weapons loot', () => {
+                    const loot = inventory.loot(lootInventory);
+                    const lootedWeapons = loot.getWeapons();
+                    expect(lootedWeapons).toEqual([]);
+                });
+            });
         });
     });
 });

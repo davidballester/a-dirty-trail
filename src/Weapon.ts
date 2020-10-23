@@ -9,6 +9,7 @@ class Weapon extends ThingWithId {
     private skill: string;
     private damage: Damage;
     private ammunition?: WeaponAmmunition;
+    private lootable: boolean;
 
     constructor({
         name,
@@ -16,12 +17,14 @@ class Weapon extends ThingWithId {
         skill,
         damage,
         ammunition,
+        canBeLooted = true,
     }: {
         name: string;
         type: string;
         skill: string;
         damage: Damage;
         ammunition?: WeaponAmmunition;
+        canBeLooted?: boolean;
     }) {
         super();
         this.name = name;
@@ -29,6 +32,7 @@ class Weapon extends ThingWithId {
         this.skill = skill;
         this.damage = damage;
         this.ammunition = ammunition;
+        this.lootable = canBeLooted;
     }
 
     getName(): string {
@@ -53,6 +57,10 @@ class Weapon extends ThingWithId {
 
     getAmmunition(): WeaponAmmunition | undefined {
         return this.ammunition;
+    }
+
+    canBeLooted(): boolean {
+        return this.lootable;
     }
 
     canAttack(): boolean {

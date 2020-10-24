@@ -1,3 +1,4 @@
+import Random from './Random';
 import ThingWithId from './ThingWithId';
 
 class Skill extends ThingWithId {
@@ -33,7 +34,7 @@ class Skill extends ThingWithId {
 
     rollSuccessWithOpposition(opposition: number): boolean {
         const level = this.getProbabilityOfSuccess() - opposition;
-        const random = Math.random();
+        const random = Random.getRandom();
         return random <= level;
     }
 

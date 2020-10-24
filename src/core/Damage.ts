@@ -1,3 +1,5 @@
+import Random from './Random';
+
 class Damage {
     private min: number;
     private max: number;
@@ -19,10 +21,7 @@ class Damage {
     }
 
     getRandomDamage() {
-        const amplitude = this.getMax() - this.getMin();
-        const randomValueInAmplitude = Math.round(Math.random() * amplitude);
-        const randomDamage = randomValueInAmplitude + this.getMin();
-        return randomDamage;
+        return Random.getRandomInRange(this.getMax(), this.getMin());
     }
 
     private static isValidRange(min: number, max: number): boolean {

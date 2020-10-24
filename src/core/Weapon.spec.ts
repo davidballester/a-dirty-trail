@@ -107,7 +107,8 @@ describe('Weapon', () => {
         let health: Health;
         let actor: Actor;
         let oponent: Actor;
-        let random: jest.SpyInstance;
+        let damageGetRandomDamage: jest.SpyInstance;
+        let skillRollSuccess: jest.SpyInstance;
         beforeEach(() => {
             aiming = new Skill({ name: 'aiming', probabilityOfSuccess: 0.4 });
             skillSet = new SkillSet({ skills: [aiming] });
@@ -124,13 +125,15 @@ describe('Weapon', () => {
                 inventory: new Inventory({}),
                 skillSet: new SkillSet({}),
             });
-            random = jest.spyOn(Math, 'random');
+            damageGetRandomDamage = jest.spyOn(damage, 'getRandomDamage');
+            skillRollSuccess = jest.spyOn(aiming, 'rollSuccess');
         });
 
         describe('weapon with ammunition', () => {
             describe('successful attack', () => {
                 beforeEach(() => {
-                    random.mockReturnValue(0.1);
+                    damageGetRandomDamage.mockReturnValue(1);
+                    skillRollSuccess.mockReturnValue(true);
                 });
 
                 it('reduces the ammunition of the weapon by 1', () => {
@@ -158,7 +161,8 @@ describe('Weapon', () => {
 
             describe('unsuccessful attack', () => {
                 beforeEach(() => {
-                    random.mockReturnValue(0.9);
+                    damageGetRandomDamage.mockReturnValue(2);
+                    skillRollSuccess.mockReturnValue(false);
                 });
 
                 it('reduces the ammunition of the weapon by 1', () => {
@@ -194,7 +198,8 @@ describe('Weapon', () => {
                         skill: 'aiming',
                         damage,
                     });
-                    random.mockReturnValue(0.1);
+                    damageGetRandomDamage.mockReturnValue(1);
+                    skillRollSuccess.mockReturnValue(true);
                 });
 
                 it('reduces the health of the oponent by the damage', () => {
@@ -216,7 +221,8 @@ describe('Weapon', () => {
 
             describe('unsuccessful attack', () => {
                 beforeEach(() => {
-                    random.mockReturnValue(0.9);
+                    damageGetRandomDamage.mockReturnValue(2);
+                    skillRollSuccess.mockReturnValue(false);
                 });
 
                 it('does not reduce the health of the oponent by the damage', () => {

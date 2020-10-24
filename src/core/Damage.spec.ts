@@ -1,4 +1,5 @@
 import Damage from './Damage';
+import Random from './Random';
 
 describe('Damage', () => {
     it('initializes without error', () => {
@@ -43,23 +44,17 @@ describe('Damage', () => {
     });
 
     describe('getRandomDamage', () => {
-        let mathRandom: jest.SpyInstance;
+        let randomGetRandomInRange: jest.SpyInstance;
         let damage: Damage;
         beforeEach(() => {
-            mathRandom = jest.spyOn(Math, 'random');
+            randomGetRandomInRange = jest.spyOn(Random, 'getRandomInRange');
             damage = new Damage({ min: 5, max: 10 });
         });
 
-        it('returns a value in the range', () => {
-            new Array(10)
-                .fill(null)
-                .map((_, index) => parseInt(`0.${index}`))
-                .forEach((value) => {
-                    mathRandom.mockReturnValue(value);
-                    const randomDamage = damage.getRandomDamage();
-                    expect(randomDamage).toBeGreaterThanOrEqual(5);
-                    expect(randomDamage).toBeLessThanOrEqual(10);
-                });
+        it('returns the result of Random.getRandomInRange', () => {
+            randomGetRandomInRange.mockReturnValue(11);
+            const result = damage.getRandomDamage();
+            expect(result).toEqual(11);
         });
     });
 });

@@ -1,4 +1,5 @@
 import { getNameOfDeclaration } from 'typescript';
+import Random from './Random';
 import Skill from './Skill';
 
 describe('Skill', () => {
@@ -43,10 +44,10 @@ describe('Skill', () => {
     });
 
     describe('rollSuccess', () => {
-        let mathRandom: jest.SpyInstance;
+        let randomGetRandom: jest.SpyInstance;
         let skill: Skill;
         beforeEach(() => {
-            mathRandom = jest.spyOn(Math, 'random');
+            randomGetRandom = jest.spyOn(Random, 'getRandom');
             skill = new Skill({
                 name: 'charisma',
                 probabilityOfSuccess: 0.5,
@@ -54,29 +55,29 @@ describe('Skill', () => {
         });
 
         it('succeeds if the random number is lower than the probability of success', () => {
-            mathRandom.mockReturnValue(0.4);
+            randomGetRandom.mockReturnValue(0.4);
             const result = skill.rollSuccess();
             expect(result).toBeTruthy();
         });
 
         it('succeeds if the random number is equal than the probability of success', () => {
-            mathRandom.mockReturnValue(0.5);
+            randomGetRandom.mockReturnValue(0.5);
             const result = skill.rollSuccess();
             expect(result).toBeTruthy();
         });
 
         it('fails if the random number is higher than the probability of success', () => {
-            mathRandom.mockReturnValue(0.6);
+            randomGetRandom.mockReturnValue(0.6);
             const result = skill.rollSuccess();
             expect(result).toBeFalsy();
         });
     });
 
     describe('rollSuccessWithOpposition', () => {
-        let mathRandom: jest.SpyInstance;
+        let randomGetRandom: jest.SpyInstance;
         let skill: Skill;
         beforeEach(() => {
-            mathRandom = jest.spyOn(Math, 'random');
+            randomGetRandom = jest.spyOn(Random, 'getRandom');
             skill = new Skill({
                 name: 'charisma',
                 probabilityOfSuccess: 0.5,
@@ -84,19 +85,19 @@ describe('Skill', () => {
         });
 
         it('succeeds if the random number is lower than the probability of success minus the opposition', () => {
-            mathRandom.mockReturnValue(0.1);
+            randomGetRandom.mockReturnValue(0.1);
             const result = skill.rollSuccessWithOpposition(0.1);
             expect(result).toBeTruthy();
         });
 
         it('succeeds if the random number is equal than the probability of success minus the opposition', () => {
-            mathRandom.mockReturnValue(0.4);
+            randomGetRandom.mockReturnValue(0.4);
             const result = skill.rollSuccessWithOpposition(0.1);
             expect(result).toBeTruthy();
         });
 
         it('fails if the random number is higher than the probability of success minus the opposition', () => {
-            mathRandom.mockReturnValue(0.4);
+            randomGetRandom.mockReturnValue(0.4);
             const result = skill.rollSuccessWithOpposition(0.2);
             expect(result).toBeFalsy();
         });

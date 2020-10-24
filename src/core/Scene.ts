@@ -8,7 +8,7 @@ class Scene extends ThingWithId {
     private player?: Actor;
     private setup: string[];
     private actors: NonPlayableActor[];
-    private actionsMap: ActionsMap;
+    private actions: Action<any>[];
 
     constructor({
         player,
@@ -25,7 +25,7 @@ class Scene extends ThingWithId {
         this.player = player;
         this.setup = setup;
         this.actors = actors;
-        this.actionsMap = new ActionsMap({ actions });
+        this.actions = actions;
     }
 
     getPlayer(): Actor | undefined {
@@ -51,15 +51,15 @@ class Scene extends ThingWithId {
     }
 
     setActions(actions: Action<any>[]) {
-        this.actionsMap = new ActionsMap({ actions });
+        this.actions = actions;
     }
 
     getAliveActors(): NonPlayableActor[] {
         return this.getActors().filter((actor) => actor.isAlive());
     }
 
-    getActionsMap(): ActionsMap {
-        return this.actionsMap;
+    getActions(): Action<any>[] {
+        return this.actions;
     }
 
     isCombat(): boolean {

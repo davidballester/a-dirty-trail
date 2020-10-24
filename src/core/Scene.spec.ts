@@ -125,11 +125,11 @@ describe('Scene', () => {
         });
     });
 
-    describe('getActionsMap | setActions', () => {
-        it('returns an actions map', () => {
+    describe('getActions | setActions', () => {
+        it('returns the actions', () => {
             scene.setActions(actions);
-            const actionsMap = scene.getActionsMap();
-            expect(actionsMap).toBeTruthy();
+            const returnedActions = scene.getActions();
+            expect(returnedActions).toEqual(actions);
         });
     });
 

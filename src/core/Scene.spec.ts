@@ -8,10 +8,10 @@ import SkillSet from './SkillSet';
 
 describe('Scene', () => {
     class CustomAction extends Action<number> {
-        canExecute(scene: Scene): boolean {
+        canExecute(): boolean {
             throw new Error('Method not implemented.');
         }
-        execute(scene: Scene): number {
+        execute(): number {
             throw new Error('Method not implemented.');
         }
     }
@@ -39,8 +39,10 @@ describe('Scene', () => {
             skillSet: new SkillSet({}),
         });
         actors = [manInBlack];
-        actions = [new CustomAction({ type: 'custom', actor: gunslinger })];
-        scene = new Scene({ player: gunslinger, setup, actors, actions });
+        scene = new Scene({ player: gunslinger, setup, actors, actions: [] });
+        actions = [
+            new CustomAction({ scene, type: 'custom', actor: gunslinger }),
+        ];
     });
 
     describe('getSetup', () => {
@@ -123,8 +125,9 @@ describe('Scene', () => {
         });
     });
 
-    describe('getActionsMap', () => {
+    describe('getActionsMap | setActions', () => {
         it('returns an actions map', () => {
+            scene.setActions(actions);
             const actionsMap = scene.getActionsMap();
             expect(actionsMap).toBeTruthy();
         });
@@ -162,6 +165,14 @@ describe('Scene', () => {
             });
             const containsActor = scene.containsActor(jake);
             expect(containsActor).toBeFalsy();
+        });
+    });
+
+    describe('removeActor', () => {
+        it('removes the actor', () => {
+            scene.removeActor(manInBlack);
+            const actors = scene.getActors();
+            expect(actors).toEqual([]);
         });
     });
 });

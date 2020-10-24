@@ -110,6 +110,7 @@ describe('LootAction', () => {
 
     describe('execute', () => {
         let inventoryLoot: jest.SpyInstance;
+        let sceneRemoveActor: jest.SpyInstance;
         let loot: Inventory;
         let action: LootAction;
         beforeEach(() => {
@@ -117,6 +118,7 @@ describe('LootAction', () => {
             inventoryLoot = jest
                 .spyOn(janeDoeInventory, 'loot')
                 .mockReturnValue(loot);
+            sceneRemoveActor = jest.spyOn(scene, 'removeActor');
             action = new LootAction({
                 scene,
                 actor: janeDoe,
@@ -127,6 +129,11 @@ describe('LootAction', () => {
         it('calls the loot method of the actor inventory', () => {
             action.execute();
             expect(inventoryLoot).toHaveBeenCalledWith(johnDoeInventory);
+        });
+
+        it('calls the remove actor of the scene', () => {
+            action.execute();
+            expect(sceneRemoveActor).toHaveBeenCalledWith(johnDoe);
         });
 
         it('returns the loot', () => {

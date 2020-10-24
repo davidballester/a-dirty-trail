@@ -2,11 +2,12 @@ import Action from './Action';
 import Actor from '../core/Actor';
 import Inventory from '../core/Inventory';
 import Scene from '../core/Scene';
+import NonPlayableActor from '../core/NonPlayableActor';
 
 class LootAction extends Action<Inventory> {
     public static readonly TYPE = 'loot';
 
-    private oponent: Actor;
+    private oponent: NonPlayableActor;
 
     constructor({
         scene,
@@ -15,13 +16,13 @@ class LootAction extends Action<Inventory> {
     }: {
         scene: Scene;
         actor: Actor;
-        oponent: Actor;
+        oponent: NonPlayableActor;
     }) {
         super({ type: LootAction.TYPE, scene, actor });
         this.oponent = oponent;
     }
 
-    getOponent(): Actor {
+    getOponent(): NonPlayableActor {
         return this.oponent;
     }
 
@@ -34,9 +35,11 @@ class LootAction extends Action<Inventory> {
     }
 
     execute(): Inventory {
+        const oponent = this.getOponent();
         const actorInventory = this.getActor().getInventory();
-        const oponentInventory = this.getOponent().getInventory();
+        const oponentInventory = oponent.getInventory();
         const loot = actorInventory.loot(oponentInventory);
+        this.scene.removeActor(oponent);
         return loot;
     }
 }

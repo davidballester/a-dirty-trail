@@ -44,6 +44,16 @@ class Scene extends ThingWithId {
         return this.actors;
     }
 
+    removeActor(actor: NonPlayableActor) {
+        this.actors = this.actors.filter(
+            (candidate) => !candidate.equals(actor)
+        );
+    }
+
+    setActions(actions: Action<any>[]) {
+        this.actionsMap = new ActionsMap({ actions });
+    }
+
     getAliveActors(): NonPlayableActor[] {
         return this.getActors().filter((actor) => actor.isAlive());
     }

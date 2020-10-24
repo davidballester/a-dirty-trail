@@ -14,10 +14,15 @@ describe('ReloadAction', () => {
     let inventory: Inventory;
     let scene: Scene;
     beforeEach(() => {
+        inventory = new Inventory({
+            ammunitionsByType: {
+                bullets: 10,
+            },
+        });
         janeDoe = new Actor({
             name: 'Jane Doe',
             health: new Health({ current: 5, max: 5 }),
-            inventory: new Inventory({}),
+            inventory,
             skillSet: new SkillSet({}),
         });
         revolver = new Weapon({
@@ -31,11 +36,6 @@ describe('ReloadAction', () => {
                 max: 6,
             }),
         });
-        inventory = new Inventory({
-            ammunitionsByType: {
-                bullets: 10,
-            },
-        });
         scene = new Scene({
             player: janeDoe,
             actors: [],
@@ -48,7 +48,6 @@ describe('ReloadAction', () => {
         new ReloadAction({
             scene,
             actor: janeDoe,
-            inventory,
             weapon: revolver,
         });
     });
@@ -64,7 +63,6 @@ describe('ReloadAction', () => {
             new ReloadAction({
                 scene,
                 actor: janeDoe,
-                inventory,
                 weapon: club,
             });
             fail('expected an error');
@@ -76,7 +74,6 @@ describe('ReloadAction', () => {
             const action = new ReloadAction({
                 scene,
                 actor: janeDoe,
-                inventory,
                 weapon: revolver,
             });
             const weapon = action.getWeapon();
@@ -105,7 +102,6 @@ describe('ReloadAction', () => {
             action = new ReloadAction({
                 scene,
                 actor: janeDoe,
-                inventory,
                 weapon: revolver,
             });
         });
@@ -156,7 +152,6 @@ describe('ReloadAction', () => {
             action = new ReloadAction({
                 scene,
                 actor: janeDoe,
-                inventory,
                 weapon: revolver,
             });
         });

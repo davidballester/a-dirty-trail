@@ -8,25 +8,21 @@ class ReloadAction extends Action<void> {
     public static readonly TYPE = 'reload';
 
     private weapon: Weapon;
-    private inventory: Inventory;
 
     constructor({
         scene,
         actor,
         weapon,
-        inventory,
     }: {
         scene: Scene;
         actor: Actor;
         weapon: Weapon;
-        inventory: Inventory;
     }) {
         super({ type: ReloadAction.TYPE, scene, actor });
         if (!weapon.getAmmunition()) {
             throw new Error('weapon does not require ammunition');
         }
         this.weapon = weapon;
-        this.inventory = inventory;
     }
 
     getWeapon(): Weapon {
@@ -42,7 +38,8 @@ class ReloadAction extends Action<void> {
         if (weaponAmmunition.getCurrent() === weaponAmmunition.getMax()) {
             return false;
         }
-        const ammunitionsByType = this.inventory.getAmmunitionsByType();
+        const inventory = this.getActor().getInventory();
+        const ammunitionsByType = inventory.getAmmunitionsByType();
         const ammunition = ammunitionsByType[weaponAmmunition.getType()];
         if (!ammunition) {
             return false;
@@ -51,7 +48,8 @@ class ReloadAction extends Action<void> {
     }
 
     execute(): void {
-        const ammunitionsByType = this.inventory.getAmmunitionsByType();
+        const inventory = this.getActor().getInventory();
+        const ammunitionsByType = inventory.getAmmunitionsByType();
         const weapon = this.getWeapon();
         const weaponAmmunition = weapon.getAmmunition()!;
         const ammunition = ammunitionsByType[weaponAmmunition.getType()];

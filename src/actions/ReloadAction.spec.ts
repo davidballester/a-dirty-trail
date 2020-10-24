@@ -46,6 +46,7 @@ describe('ReloadAction', () => {
 
     it('initializes without errors', () => {
         new ReloadAction({
+            scene,
             actor: janeDoe,
             inventory,
             weapon: revolver,
@@ -61,6 +62,7 @@ describe('ReloadAction', () => {
         });
         try {
             new ReloadAction({
+                scene,
                 actor: janeDoe,
                 inventory,
                 weapon: club,
@@ -72,6 +74,7 @@ describe('ReloadAction', () => {
     describe('getWeapon', () => {
         it('returns the weapon', () => {
             const action = new ReloadAction({
+                scene,
                 actor: janeDoe,
                 inventory,
                 weapon: revolver,
@@ -100,6 +103,7 @@ describe('ReloadAction', () => {
             );
             weaponGetAmmunition = jest.spyOn(revolver, 'getAmmunition');
             action = new ReloadAction({
+                scene,
                 actor: janeDoe,
                 inventory,
                 weapon: revolver,
@@ -108,13 +112,13 @@ describe('ReloadAction', () => {
 
         it('returns false if the player is not alive', () => {
             playerIsAlive.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the player is not in the scene', () => {
             sceneContainsActor.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
@@ -122,24 +126,24 @@ describe('ReloadAction', () => {
             weaponGetAmmunition.mockReturnValue(
                 new WeaponAmmunition({ type: 'bullets', current: 6, max: 6 })
             );
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the inventory contains 0 of the weapon ammunition type', () => {
             inventoryGetAmmunitionsByType.mockReturnValue({ bullets: 0 });
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the inventory does not have the ammunition type', () => {
             inventoryGetAmmunitionsByType.mockReturnValue({});
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns true otherwise', () => {
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(true);
         });
     });
@@ -150,6 +154,7 @@ describe('ReloadAction', () => {
         beforeEach(() => {
             weaponReload = jest.spyOn(revolver, 'reload').mockReturnValue(1);
             action = new ReloadAction({
+                scene,
                 actor: janeDoe,
                 inventory,
                 weapon: revolver,
@@ -157,12 +162,12 @@ describe('ReloadAction', () => {
         });
 
         it('calls the reload method of the weapon', () => {
-            action.execute(scene);
+            action.execute();
             expect(weaponReload).toHaveBeenCalledWith(10);
         });
 
         it('sets the ammunition in the inventory to the response of the reload call', () => {
-            action.execute(scene);
+            action.execute();
             expect(inventory.getAmmunitionsByType()['bullets']).toEqual(1);
         });
     });

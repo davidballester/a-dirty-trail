@@ -6,19 +6,23 @@ abstract class Action<T> extends ThingWithId {
     private type: string;
     private name?: string;
     private actor: Actor;
+    protected scene: Scene;
 
     constructor({
         type,
         name,
+        scene,
         actor,
     }: {
         type: string;
         name?: string;
+        scene: Scene;
         actor: Actor;
     }) {
         super();
         this.type = type;
         this.name = name;
+        this.scene = scene;
         this.actor = actor;
     }
 
@@ -34,14 +38,14 @@ abstract class Action<T> extends ThingWithId {
         return this.actor;
     }
 
-    canExecute(scene: Scene): boolean {
+    canExecute(): boolean {
         const actor = this.getActor();
         const isActorAlive = actor.isAlive();
-        const isActorInScene = scene.containsActor(actor);
+        const isActorInScene = this.scene.containsActor(actor);
         return isActorAlive && isActorInScene;
     }
 
-    abstract execute(scene: Scene): T;
+    abstract execute(): T;
 }
 
 export default Action;

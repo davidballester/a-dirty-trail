@@ -8,8 +8,16 @@ class LootAction extends Action<Inventory> {
 
     private oponent: Actor;
 
-    constructor({ actor, oponent }: { actor: Actor; oponent: Actor }) {
-        super({ type: LootAction.TYPE, actor });
+    constructor({
+        scene,
+        actor,
+        oponent,
+    }: {
+        scene: Scene;
+        actor: Actor;
+        oponent: Actor;
+    }) {
+        super({ type: LootAction.TYPE, scene, actor });
         this.oponent = oponent;
     }
 
@@ -17,15 +25,15 @@ class LootAction extends Action<Inventory> {
         return this.oponent;
     }
 
-    canExecute(scene: Scene): boolean {
-        if (!super.canExecute(scene)) {
+    canExecute(): boolean {
+        if (!super.canExecute()) {
             return false;
         }
         const oponent = this.getOponent();
         return !oponent.isAlive();
     }
 
-    execute(scene: Scene): Inventory {
+    execute(): Inventory {
         const actorInventory = this.getActor().getInventory();
         const oponentInventory = this.getOponent().getInventory();
         const loot = actorInventory.loot(oponentInventory);

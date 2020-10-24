@@ -31,7 +31,12 @@ describe('AdvanceAction', () => {
     });
 
     it('initializes without errors', () => {
-        new AdvanceAction({ actor: janeDoe, name: 'Go on', narration });
+        new AdvanceAction({
+            scene,
+            actor: janeDoe,
+            name: 'Go on',
+            narration,
+        });
     });
 
     describe('canExecute', () => {
@@ -44,6 +49,7 @@ describe('AdvanceAction', () => {
                 .spyOn(scene, 'containsActor')
                 .mockReturnValue(true);
             action = new AdvanceAction({
+                scene,
                 actor: janeDoe,
                 name: 'Go on',
                 narration,
@@ -52,18 +58,18 @@ describe('AdvanceAction', () => {
 
         it('returns false if the actor is not alive', () => {
             actorIsAlive.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the actor is not in the scene', () => {
             sceneContainsActor.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns true otherwise', () => {
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(true);
         });
     });
@@ -72,11 +78,12 @@ describe('AdvanceAction', () => {
         it('invokes the loadScene method of the narration', () => {
             const loadSpy = jest.spyOn(narration, 'loadNextScene');
             const action = new AdvanceAction({
+                scene,
                 actor: janeDoe,
                 name: 'Go on',
                 narration,
             });
-            action.execute(scene);
+            action.execute();
             expect(loadSpy).toHaveBeenCalledWith(scene);
         });
     });

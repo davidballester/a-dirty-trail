@@ -38,6 +38,7 @@ describe('LootAction', () => {
 
     it('initializes without errors', () => {
         new LootAction({
+            scene,
             actor: janeDoe,
             oponent: johnDoe,
         });
@@ -46,6 +47,7 @@ describe('LootAction', () => {
     describe('getOponent', () => {
         it('returns the oponent', () => {
             const action = new LootAction({
+                scene,
                 actor: janeDoe,
                 oponent: johnDoe,
             });
@@ -70,6 +72,7 @@ describe('LootAction', () => {
                 .spyOn(johnDoe, 'isAlive')
                 .mockReturnValue(false);
             action = new LootAction({
+                scene,
                 actor: janeDoe,
                 oponent: johnDoe,
             });
@@ -77,30 +80,30 @@ describe('LootAction', () => {
 
         it('returns false if the player is not alive', () => {
             playerIsAlive.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the player is not in the scene', () => {
             when(sceneContainsActor).calledWith(janeDoe).mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the oponent is alive', () => {
             oponentIsAlive.mockReturnValue(true);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the oponent is not in the scene', () => {
             when(sceneContainsActor).calledWith(johnDoe).mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns true otherwise', () => {
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(true);
         });
     });
@@ -115,18 +118,19 @@ describe('LootAction', () => {
                 .spyOn(janeDoeInventory, 'loot')
                 .mockReturnValue(loot);
             action = new LootAction({
+                scene,
                 actor: janeDoe,
                 oponent: johnDoe,
             });
         });
 
         it('calls the loot method of the actor inventory', () => {
-            action.execute(scene);
+            action.execute();
             expect(inventoryLoot).toHaveBeenCalledWith(johnDoeInventory);
         });
 
         it('returns the loot', () => {
-            const response = action.execute(scene);
+            const response = action.execute();
             expect(response).toEqual(loot);
         });
     });

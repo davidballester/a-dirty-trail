@@ -7,15 +7,16 @@ import SkillSet from '../core/SkillSet';
 
 describe('Action', () => {
     class CustomAction extends Action<number> {
-        canExecute(scene: Scene): boolean {
-            return super.canExecute(scene);
+        canExecute(): boolean {
+            return super.canExecute();
         }
-        execute(scene: Scene): number {
+        execute(): number {
             throw new Error('not supported');
         }
     }
 
     let action: Action<number>;
+    let scene: Scene;
     let actor: Actor;
     beforeEach(() => {
         actor = new Actor({
@@ -24,7 +25,14 @@ describe('Action', () => {
             inventory: new Inventory({}),
             skillSet: new SkillSet({}),
         });
+        scene = new Scene({
+            player: actor,
+            setup: [],
+            actors: [],
+            actions: [],
+        });
         action = new CustomAction({
+            scene,
             type: 'custom',
             name: 'myAction',
             actor: actor,
@@ -45,7 +53,7 @@ describe('Action', () => {
         });
 
         it('returns no name if the action has no name', () => {
-            const action = new CustomAction({ type: 'custom', actor });
+            const action = new CustomAction({ scene, type: 'custom', actor });
             const name = action.getName();
             expect(name).toBeUndefined();
         });
@@ -59,16 +67,9 @@ describe('Action', () => {
     });
 
     describe('canExecute', () => {
-        let scene: Scene;
         let actorIsAlive: jest.SpyInstance;
         let sceneContainsActor: jest.SpyInstance;
         beforeEach(() => {
-            scene = new Scene({
-                player: actor,
-                setup: [],
-                actors: [],
-                actions: [],
-            });
             actorIsAlive = jest.spyOn(actor, 'isAlive').mockReturnValue(true);
             sceneContainsActor = jest
                 .spyOn(scene, 'containsActor')
@@ -77,18 +78,18 @@ describe('Action', () => {
 
         it('returns false if the actor is not alive', () => {
             actorIsAlive.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the actor is not in the scene', () => {
             sceneContainsActor.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns true otherwise', () => {
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(true);
         });
     });

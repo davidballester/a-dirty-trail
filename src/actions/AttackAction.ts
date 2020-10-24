@@ -11,14 +11,16 @@ class AttackAction extends Action<AttackOutcome> {
 
     constructor({
         actor,
+        scene,
         oponent,
         weapon,
     }: {
         actor: Actor;
+        scene: Scene;
         oponent: Actor;
         weapon: Weapon;
     }) {
-        super({ type: AttackAction.TYPE, actor });
+        super({ type: AttackAction.TYPE, actor, scene });
         this.oponent = oponent;
         this.weapon = weapon;
     }
@@ -31,8 +33,8 @@ class AttackAction extends Action<AttackOutcome> {
         return this.weapon;
     }
 
-    canExecute(scene: Scene): boolean {
-        if (!super.canExecute(scene)) {
+    canExecute(): boolean {
+        if (!super.canExecute()) {
             return false;
         }
         const weapon = this.getWeapon();
@@ -41,11 +43,11 @@ class AttackAction extends Action<AttackOutcome> {
         }
         const oponent = this.getOponent();
         const isOponentAlive = oponent.isAlive();
-        const isOponentInScene = scene.containsActor(oponent);
+        const isOponentInScene = this.scene.containsActor(oponent);
         return isOponentAlive && isOponentInScene;
     }
 
-    execute(scene: Scene): AttackOutcome {
+    execute(): AttackOutcome {
         const weapon = this.getWeapon();
         const actor = this.getActor();
         const oponent = this.getOponent();

@@ -49,6 +49,7 @@ describe('AttackAction', () => {
 
     it('initializes without errors', () => {
         new AttackAction({
+            scene,
             actor: janeDoe,
             oponent: johnDoe,
             weapon: revolver,
@@ -58,6 +59,7 @@ describe('AttackAction', () => {
     describe('getOponent', () => {
         it('returns the oponent', () => {
             const action = new AttackAction({
+                scene,
                 actor: janeDoe,
                 oponent: johnDoe,
                 weapon: revolver,
@@ -70,6 +72,7 @@ describe('AttackAction', () => {
     describe('getWeapon', () => {
         it('returns the weapon', () => {
             const action = new AttackAction({
+                scene,
                 actor: janeDoe,
                 oponent: johnDoe,
                 weapon: revolver,
@@ -99,6 +102,7 @@ describe('AttackAction', () => {
                 .spyOn(revolver, 'canAttack')
                 .mockReturnValue(true);
             action = new AttackAction({
+                scene,
                 actor: janeDoe,
                 oponent: johnDoe,
                 weapon: revolver,
@@ -107,36 +111,36 @@ describe('AttackAction', () => {
 
         it('returns false if the player is not alive', () => {
             playerIsAlive.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the player is not in the scene', () => {
             when(sceneContainsActor).calledWith(janeDoe).mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the oponent is not alive', () => {
             oponentIsAlive.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the oponent is not in the scene', () => {
             when(sceneContainsActor).calledWith(johnDoe).mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns false if the weapon cannot attack', () => {
             weaponCanAttack.mockReturnValue(false);
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
 
         it('returns true otherwise', () => {
-            const canExecute = action.canExecute(scene);
+            const canExecute = action.canExecute();
             expect(canExecute).toEqual(true);
         });
     });
@@ -151,6 +155,7 @@ describe('AttackAction', () => {
                 .spyOn(revolver, 'attack')
                 .mockReturnValue(attackOutcome);
             action = new AttackAction({
+                scene,
                 actor: janeDoe,
                 oponent: johnDoe,
                 weapon: revolver,
@@ -158,12 +163,12 @@ describe('AttackAction', () => {
         });
 
         it('calls the attack method of the weapon', () => {
-            action.execute(scene);
+            action.execute();
             expect(weaponAttack).toHaveBeenCalledWith(janeDoe, johnDoe);
         });
 
         it('returns the attack outcome', () => {
-            const response = action.execute(scene);
+            const response = action.execute();
             expect(response).toEqual(attackOutcome);
         });
     });

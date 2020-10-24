@@ -10,26 +10,28 @@ class AdvanceAction extends Action<void> {
 
     constructor({
         actor,
+        scene,
         narration,
         name,
     }: {
         actor: Actor;
+        scene: Scene;
         narration: Narration;
         name: string;
     }) {
-        super({ type: AdvanceAction.TYPE, name, actor });
+        super({ type: AdvanceAction.TYPE, name, scene, actor });
         this.narration = narration;
     }
 
-    canExecute(scene: Scene): boolean {
-        if (!super.canExecute(scene)) {
+    canExecute(): boolean {
+        if (!super.canExecute()) {
             return false;
         }
-        return !scene.isCombat();
+        return !this.scene.isCombat();
     }
 
-    execute(scene: Scene): void {
-        this.narration.loadNextScene(scene);
+    execute(): void {
+        this.narration.loadNextScene(this.scene);
     }
 }
 

@@ -1,12 +1,15 @@
 import ActionsMap from '../core/ActionsMap';
+import NonPlayableActor from '../core/NonPlayableActor';
 import ActionBuilder from './ActionBuilder';
 import AttackAction from './AttackAction';
+import ScapeAction from './ScapeAction';
 
 class NonPlayableActorActionBuilder extends ActionBuilder {
     buildActions(): ActionsMap {
         const attackActions = this.buildAttackActions();
         const reloadActions = this.buildReloadActions();
-        const actions = [...attackActions, ...reloadActions];
+        const scapeAction = this.buildScapeAction();
+        const actions = [...attackActions, ...reloadActions, scapeAction];
         const executableActions = actions.filter((action) =>
             action.canExecute()
         );
@@ -18,6 +21,13 @@ class NonPlayableActorActionBuilder extends ActionBuilder {
     protected buildAttackActions(): AttackAction[] {
         const player = this.scene.getPlayer();
         return this.buildOponentAttackActions(player!);
+    }
+
+    private buildScapeAction(): ScapeAction {
+        return new ScapeAction({
+            actor: this.actor as NonPlayableActor,
+            scene: this.scene,
+        });
     }
 }
 

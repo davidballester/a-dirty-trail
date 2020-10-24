@@ -3,12 +3,14 @@ import AdvanceAction from '../actions/AdvanceAction';
 import AttackAction from '../actions/AttackAction';
 import LootAction from '../actions/LootAction';
 import ReloadAction from '../actions/ReloadAction';
+import ScapeAction from '../actions/ScapeAction';
 import ActionsMap from './ActionsMap';
 import Actor from './Actor';
 import Damage from './Damage';
 import Health from './Health';
 import Inventory from './Inventory';
 import Narration from './Narration';
+import NonPlayableActor from './NonPlayableActor';
 import Scene from './Scene';
 import SkillSet from './SkillSet';
 import Weapon from './Weapon';
@@ -87,6 +89,7 @@ describe('ActionsMap', () => {
         let reloadAction: ReloadAction;
         let lootAction: LootAction;
         let advanceAction: AdvanceAction;
+        let scapeAction: ScapeAction;
         beforeEach(() => {
             const revolver = new Weapon({
                 name: 'revolver',
@@ -113,13 +116,17 @@ describe('ActionsMap', () => {
             lootAction = new LootAction({
                 scene,
                 actor: janeDoe,
-                oponent: janeDoe,
+                oponent: janeDoe as NonPlayableActor,
             });
             advanceAction = new AdvanceAction({
                 scene,
                 actor: janeDoe,
                 narration: ({} as unknown) as Narration,
                 name: 'Go on',
+            });
+            scapeAction = new ScapeAction({
+                scene,
+                actor: janeDoe as NonPlayableActor,
             });
 
             actionsMap = new ActionsMap({
@@ -128,6 +135,7 @@ describe('ActionsMap', () => {
                     reloadAction,
                     lootAction,
                     advanceAction,
+                    scapeAction,
                 ],
             });
         });
@@ -157,6 +165,13 @@ describe('ActionsMap', () => {
             it('returns the advance actions', () => {
                 const advanceActions = actionsMap.getAdvanceActions();
                 expect(advanceActions).toEqual([advanceAction]);
+            });
+        });
+
+        describe('getScapeAction', () => {
+            it('returns the scape action', () => {
+                const returnedScapeAction = actionsMap.getScapeAction();
+                expect(returnedScapeAction).toEqual(scapeAction);
             });
         });
     });

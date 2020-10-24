@@ -3,6 +3,7 @@ import AdvanceAction from '../actions/AdvanceAction';
 import AttackAction from '../actions/AttackAction';
 import LootAction from '../actions/LootAction';
 import ReloadAction from '../actions/ReloadAction';
+import ScapeAction from '../actions/ScapeAction';
 
 class ActionsMap {
     private innerMap: InnerMap;
@@ -34,6 +35,11 @@ class ActionsMap {
     getAdvanceActions(): AdvanceAction[] {
         const advanceActions = this.innerMap[AdvanceAction.TYPE] || [];
         return advanceActions.map((action) => action as AdvanceAction);
+    }
+
+    getScapeAction(): ScapeAction | undefined {
+        const scapeActions = this.innerMap[ScapeAction.TYPE] || [];
+        return scapeActions[0];
     }
 
     addAction(action: Action<any>) {

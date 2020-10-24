@@ -1,4 +1,8 @@
 import Action from '../actions/Action';
+import AdvanceAction from '../actions/AdvanceAction';
+import AttackAction from '../actions/AttackAction';
+import LootAction from '../actions/LootAction';
+import ReloadAction from '../actions/ReloadAction';
 
 class ActionsMap {
     private innerMap: InnerMap;
@@ -10,6 +14,26 @@ class ActionsMap {
 
     getActionsOfType(type: string): Action<any>[] {
         return this.innerMap[type] || [];
+    }
+
+    getAttackActions(): AttackAction[] {
+        const attackActions = this.innerMap[AttackAction.TYPE] || [];
+        return attackActions.map((action) => action as AttackAction);
+    }
+
+    getReloadActions(): ReloadAction[] {
+        const reloadActions = this.innerMap[ReloadAction.TYPE] || [];
+        return reloadActions.map((action) => action as ReloadAction);
+    }
+
+    getLootActions(): LootAction[] {
+        const lootActions = this.innerMap[LootAction.TYPE] || [];
+        return lootActions.map((action) => action as LootAction);
+    }
+
+    getAdvanceActions(): AdvanceAction[] {
+        const advanceActions = this.innerMap[AdvanceAction.TYPE] || [];
+        return advanceActions.map((action) => action as AdvanceAction);
     }
 
     addAction(action: Action<any>) {

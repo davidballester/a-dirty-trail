@@ -8,8 +8,8 @@ import LootAction from './LootAction';
 import ReloadAction from './ReloadAction';
 
 class ActionBuilder {
-    private scene: Scene;
-    private actor: Actor;
+    protected scene: Scene;
+    protected actor: Actor;
 
     constructor({ scene, actor }: { scene: Scene; actor: Actor }) {
         if (!scene.containsActor(actor) || !actor.isAlive()) {
@@ -38,7 +38,7 @@ class ActionBuilder {
         });
     }
 
-    private buildAttackActions(): AttackAction[] {
+    protected buildAttackActions(): AttackAction[] {
         const aliveOponents = this.scene.getAliveActors();
         const attackActionsPerOponent = aliveOponents.map((oponent) =>
             this.buildOponentAttackActions(oponent)
@@ -53,9 +53,7 @@ class ActionBuilder {
         return attackActions;
     }
 
-    private buildOponentAttackActions(
-        oponent: NonPlayableActor
-    ): AttackAction[] {
+    protected buildOponentAttackActions(oponent: Actor): AttackAction[] {
         const weapons = this.actor.getInventory().getWeapons();
         const attackActions = weapons.map((weapon) =>
             this.buildAttackAction(oponent, weapon)
@@ -63,10 +61,7 @@ class ActionBuilder {
         return attackActions;
     }
 
-    private buildAttackAction(
-        oponent: NonPlayableActor,
-        weapon: Weapon
-    ): AttackAction {
+    protected buildAttackAction(oponent: Actor, weapon: Weapon): AttackAction {
         return new AttackAction({
             scene: this.scene,
             actor: this.actor,
@@ -75,7 +70,7 @@ class ActionBuilder {
         });
     }
 
-    private buildReloadActions(): ReloadAction[] {
+    protected buildReloadActions(): ReloadAction[] {
         const weapons = this.actor.getInventory().getWeapons();
         const weaponsThatRequireAmmunition = weapons.filter(
             (weapon) => !!weapon.getAmmunition()
@@ -86,7 +81,7 @@ class ActionBuilder {
         return reloadActions;
     }
 
-    private buildReloadAction(weapon: Weapon): ReloadAction {
+    protected buildReloadAction(weapon: Weapon): ReloadAction {
         return new ReloadAction({
             scene: this.scene,
             actor: this.actor,
@@ -94,7 +89,7 @@ class ActionBuilder {
         });
     }
 
-    private buildLootActions(): LootAction[] {
+    protected buildLootActions(): LootAction[] {
         const deadActors = this.scene.getDeadActors();
         const lootActions = deadActors.map((deadActor) =>
             this.buildLootAction(deadActor)
@@ -102,7 +97,7 @@ class ActionBuilder {
         return lootActions;
     }
 
-    private buildLootAction(actor: NonPlayableActor): LootAction {
+    protected buildLootAction(actor: NonPlayableActor): LootAction {
         return new LootAction({
             scene: this.scene,
             actor: this.actor,

@@ -58,6 +58,10 @@ class Scene extends ThingWithId {
         return this.getActors().filter((actor) => actor.isAlive());
     }
 
+    getDeadActors(): NonPlayableActor[] {
+        return this.getActors().filter((actor) => !actor.isAlive());
+    }
+
     getActions(): Action<any>[] {
         return this.actions;
     }

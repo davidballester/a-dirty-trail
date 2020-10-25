@@ -20,6 +20,8 @@ abstract class Narration {
         this.currentScene = scene;
     }
 
+    abstract initialize(): void;
+
     abstract loadNextScene(scene: Scene): void;
 }
 

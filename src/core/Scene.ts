@@ -3,10 +3,11 @@ import Action from '../actions/Action';
 import NonPlayableActor from './NonPlayableActor';
 import ActionsMap from './ActionsMap';
 import Actor from './Actor';
+import MarkdownText from './MarkdownText';
 
 class Scene extends ThingWithId {
     private player?: Actor;
-    private setup: string[];
+    private setup: MarkdownText[];
     private actors: NonPlayableActor[];
     private actions: Action<any>[];
 
@@ -17,7 +18,7 @@ class Scene extends ThingWithId {
         actions,
     }: {
         player?: Actor;
-        setup: string[];
+        setup: MarkdownText[];
         actors: NonPlayableActor[];
         actions: Action<any>[];
     }) {
@@ -36,7 +37,7 @@ class Scene extends ThingWithId {
         this.player = player;
     }
 
-    getSetup(): string[] {
+    getSetup(): MarkdownText[] {
         return this.setup;
     }
 

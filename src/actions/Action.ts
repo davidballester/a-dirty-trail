@@ -1,10 +1,11 @@
 import Actor from '../core/Actor';
 import ThingWithId from '../core/ThingWithId';
 import Scene from '../core/Scene';
+import MarkdownText from '../core/MarkdownText';
 
 abstract class Action<T> extends ThingWithId {
     private type: string;
-    private name?: string;
+    private name?: MarkdownText;
     private actor: Actor;
     protected scene: Scene;
 
@@ -15,7 +16,7 @@ abstract class Action<T> extends ThingWithId {
         actor,
     }: {
         type: string;
-        name?: string;
+        name?: MarkdownText;
         scene: Scene;
         actor: Actor;
     }) {
@@ -26,7 +27,7 @@ abstract class Action<T> extends ThingWithId {
         this.actor = actor;
     }
 
-    getType(): string {
+    getType(): MarkdownText {
         return this.type;
     }
 

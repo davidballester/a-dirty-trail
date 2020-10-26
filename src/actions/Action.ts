@@ -46,7 +46,7 @@ abstract class Action<T> extends ThingWithId {
         return isActorAlive && isActorInScene;
     }
 
-    abstract execute(): T;
+    abstract execute(): T | Promise<T>;
 }
 
 export default Action;

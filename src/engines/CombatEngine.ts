@@ -35,7 +35,7 @@ class CombatEngine {
         return this.scene.getAliveActors();
     }
 
-    executePlayerAction<T>(action: Action<T>): T {
+    async executePlayerAction<T>(action: Action<T>): Promise<T> {
         const player = this.scene.getPlayer()!;
         if (!this.isActorTurn(player)) {
             throw new Error('Not the turn of the player!');
@@ -63,8 +63,8 @@ class CombatEngine {
         return actor.equals(actorCurrentTurn);
     }
 
-    private executeAction<T>(action: Action<T>): T {
-        const outcome = action.execute();
+    private async executeAction<T>(action: Action<T>): Promise<T> {
+        const outcome = await action.execute();
         this.updateTurn();
         if (this.isActorsCountChanged()) {
             this.rebuildTurns();
@@ -100,7 +100,7 @@ class CombatEngine {
         }
     }
 
-    executeNextOponentAction<T>(): [Action<T>, T] | undefined {
+    async executeNextOponentAction<T>(): Promise<[Action<T>, T] | undefined> {
         const player = this.scene.getPlayer()!;
         if (this.isActorTurn(player)) {
             throw new Error('Player turn!');
@@ -110,7 +110,7 @@ class CombatEngine {
         if (!nextOponentAction.canExecute()) {
             return undefined;
         }
-        const outcome = this.executeAction(nextOponentAction);
+        const outcome = await this.executeAction(nextOponentAction);
         return [nextOponentAction, outcome];
     }
 }

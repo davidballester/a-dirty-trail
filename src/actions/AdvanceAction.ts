@@ -34,8 +34,8 @@ class AdvanceAction extends Action<void> {
         return !this.scene.isCombat();
     }
 
-    execute(): void {
-        const nextScene = this.nextSceneDecider(this.scene);
+    async execute(): Promise<void> {
+        const nextScene = await this.nextSceneDecider(this.scene);
         this.narration.loadNextScene(nextScene);
     }
 }

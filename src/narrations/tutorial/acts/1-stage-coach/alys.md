@@ -1,3 +1,7 @@
+---
+action1: Alys opened the door and jumped out
+---
+
 "Alys it is, then," the minister said and then the driver anounced they were parting.
 
 Now he snored, reeking of booze, and Alys glanced at the woods.

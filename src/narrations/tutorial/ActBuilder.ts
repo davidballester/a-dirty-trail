@@ -1,9 +1,8 @@
+import Actor from '../../core/Actor';
 import Scene from '../../core/Scene';
 
 abstract class ActBuilder {
-    abstract build(): Promise<Scene>;
-
-    abstract getNextScene(scene: Scene): Promise<Scene | undefined>;
+    abstract build(player: Actor): Promise<Scene>;
 }
 
 export default ActBuilder;

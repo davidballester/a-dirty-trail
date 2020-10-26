@@ -1,4 +1,8 @@
-"Lady Cartwright," the minister said with, bowing slightly. "Such an honor."
+---
+action1: Lady Cartwright opened the door and jumped out
+---
+
+"Such an honor, milady," the minister said with, bowing slightly.
 
 Now he snored, reeking of booze, and Lady Cartwright glanced at the woods.
 

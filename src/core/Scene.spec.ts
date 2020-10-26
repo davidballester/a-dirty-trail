@@ -57,6 +57,17 @@ describe('Scene', () => {
             const returnedSetup = scene.getSetup();
             expect(returnedSetup).toEqual(setup);
         });
+
+        it('returns undefined if not setup is provided', () => {
+            scene = new Scene({
+                title,
+                player: gunslinger,
+                actors,
+                actions: [],
+            });
+            const returnedSetup = scene.getSetup();
+            expect(returnedSetup).toBeUndefined();
+        });
     });
 
     describe('getPlayer', () => {

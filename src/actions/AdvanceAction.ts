@@ -14,12 +14,12 @@ class AdvanceAction extends Action<void> {
         scene,
         narration,
         name,
-        nextSceneDecider = () => undefined,
+        nextSceneDecider = () => Promise.resolve(undefined),
     }: {
         actor: Actor;
         scene: Scene;
         narration: Narration;
-        name: string;
+        name?: string;
         nextSceneDecider?: NextSceneDecider;
     }) {
         super({ type: AdvanceAction.TYPE, name, scene, actor });
@@ -40,6 +40,8 @@ class AdvanceAction extends Action<void> {
     }
 }
 
-export type NextSceneDecider = (currentScene: Scene) => Scene | undefined;
+export type NextSceneDecider = (
+    currentScene: Scene
+) => Promise<Scene | undefined>;
 
 export default AdvanceAction;

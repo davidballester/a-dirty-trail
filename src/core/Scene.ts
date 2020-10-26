@@ -7,7 +7,7 @@ import MarkdownText from './MarkdownText';
 class Scene extends ThingWithId {
     private player?: Actor;
     private title: MarkdownText;
-    private setup: MarkdownText;
+    private setup?: MarkdownText;
     private actors: NonPlayableActor[];
     private actions: Action<any>[];
 
@@ -20,7 +20,7 @@ class Scene extends ThingWithId {
     }: {
         player?: Actor;
         title: MarkdownText;
-        setup: MarkdownText;
+        setup?: MarkdownText;
         actors: NonPlayableActor[];
         actions: Action<any>[];
     }) {
@@ -44,7 +44,7 @@ class Scene extends ThingWithId {
         this.player = player;
     }
 
-    getSetup(): MarkdownText {
+    getSetup(): MarkdownText | undefined {
         return this.setup;
     }
 

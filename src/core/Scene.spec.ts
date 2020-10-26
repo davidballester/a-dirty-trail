@@ -16,16 +16,16 @@ describe('Scene', () => {
         }
     }
 
-    let setup: string[];
+    let setup: string;
     let gunslinger: Actor;
     let manInBlack: NonPlayableActor;
     let actors: NonPlayableActor[];
     let actions: Action<any>[];
     let scene: Scene;
+    let title: string;
     beforeEach(() => {
-        setup = [
-            'The man in black fled across the desert, and the gunslinger followed',
-        ];
+        setup =
+            'The man in black fled across the desert, and the gunslinger followed';
         gunslinger = new Actor({
             name: 'gunslinger',
             health: new Health({ current: 5, max: 5 }),
@@ -39,7 +39,14 @@ describe('Scene', () => {
             skillSet: new SkillSet({}),
         });
         actors = [manInBlack];
-        scene = new Scene({ player: gunslinger, setup, actors, actions: [] });
+        title = '19';
+        scene = new Scene({
+            title,
+            player: gunslinger,
+            setup,
+            actors,
+            actions: [],
+        });
         actions = [
             new CustomAction({ scene, type: 'custom', actor: gunslinger }),
         ];
@@ -59,15 +66,22 @@ describe('Scene', () => {
         });
 
         it('gets undefined if there is no player', () => {
-            scene = new Scene({ setup, actors, actions });
+            scene = new Scene({ title, setup, actors, actions });
             const player = scene.getPlayer();
             expect(player).toBeUndefined();
         });
     });
 
+    describe('getTitle', () => {
+        it('gets the title', () => {
+            const returnedTitle = scene.getTitle();
+            expect(returnedTitle).toEqual(title);
+        });
+    });
+
     describe('setPlayer', () => {
         it('sets the player', () => {
-            scene = new Scene({ setup, actors, actions });
+            scene = new Scene({ title, setup, actors, actions });
             scene.setPlayer(gunslinger);
             const player = scene.getPlayer();
             expect(player).toEqual(gunslinger);
@@ -102,6 +116,7 @@ describe('Scene', () => {
                 skillSet: new SkillSet({}),
             });
             scene = new Scene({
+                title,
                 player: gunslinger,
                 setup,
                 actors: [sussannah, manInBlack],
@@ -127,6 +142,7 @@ describe('Scene', () => {
                 skillSet: new SkillSet({}),
             });
             scene = new Scene({
+                title,
                 player: gunslinger,
                 setup,
                 actors: [sussannah, manInBlack],

@@ -3,7 +3,11 @@ import Scene from './Scene';
 
 describe('Narration', () => {
     class CustomNarration extends Narration {
-        loadNextScene(scene: Scene): void {
+        loadNextScene(scene: Scene): Promise<void> {
+            throw new Error('Method not implemented.');
+        }
+
+        initialize(): Promise<Scene> {
             throw new Error('Method not implemented.');
         }
     }

@@ -1,28 +1,31 @@
 import ThingWithId from './ThingWithId';
 import Action from '../actions/Action';
 import NonPlayableActor from './NonPlayableActor';
-import ActionsMap from './ActionsMap';
 import Actor from './Actor';
 import MarkdownText from './MarkdownText';
 
 class Scene extends ThingWithId {
     private player?: Actor;
-    private setup: MarkdownText[];
+    private title: MarkdownText;
+    private setup: MarkdownText;
     private actors: NonPlayableActor[];
     private actions: Action<any>[];
 
     constructor({
         player,
+        title,
         setup,
         actors,
         actions,
     }: {
         player?: Actor;
-        setup: MarkdownText[];
+        title: MarkdownText;
+        setup: MarkdownText;
         actors: NonPlayableActor[];
         actions: Action<any>[];
     }) {
         super();
+        this.title = title;
         this.player = player;
         this.setup = setup;
         this.actors = actors;
@@ -33,11 +36,15 @@ class Scene extends ThingWithId {
         return this.player;
     }
 
+    getTitle(): MarkdownText {
+        return this.title;
+    }
+
     setPlayer(player?: Actor) {
         this.player = player;
     }
 
-    getSetup(): MarkdownText[] {
+    getSetup(): MarkdownText {
         return this.setup;
     }
 

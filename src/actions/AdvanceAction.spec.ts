@@ -1,4 +1,4 @@
-import AdvanceAction from './AdvanceAction';
+import AdvanceAction, { NextSceneDecider } from './AdvanceAction';
 import Narration from '../core/Narration';
 import Scene from '../core/Scene';
 import Actor from '../core/Actor';
@@ -7,27 +7,28 @@ import Inventory from '../core/Inventory';
 import SkillSet from '../core/SkillSet';
 
 describe('AdvanceAction', () => {
-    class CustomNarration extends Narration {
-        loadNextScene(scene: Scene): void {}
-    }
-
     let janeDoe: Actor;
+    let janeDoeIsAlive: jest.SpyInstance;
     let scene: Scene;
+    let sceneContainsActor: jest.SpyInstance;
     let narration: Narration;
+    let loadNextScene: jest.SpyInstance;
     beforeEach(() => {
-        janeDoe = new Actor({
-            name: 'Jane Doe',
-            health: new Health({ current: 5, max: 5 }),
-            inventory: new Inventory({}),
-            skillSet: new SkillSet({}),
-        });
-        scene = new Scene({
-            player: janeDoe,
-            setup: [],
-            actors: [],
-            actions: [],
-        });
-        narration = new CustomNarration({ title: 'My narration ' });
+        janeDoeIsAlive = jest.fn().mockReturnValue(true);
+        janeDoe = ({
+            id: 'jane doe',
+            isAlive: janeDoeIsAlive,
+        } as unknown) as Actor;
+        sceneContainsActor = jest.fn().mockReturnValue(true);
+        scene = ({
+            id: 'scene',
+            containsActor: sceneContainsActor,
+            isCombat: jest.fn().mockReturnValue(false),
+        } as unknown) as Scene;
+        loadNextScene = jest.fn();
+        narration = ({
+            loadNextScene,
+        } as unknown) as Narration;
     });
 
     it('initializes without errors', () => {
@@ -40,14 +41,8 @@ describe('AdvanceAction', () => {
     });
 
     describe('canExecute', () => {
-        let actorIsAlive: jest.SpyInstance;
-        let sceneContainsActor: jest.SpyInstance;
         let action: AdvanceAction;
         beforeEach(() => {
-            actorIsAlive = jest.spyOn(janeDoe, 'isAlive').mockReturnValue(true);
-            sceneContainsActor = jest
-                .spyOn(scene, 'containsActor')
-                .mockReturnValue(true);
             action = new AdvanceAction({
                 scene,
                 actor: janeDoe,
@@ -57,7 +52,7 @@ describe('AdvanceAction', () => {
         });
 
         it('returns false if the actor is not alive', () => {
-            actorIsAlive.mockReturnValue(false);
+            janeDoeIsAlive.mockReturnValue(false);
             const canExecute = action.canExecute();
             expect(canExecute).toEqual(false);
         });
@@ -75,6 +70,15 @@ describe('AdvanceAction', () => {
     });
 
     describe('execute', () => {
+        let nextSceneDecider: NextSceneDecider;
+        let nextScene: Scene;
+        beforeEach(() => {
+            nextScene = ({
+                id: 'next scene',
+            } as unknown) as Scene;
+            nextSceneDecider = jest.fn().mockReturnValue(nextScene);
+        });
+
         it('invokes the loadScene method of the narration', () => {
             const loadSpy = jest.spyOn(narration, 'loadNextScene');
             const action = new AdvanceAction({
@@ -84,7 +88,20 @@ describe('AdvanceAction', () => {
                 narration,
             });
             action.execute();
-            expect(loadSpy).toHaveBeenCalledWith(scene);
+            expect(loadSpy).toHaveBeenCalledWith(undefined);
+        });
+
+        it('invokes the loadScene method of the narration with the result of the next scene decider', () => {
+            const loadSpy = jest.spyOn(narration, 'loadNextScene');
+            const action = new AdvanceAction({
+                scene,
+                actor: janeDoe,
+                name: 'Go on',
+                narration,
+                nextSceneDecider,
+            });
+            action.execute();
+            expect(loadSpy).toHaveBeenCalledWith(nextScene);
         });
     });
 });

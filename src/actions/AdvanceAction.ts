@@ -7,20 +7,24 @@ class AdvanceAction extends Action<void> {
     public static readonly TYPE = 'advance';
 
     private narration: Narration;
+    private nextSceneDecider: NextSceneDecider;
 
     constructor({
         actor,
         scene,
         narration,
         name,
+        nextSceneDecider = () => undefined,
     }: {
         actor: Actor;
         scene: Scene;
         narration: Narration;
         name: string;
+        nextSceneDecider?: NextSceneDecider;
     }) {
         super({ type: AdvanceAction.TYPE, name, scene, actor });
         this.narration = narration;
+        this.nextSceneDecider = nextSceneDecider;
     }
 
     canExecute(): boolean {
@@ -31,8 +35,11 @@ class AdvanceAction extends Action<void> {
     }
 
     execute(): void {
-        this.narration.loadNextScene(this.scene);
+        const nextScene = this.nextSceneDecider(this.scene);
+        this.narration.loadNextScene(nextScene);
     }
 }
+
+export type NextSceneDecider = (currentScene: Scene) => Scene | undefined;
 
 export default AdvanceAction;

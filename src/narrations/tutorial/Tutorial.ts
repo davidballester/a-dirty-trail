@@ -8,7 +8,11 @@ class Tutorial extends Narration {
         super({ title: Tutorial.NAME });
     }
 
-    loadNextScene(scene: Scene): void {
+    initialize(): Promise<Scene> {
+        throw new Error('Method not implemented.');
+    }
+
+    loadNextScene(scene: Scene): Promise<void> {
         throw new Error('Method not implemented.');
     }
 }

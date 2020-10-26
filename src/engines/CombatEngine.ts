@@ -20,7 +20,7 @@ class CombatEngine {
     private buildTurns() {
         this.actorsTurns = [];
         const aliveActors = this.scene.getAliveActors();
-        const player = this.scene.getPlayer()!;
+        const player = this.scene.getPlayer();
         aliveActors.forEach((oponent) => {
             this.actorsTurns.push(player);
             this.actorsTurns.push(oponent);
@@ -36,7 +36,7 @@ class CombatEngine {
     }
 
     async executePlayerAction<T>(action: Action<T>): Promise<T> {
-        const player = this.scene.getPlayer()!;
+        const player = this.scene.getPlayer();
         if (!this.isActorTurn(player)) {
             throw new Error('Not the turn of the player!');
         }
@@ -47,7 +47,7 @@ class CombatEngine {
     }
 
     getPlayerActions(): ActionsMap {
-        const player = this.scene.getPlayer()!;
+        const player = this.scene.getPlayer();
         if (!this.isActorTurn(player)) {
             throw new Error('Not the turn of the player!');
         }
@@ -78,7 +78,7 @@ class CombatEngine {
 
     private isActorsCountChanged(): boolean {
         const aliveActors = this.scene.getAliveActors();
-        const player = this.scene.getPlayer()!;
+        const player = this.scene.getPlayer();
         const actorsInTurns = this.actorsTurns.filter(
             (actor) => !actor.equals(player)
         );
@@ -89,7 +89,7 @@ class CombatEngine {
 
     private rebuildTurns() {
         const nextActor = this.getActorCurrentTurn();
-        const nextActorIsPlayer = nextActor.equals(this.scene.getPlayer()!);
+        const nextActorIsPlayer = nextActor.equals(this.scene.getPlayer());
         const nextOponentCanAct =
             nextActor.isAlive() && this.scene.containsActor(nextActor);
         this.buildTurns();
@@ -101,7 +101,7 @@ class CombatEngine {
     }
 
     async executeNextOponentAction<T>(): Promise<[Action<T>, T] | undefined> {
-        const player = this.scene.getPlayer()!;
+        const player = this.scene.getPlayer();
         if (this.isActorTurn(player)) {
             throw new Error('Player turn!');
         }

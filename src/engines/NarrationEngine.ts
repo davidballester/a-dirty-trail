@@ -12,7 +12,7 @@ class NarrationEngine {
     getPlayerActions(): ActionsMap {
         const actionBuilder = new ActionBuilder({
             scene: this.scene,
-            actor: this.scene.getPlayer()!,
+            actor: this.scene.getPlayer(),
         });
         return actionBuilder.buildActions();
     }

@@ -5,7 +5,7 @@ import Actor from './Actor';
 import MarkdownText from './MarkdownText';
 
 class Scene extends ThingWithId {
-    private player?: Actor;
+    private player: Actor;
     private title: MarkdownText;
     private setup?: MarkdownText;
     private actors: NonPlayableActor[];
@@ -18,7 +18,7 @@ class Scene extends ThingWithId {
         actors,
         actions,
     }: {
-        player?: Actor;
+        player: Actor;
         title: MarkdownText;
         setup?: MarkdownText;
         actors: NonPlayableActor[];
@@ -32,16 +32,12 @@ class Scene extends ThingWithId {
         this.actions = actions;
     }
 
-    getPlayer(): Actor | undefined {
+    getPlayer(): Actor {
         return this.player;
     }
 
     getTitle(): MarkdownText {
         return this.title;
-    }
-
-    setPlayer(player?: Actor) {
-        this.player = player;
     }
 
     getSetup(): MarkdownText | undefined {
@@ -81,7 +77,7 @@ class Scene extends ThingWithId {
 
     containsActor(actor: Actor): boolean {
         const player = this.getPlayer();
-        const isPlayer = player && actor.equals(player);
+        const isPlayer = actor.equals(player);
         if (isPlayer) {
             return true;
         }

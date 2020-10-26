@@ -47,10 +47,10 @@ class StageCoachActBuilder extends ActBuilder {
                 name: actionsText[0],
                 narration: this.narration,
                 sideEffect: (scene: Scene) => {
-                    scene.getPlayer()!.changeName('Alys');
+                    scene.getPlayer().changeName('Alys');
                 },
                 nextSceneDecider: (scene: Scene) =>
-                    this.buildAlysScene(scene.getPlayer()!),
+                    this.buildAlysScene(scene.getPlayer()),
             }),
             new AdvanceActionWithSideEffect({
                 actor: player,
@@ -58,10 +58,10 @@ class StageCoachActBuilder extends ActBuilder {
                 name: actionsText[1],
                 narration: this.narration,
                 sideEffect: (scene: Scene) => {
-                    scene.getPlayer()!.changeName('Lady Cartwright');
+                    scene.getPlayer().changeName('Lady Cartwright');
                 },
                 nextSceneDecider: (scene: Scene) =>
-                    this.buildLadyCartwrightScene(scene.getPlayer()!),
+                    this.buildLadyCartwrightScene(scene.getPlayer()),
             }),
         ]);
         return scene;
@@ -89,7 +89,7 @@ class StageCoachActBuilder extends ActBuilder {
                 name: actionsText[0],
                 narration: this.narration,
                 nextSceneDecider: (scene: Scene) =>
-                    this.buildOutsideTheStageCoach(scene.getPlayer()!),
+                    this.buildOutsideTheStageCoach(scene.getPlayer()),
             }),
         ]);
         return scene;
@@ -119,12 +119,12 @@ class StageCoachActBuilder extends ActBuilder {
                 sideEffect: (scene: Scene) => {
                     const revolver = this.buildRevolver();
                     scene
-                        .getPlayer()!
+                        .getPlayer()
                         .getInventory()
                         .loot(new Inventory({ weapons: [revolver] }));
                 },
                 nextSceneDecider: (scene: Scene) =>
-                    this.buildOutsideTheStageCoach(scene.getPlayer()!),
+                    this.buildOutsideTheStageCoach(scene.getPlayer()),
             }),
         ]);
         return scene;
@@ -166,7 +166,7 @@ class StageCoachActBuilder extends ActBuilder {
                 name: actionsText[0],
                 narration: this.narration,
                 nextSceneDecider: (scene: Scene) =>
-                    this.buildCombat(scene.getPlayer()!),
+                    this.buildCombat(scene.getPlayer()),
             }),
         ]);
         return scene;
@@ -185,7 +185,7 @@ class StageCoachActBuilder extends ActBuilder {
                 scene: scene,
                 narration: this.narration,
                 nextSceneDecider: (scene: Scene) =>
-                    this.buildAfterTheShootout(scene.getPlayer()!),
+                    this.buildAfterTheShootout(scene.getPlayer()),
             }),
         ]);
         return scene;

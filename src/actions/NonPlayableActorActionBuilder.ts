@@ -20,7 +20,7 @@ class NonPlayableActorActionBuilder extends ActionBuilder {
 
     protected buildAttackActions(): AttackAction[] {
         const player = this.scene.getPlayer();
-        return this.buildOponentAttackActions(player!);
+        return this.buildOponentAttackActions(player);
     }
 
     private buildScapeAction(): ScapeAction {

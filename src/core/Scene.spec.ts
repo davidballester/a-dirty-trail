@@ -75,33 +75,12 @@ describe('Scene', () => {
             const player = scene.getPlayer();
             expect(player).toEqual(gunslinger);
         });
-
-        it('gets undefined if there is no player', () => {
-            scene = new Scene({ title, setup, actors, actions });
-            const player = scene.getPlayer();
-            expect(player).toBeUndefined();
-        });
     });
 
     describe('getTitle', () => {
         it('gets the title', () => {
             const returnedTitle = scene.getTitle();
             expect(returnedTitle).toEqual(title);
-        });
-    });
-
-    describe('setPlayer', () => {
-        it('sets the player', () => {
-            scene = new Scene({ title, setup, actors, actions });
-            scene.setPlayer(gunslinger);
-            const player = scene.getPlayer();
-            expect(player).toEqual(gunslinger);
-        });
-
-        it('sets the player to undefined', () => {
-            scene.setPlayer(undefined);
-            const player = scene.getPlayer();
-            expect(player).toBeUndefined();
         });
     });
 
@@ -197,18 +176,6 @@ describe('Scene', () => {
         });
 
         it('returns false for an unknown actor', () => {
-            const jake = new NonPlayableActor({
-                name: 'jake',
-                health: new Health({ current: 5, max: 5 }),
-                inventory: new Inventory({}),
-                skillSet: new SkillSet({}),
-            });
-            const containsActor = scene.containsActor(jake);
-            expect(containsActor).toBeFalsy();
-        });
-
-        it('returns false for an unknown actor when there is no player', () => {
-            scene.setPlayer(undefined);
             const jake = new NonPlayableActor({
                 name: 'jake',
                 health: new Health({ current: 5, max: 5 }),

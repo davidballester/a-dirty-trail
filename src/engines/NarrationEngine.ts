@@ -4,17 +4,25 @@ import Scene from '../core/Scene';
 
 class NarrationEngine {
     private scene: Scene;
+    private playerActions: ActionsMap;
 
     constructor({ scene }: { scene: Scene }) {
         this.scene = scene;
-    }
-
-    getPlayerActions(): ActionsMap {
         const actionBuilder = new ActionBuilder({
             scene: this.scene,
             actor: this.scene.getPlayer(),
         });
-        return actionBuilder.buildActions();
+        this.playerActions = actionBuilder.buildActions();
+    }
+
+    getPlayerActions(): ActionsMap {
+        return this.playerActions;
+    }
+
+    isNarrationFinished(): boolean {
+        const playerActions = this.getPlayerActions();
+        const advanceActions = playerActions.getAdvanceActions();
+        return !advanceActions.length;
     }
 }
 

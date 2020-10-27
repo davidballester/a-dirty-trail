@@ -5,14 +5,15 @@ import Inventory from '../core/Inventory';
 import ReloadAction from './ReloadAction';
 import Scene from '../core/Scene';
 import SkillSet from '../core/SkillSet';
-import Weapon from '../core/Weapon';
 import WeaponAmmunition from '../core/WeaponAmmunition';
+import Firearm from '../core/Firearm';
 
 describe('ReloadAction', () => {
     let janeDoe: Actor;
-    let revolver: Weapon;
+    let revolver: Firearm;
     let inventory: Inventory;
     let scene: Scene;
+    let sceneContainsActor: jest.SpyInstance;
     beforeEach(() => {
         inventory = new Inventory({
             ammunitionsByType: {
@@ -25,7 +26,7 @@ describe('ReloadAction', () => {
             inventory,
             skillSet: new SkillSet({}),
         });
-        revolver = new Weapon({
+        revolver = new Firearm({
             name: 'revolver',
             type: 'gun',
             skill: 'aiming',
@@ -36,12 +37,11 @@ describe('ReloadAction', () => {
                 max: 6,
             }),
         });
-        scene = new Scene({
-            player: janeDoe,
-            actors: [],
-            setup: [],
-            actions: [],
-        });
+        sceneContainsActor = jest.fn().mockReturnValue(true);
+        scene = ({
+            id: 'scene',
+            containsActor: sceneContainsActor,
+        } as unknown) as Scene;
     });
 
     it('initializes without errors', () => {
@@ -50,23 +50,6 @@ describe('ReloadAction', () => {
             actor: janeDoe,
             weapon: revolver,
         });
-    });
-
-    it('fails to initialize if the provided weapon does not require ammunition', () => {
-        const club = new Weapon({
-            name: 'club',
-            type: 'club',
-            skill: 'swinging',
-            damage: new Damage({ min: 1, max: 2 }),
-        });
-        try {
-            new ReloadAction({
-                scene,
-                actor: janeDoe,
-                weapon: club,
-            });
-            fail('expected an error');
-        } catch (err) {}
     });
 
     describe('getWeapon', () => {
@@ -83,16 +66,12 @@ describe('ReloadAction', () => {
 
     describe('canExecute', () => {
         let playerIsAlive: jest.SpyInstance;
-        let sceneContainsActor: jest.SpyInstance;
         let inventoryGetAmmunitionsByType: jest.SpyInstance;
         let weaponGetAmmunition: jest.SpyInstance;
         let action: ReloadAction;
         beforeEach(() => {
             playerIsAlive = jest
                 .spyOn(janeDoe, 'isAlive')
-                .mockReturnValue(true);
-            sceneContainsActor = jest
-                .spyOn(scene, 'containsActor')
                 .mockReturnValue(true);
             inventoryGetAmmunitionsByType = jest.spyOn(
                 inventory,

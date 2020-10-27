@@ -1,5 +1,6 @@
 import ActionsMap from '../core/ActionsMap';
 import Actor from '../core/Actor';
+import Firearm from '../core/Firearm';
 import NonPlayableActor from '../core/NonPlayableActor';
 import Scene from '../core/Scene';
 import Weapon from '../core/Weapon';
@@ -72,20 +73,20 @@ class ActionBuilder {
 
     protected buildReloadActions(): ReloadAction[] {
         const weapons = this.actor.getInventory().getWeapons();
-        const weaponsThatRequireAmmunition = weapons.filter(
-            (weapon) => !!weapon.getAmmunition()
-        );
-        const reloadActions = weaponsThatRequireAmmunition.map((weapon) =>
+        const firearms = weapons
+            .filter((weapon) => !!weapon.getAmmunition())
+            .map((weapon) => weapon as Firearm);
+        const reloadActions = firearms.map((weapon) =>
             this.buildReloadAction(weapon)
         );
         return reloadActions;
     }
 
-    protected buildReloadAction(weapon: Weapon): ReloadAction {
+    protected buildReloadAction(firearm: Firearm): ReloadAction {
         return new ReloadAction({
             scene: this.scene,
             actor: this.actor,
-            weapon,
+            weapon: firearm,
         });
     }
 

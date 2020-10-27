@@ -5,50 +5,15 @@ import LootAction from '../actions/LootAction';
 import ReloadAction from '../actions/ReloadAction';
 import ScapeAction from '../actions/ScapeAction';
 import ActionsMap from './ActionsMap';
-import Actor from './Actor';
-import Damage from './Damage';
-import Health from './Health';
-import Inventory from './Inventory';
-import Narration from './Narration';
-import NonPlayableActor from './NonPlayableActor';
-import Scene from './Scene';
-import SkillSet from './SkillSet';
-import Weapon from './Weapon';
-import WeaponAmmunition from './WeaponAmmunition';
 
 describe('ActionsMap', () => {
-    class CustomAction extends Action<number> {
-        canExecute(): boolean {
-            throw new Error('Method not implemented.');
-        }
-        execute(): number {
-            throw new Error('Method not implemented.');
-        }
-    }
-
-    let action: CustomAction;
+    let action: Action<any>;
     let actionsMap: ActionsMap;
-    let janeDoe: Actor;
-    let scene: Scene;
     beforeEach(() => {
-        janeDoe = new Actor({
-            name: 'Jane Doe',
-            health: new Health({ current: 5, max: 5 }),
-            inventory: new Inventory({}),
-            skillSet: new SkillSet({}),
-        });
-        scene = new Scene({
-            player: janeDoe,
-            setup: [],
-            actors: [],
-            actions: [],
-        });
-        action = new CustomAction({
-            scene,
-            type: 'custom',
-            name: 'myAction',
-            actor: janeDoe,
-        });
+        action = ({
+            id: 'action',
+            getType: jest.fn().mockReturnValue('custom'),
+        } as unknown) as Action<any>;
         actionsMap = new ActionsMap({ actions: [action] });
     });
 
@@ -72,12 +37,10 @@ describe('ActionsMap', () => {
         });
 
         it('adds the action to a new list for the new type', () => {
-            const anotherAction = new CustomAction({
-                scene,
-                type: 'anotherType',
-                name: 'myAction',
-                actor: janeDoe,
-            });
+            const anotherAction = ({
+                id: 'another-action',
+                getType: jest.fn().mockReturnValue('anotherType'),
+            } as unknown) as Action<any>;
             actionsMap.addAction(anotherAction);
             const actions = actionsMap.getActionsOfType('anotherType');
             expect(actions).toEqual([anotherAction]);
@@ -91,43 +54,26 @@ describe('ActionsMap', () => {
         let advanceAction: AdvanceAction;
         let scapeAction: ScapeAction;
         beforeEach(() => {
-            const revolver = new Weapon({
-                name: 'revolver',
-                type: 'gun',
-                skill: 'aim',
-                damage: new Damage({ min: 1, max: 2 }),
-                ammunition: new WeaponAmmunition({
-                    type: 'bullets',
-                    current: 1,
-                    max: 6,
-                }),
-            });
-            attackAction = new AttackAction({
-                actor: janeDoe,
-                scene,
-                oponent: janeDoe,
-                weapon: revolver,
-            });
-            reloadAction = new ReloadAction({
-                scene,
-                actor: janeDoe,
-                weapon: revolver,
-            });
-            lootAction = new LootAction({
-                scene,
-                actor: janeDoe,
-                oponent: janeDoe as NonPlayableActor,
-            });
-            advanceAction = new AdvanceAction({
-                scene,
-                actor: janeDoe,
-                narration: ({} as unknown) as Narration,
-                name: 'Go on',
-            });
-            scapeAction = new ScapeAction({
-                scene,
-                actor: janeDoe as NonPlayableActor,
-            });
+            attackAction = ({
+                id: 'attack-action',
+                getType: jest.fn().mockReturnValue(AttackAction.TYPE),
+            } as unknown) as AttackAction;
+            reloadAction = ({
+                id: 'reload-action',
+                getType: jest.fn().mockReturnValue(ReloadAction.TYPE),
+            } as unknown) as ReloadAction;
+            lootAction = ({
+                id: 'loot-action',
+                getType: jest.fn().mockReturnValue(LootAction.TYPE),
+            } as unknown) as LootAction;
+            advanceAction = ({
+                id: 'advance-action',
+                getType: jest.fn().mockReturnValue(AdvanceAction.TYPE),
+            } as unknown) as AdvanceAction;
+            scapeAction = ({
+                id: 'scape-action',
+                getType: jest.fn().mockReturnValue(ScapeAction.TYPE),
+            } as unknown) as ScapeAction;
 
             actionsMap = new ActionsMap({
                 actions: [

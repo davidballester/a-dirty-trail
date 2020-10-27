@@ -10,6 +10,7 @@ describe('AdvanceAction', () => {
     let sceneContainsActor: jest.SpyInstance;
     let narration: Narration;
     let loadNextScene: jest.SpyInstance;
+    let nextSceneDecider: NextSceneDecider;
     beforeEach(() => {
         janeDoeIsAlive = jest.fn().mockReturnValue(true);
         janeDoe = ({
@@ -26,6 +27,7 @@ describe('AdvanceAction', () => {
         narration = ({
             loadNextScene,
         } as unknown) as Narration;
+        nextSceneDecider = (jest.fn() as unknown) as NextSceneDecider;
     });
 
     it('initializes without errors', () => {
@@ -34,6 +36,7 @@ describe('AdvanceAction', () => {
             actor: janeDoe,
             name: 'Go on',
             narration,
+            nextSceneDecider,
         });
     });
 
@@ -45,6 +48,7 @@ describe('AdvanceAction', () => {
                 actor: janeDoe,
                 name: 'Go on',
                 narration,
+                nextSceneDecider,
             });
         });
 
@@ -67,29 +71,19 @@ describe('AdvanceAction', () => {
     });
 
     describe('execute', () => {
-        let nextSceneDecider: NextSceneDecider;
         let nextScene: Scene;
+        let loadSpy: jest.SpyInstance;
         beforeEach(() => {
             nextScene = ({
                 id: 'next scene',
             } as unknown) as Scene;
-            nextSceneDecider = jest.fn().mockReturnValue(nextScene);
+            ((nextSceneDecider as unknown) as jest.SpyInstance).mockReturnValue(
+                nextScene
+            );
+            loadSpy = jest.spyOn(narration, 'loadNextScene');
         });
 
-        it('invokes the loadScene method of the narration', async () => {
-            const loadSpy = jest.spyOn(narration, 'loadNextScene');
-            const action = new AdvanceAction({
-                scene,
-                actor: janeDoe,
-                name: 'Go on',
-                narration,
-            });
-            await action.execute();
-            expect(loadSpy).toHaveBeenCalledWith(undefined);
-        });
-
-        it('invokes the loadScene method of the narration with the result of the next scene decider', async () => {
-            const loadSpy = jest.spyOn(narration, 'loadNextScene');
+        it('invokes the loadNextScene method of the narration with the result of the next scene decider', async () => {
             const action = new AdvanceAction({
                 scene,
                 actor: janeDoe,

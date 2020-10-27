@@ -2,6 +2,7 @@ import AdvanceAction from '../../../../actions/AdvanceAction';
 import AdvanceActionWithSideEffect from '../../../../actions/AdvanceActionWithSideEffect';
 import Actor from '../../../../core/Actor';
 import Damage from '../../../../core/Damage';
+import Firearm from '../../../../core/Firearm';
 import Health from '../../../../core/Health';
 import Inventory from '../../../../core/Inventory';
 import Narration from '../../../../core/Narration';
@@ -9,7 +10,6 @@ import NonPlayableActor from '../../../../core/NonPlayableActor';
 import Scene from '../../../../core/Scene';
 import Skill from '../../../../core/Skill';
 import SkillSet from '../../../../core/SkillSet';
-import Weapon from '../../../../core/Weapon';
 import WeaponAmmunition from '../../../../core/WeaponAmmunition';
 import SceneTextsReader from '../../../SceneTextsReader';
 import ActBuilder from '../../ActBuilder';
@@ -130,8 +130,8 @@ class StageCoachActBuilder extends ActBuilder {
         return scene;
     }
 
-    private buildRevolver(): Weapon {
-        return new Weapon({
+    private buildRevolver(): Firearm {
+        return new Firearm({
             name: 'revolver',
             type: 'revolver',
             damage: new Damage({ min: 1, max: 2 }),
@@ -193,7 +193,7 @@ class StageCoachActBuilder extends ActBuilder {
 
     private buildScarredBrigand(): NonPlayableActor {
         const rifle = this.buildRifle();
-        rifle.getAmmunition()!.modify(-1);
+        rifle.getAmmunition().modify(-1);
         return new NonPlayableActor({
             name: 'Scarred brigand',
             health: new Health({ current: 2, max: 2 }),
@@ -209,8 +209,8 @@ class StageCoachActBuilder extends ActBuilder {
         });
     }
 
-    private buildRifle(): Weapon {
-        return new Weapon({
+    private buildRifle(): Firearm {
+        return new Firearm({
             name: 'one-shot rifle',
             type: 'rifle',
             damage: new Damage({ min: 2, max: 2 }),

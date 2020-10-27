@@ -5,21 +5,21 @@ import Inventory from './Inventory';
 import NonPlayableActor from './NonPlayableActor';
 import Scene from './Scene';
 import SkillSet from './SkillSet';
-import Weapon from './Weapon';
 import NonPlayableActorActionBuilder from '../actions/NonPlayableActorActionBuilder';
 import Damage from './Damage';
 import AttackAction from '../actions/AttackAction';
 import ReloadAction from '../actions/ReloadAction';
 import WeaponAmmunition from './WeaponAmmunition';
 import ScapeAction from '../actions/ScapeAction';
+import Firearm from './Firearm';
 jest.mock('../actions/NonPlayableActorActionBuilder');
 
 describe('NonPlayableActor', () => {
     describe('getNextAction', () => {
         let janeDoe: NonPlayableActor;
         let scene: Scene;
-        let shotgun: Weapon;
-        let revolver: Weapon;
+        let shotgun: Firearm;
+        let revolver: Firearm;
         let getWeaponChallengeRate: jest.SpyInstance;
         let buildActions: jest.SpyInstance;
         let getAttackActions: jest.SpyInstance;
@@ -30,7 +30,7 @@ describe('NonPlayableActor', () => {
         let reloadShotgun: ReloadAction;
         let scapeAction: ScapeAction;
         beforeEach(() => {
-            shotgun = new Weapon({
+            shotgun = new Firearm({
                 name: 'shotgun',
                 type: 'gun',
                 skill: 'aiming',
@@ -41,7 +41,7 @@ describe('NonPlayableActor', () => {
                     max: 2,
                 }),
             });
-            revolver = new Weapon({
+            revolver = new Firearm({
                 name: 'revolver',
                 type: 'gun',
                 skill: 'aiming',

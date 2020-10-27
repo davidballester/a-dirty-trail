@@ -16,7 +16,10 @@ class NonPlayableActor extends Actor {
         if (!this.nextAction) {
             this.buildNextAction(scene);
         }
-        return this.nextAction!;
+        if (!this.nextAction) {
+            throw new Error('Unable to build next action!');
+        }
+        return this.nextAction;
     }
 
     private buildNextAction(scene: Scene) {
@@ -68,9 +71,10 @@ class NonPlayableActor extends Actor {
         if (!this.deadliestWeapon) {
             return;
         }
+        const deadliestWeapon = this.deadliestWeapon;
         return actions
             .getAttackActions()
-            .find((action) => action.getWeapon().equals(this.deadliestWeapon!));
+            .find((action) => action.getWeapon().equals(deadliestWeapon));
     }
 
     private getReloadDeadliestWeapon(
@@ -79,9 +83,10 @@ class NonPlayableActor extends Actor {
         if (!this.deadliestWeapon) {
             return;
         }
+        const deadliestWeapon = this.deadliestWeapon;
         return actions
             .getReloadActions()
-            .find((action) => action.getWeapon().equals(this.deadliestWeapon!));
+            .find((action) => action.getWeapon().equals(deadliestWeapon));
     }
 
     private getOtherAttack(actions: ActionsMap): AttackAction | undefined {

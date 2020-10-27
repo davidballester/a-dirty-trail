@@ -4,12 +4,14 @@ import AdvanceActionWithSideEffect, {
 import Narration from '../core/Narration';
 import Scene from '../core/Scene';
 import Actor from '../core/Actor';
+import { NextSceneDecider } from './AdvanceAction';
 
 describe('AdvanceActionWithSideEffect', () => {
     let janeDoe: Actor;
     let scene: Scene;
     let narration: Narration;
     let sideEffect: SideEffect;
+    let nextSceneDecider: NextSceneDecider;
     beforeEach(() => {
         janeDoe = ({
             id: 'jane doe',
@@ -21,6 +23,7 @@ describe('AdvanceActionWithSideEffect', () => {
             loadNextScene: jest.fn(),
         } as unknown) as Narration;
         sideEffect = jest.fn();
+        nextSceneDecider = (jest.fn() as unknown) as NextSceneDecider;
     });
 
     it('initializes without errors', () => {
@@ -30,6 +33,7 @@ describe('AdvanceActionWithSideEffect', () => {
             name: 'Go on',
             narration,
             sideEffect,
+            nextSceneDecider,
         });
     });
 
@@ -41,6 +45,7 @@ describe('AdvanceActionWithSideEffect', () => {
                 name: 'Go on',
                 narration,
                 sideEffect,
+                nextSceneDecider,
             }).execute();
             expect(sideEffect).toHaveBeenCalledWith(scene);
         });

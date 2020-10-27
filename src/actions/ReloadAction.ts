@@ -1,12 +1,12 @@
 import Action from './Action';
 import Actor from '../core/Actor';
 import Scene from '../core/Scene';
-import Weapon from '../core/Weapon';
+import Firearm from '../core/Firearm';
 
 class ReloadAction extends Action<void> {
     public static readonly TYPE = 'reload';
 
-    private weapon: Weapon;
+    private weapon: Firearm;
 
     constructor({
         scene,
@@ -15,16 +15,13 @@ class ReloadAction extends Action<void> {
     }: {
         scene: Scene;
         actor: Actor;
-        weapon: Weapon;
+        weapon: Firearm;
     }) {
         super({ type: ReloadAction.TYPE, scene, actor });
-        if (!weapon.getAmmunition()) {
-            throw new Error('weapon does not require ammunition');
-        }
         this.weapon = weapon;
     }
 
-    getWeapon(): Weapon {
+    getWeapon(): Firearm {
         return this.weapon;
     }
 
@@ -33,7 +30,7 @@ class ReloadAction extends Action<void> {
             return false;
         }
         const weapon = this.getWeapon();
-        const weaponAmmunition = weapon.getAmmunition()!;
+        const weaponAmmunition = weapon.getAmmunition();
         if (weaponAmmunition.getCurrent() === weaponAmmunition.getMax()) {
             return false;
         }
@@ -50,7 +47,7 @@ class ReloadAction extends Action<void> {
         const inventory = this.getActor().getInventory();
         const ammunitionsByType = inventory.getAmmunitionsByType();
         const weapon = this.getWeapon();
-        const weaponAmmunition = weapon.getAmmunition()!;
+        const weaponAmmunition = weapon.getAmmunition();
         const ammunition = ammunitionsByType[weaponAmmunition.getType()];
         const remainingAmmunition = weapon.reload(ammunition);
         ammunitionsByType[weaponAmmunition.getType()] = remainingAmmunition;

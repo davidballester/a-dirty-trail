@@ -19,7 +19,7 @@
         "dev": "node ./build/dev.js",
         "prepare": "npm run build",
         "test": "jest src/.*.spec.ts",
-        "lint": "eslint --max-warnings=0 src/**/*.ts",
+        "lint": "eslint --max-warnings=0 src --ext=.ts",
         "lint-fix": "npm run lint -- --fix"
     },
     "dependencies": {

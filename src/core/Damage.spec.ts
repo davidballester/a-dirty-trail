@@ -7,24 +7,15 @@ describe('Damage', () => {
     });
 
     it('fails if the min is lower than 0', () => {
-        try {
-            new Damage({ min: -1, max: 0 });
-            fail('error expected');
-        } catch (err) {}
+        expect(() => new Damage({ min: -1, max: 0 })).toThrow();
     });
 
     it('fails if the max is lower than 0', () => {
-        try {
-            new Damage({ min: 0, max: -1 });
-            fail('error expected');
-        } catch (err) {}
+        expect(() => new Damage({ min: 0, max: -1 })).toThrow();
     });
 
     it('fails if the max is lower than the min', () => {
-        try {
-            new Damage({ min: 2, max: 1 });
-            fail('error expected');
-        } catch (err) {}
+        expect(() => new Damage({ min: 2, max: 1 })).toThrow();
     });
 
     describe('getMin', () => {

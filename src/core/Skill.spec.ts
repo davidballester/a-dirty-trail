@@ -7,17 +7,15 @@ describe('Skill', () => {
     });
 
     it('fails if the probability of success is lower than 0', () => {
-        try {
-            new Skill({ name: 'charisma', probabilityOfSuccess: -0.5 });
-            fail('expected an error');
-        } catch (err) {}
+        expect(
+            () => new Skill({ name: 'charisma', probabilityOfSuccess: -0.5 })
+        ).toThrow();
     });
 
     it('fails if the probability of success is higher than 1', () => {
-        try {
-            new Skill({ name: 'charisma', probabilityOfSuccess: 1.5 });
-            fail('expected an error');
-        } catch (err) {}
+        expect(
+            () => new Skill({ name: 'charisma', probabilityOfSuccess: 1.5 })
+        ).toThrow();
     });
 
     describe('getName', () => {

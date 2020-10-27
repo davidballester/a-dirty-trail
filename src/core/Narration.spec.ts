@@ -3,10 +3,6 @@ import Scene from './Scene';
 
 describe('Narration', () => {
     class CustomNarration extends Narration {
-        loadNextScene(): Promise<void> {
-            throw new Error('Method not implemented.');
-        }
-
         initialize(): Promise<Scene> {
             throw new Error('Method not implemented.');
         }
@@ -38,6 +34,18 @@ describe('Narration', () => {
         it('retunrs the scene just set', () => {
             const scene = ({ id: 'foo' } as unknown) as Scene;
             narration.setCurrentScene(scene);
+            const returnedScene = narration.getCurrentScene();
+            expect(returnedScene).toEqual(scene);
+        });
+    });
+
+    describe('loadNextScene', () => {
+        it('sets the current scene to the new one', () => {
+            const scene = ({
+                id: 'scene',
+            } as unknown) as Scene;
+            const narration = new CustomNarration({ title: 'My narration' });
+            narration.loadNextScene(scene);
             const returnedScene = narration.getCurrentScene();
             expect(returnedScene).toEqual(scene);
         });

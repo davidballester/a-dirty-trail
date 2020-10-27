@@ -20,6 +20,7 @@ describe('NonPlayableActor', () => {
         let scene: Scene;
         let shotgun: Firearm;
         let revolver: Firearm;
+        let getWeapons: jest.SpyInstance;
         let getWeaponChallengeRate: jest.SpyInstance;
         let buildActions: jest.SpyInstance;
         let getAttackActions: jest.SpyInstance;
@@ -60,10 +61,14 @@ describe('NonPlayableActor', () => {
             when(getWeaponChallengeRate)
                 .calledWith(revolver)
                 .mockReturnValue(1);
+            getWeapons = jest.fn().mockReturnValue([shotgun, revolver]);
+            const inventory = ({
+                getWeapons,
+            } as unknown) as Inventory;
             janeDoe = new NonPlayableActor({
                 name: 'Jane Doe',
                 health: new Health({ current: 5, max: 5 }),
-                inventory: new Inventory({ weapons: [shotgun, revolver] }),
+                inventory,
                 skillSet: new SkillSet({}),
             });
             scene = {} as Scene;
@@ -114,24 +119,49 @@ describe('NonPlayableActor', () => {
             expect(returnedAction).toEqual(attackWithShotgun);
         });
 
-        it('they cannot attack with the deadliest weapon, return reload it', () => {
+        it('returns an attack with the deadliest weapon if they are sorted the other way around', () => {
+            getWeapons.mockReturnValue([revolver, shotgun]);
+            const returnedAction = janeDoe.getNextAction(scene);
+            expect(returnedAction).toEqual(attackWithShotgun);
+        });
+
+        it('returns reload it if they cannot attack with the deadliest weapon', () => {
             getAttackActions.mockReturnValue([attackWithRevolver]);
             const returnedAction = janeDoe.getNextAction(scene);
             expect(returnedAction).toEqual(reloadShotgun);
         });
 
-        it('they cannot reload the deadliest weapon, return other attack', () => {
+        it('returns other attack if they cannot reload the deadliest weapon', () => {
             getAttackActions.mockReturnValue([attackWithRevolver]);
             getReloadActions.mockReturnValue([]);
             const returnedAction = janeDoe.getNextAction(scene);
             expect(returnedAction).toEqual(attackWithRevolver);
         });
 
-        it('they cannot attack nor reload, scape', () => {
+        it('scapes if they cannot attack nor reload', () => {
             getAttackActions.mockReturnValue([]);
             getReloadActions.mockReturnValue([]);
             const returnedAction = janeDoe.getNextAction(scene);
             expect(returnedAction).toEqual(scapeAction);
+        });
+
+        it('scapes if there are no weapons at all', () => {
+            getAttackActions.mockReturnValue([]);
+            getReloadActions.mockReturnValue([]);
+            getWeapons.mockReturnValue([]);
+            const returnedAction = janeDoe.getNextAction(scene);
+            expect(returnedAction).toEqual(scapeAction);
+        });
+
+        it('throws an error if no actions are possible', () => {
+            getAttackActions.mockReturnValue([]);
+            getReloadActions.mockReturnValue([]);
+            getScapeAction.mockReturnValue(undefined);
+            getWeapons.mockReturnValue([]);
+            try {
+                janeDoe.getNextAction(scene);
+                fail('error expected');
+            } catch (err) {}
         });
     });
 });

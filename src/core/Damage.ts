@@ -6,7 +6,7 @@ class Damage {
 
     constructor({ min, max }: { min: number; max: number }) {
         if (!Damage.isValidRange(min, max)) {
-            throw new Error('invalid range provided');
+            throw new Error('invalid range');
         }
         this.min = min;
         this.max = max;

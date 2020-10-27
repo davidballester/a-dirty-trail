@@ -14,7 +14,7 @@ class Skill extends ThingWithId {
     }) {
         super();
         if (!Skill.isLevelValid(probabilityOfSuccess)) {
-            throw new Error('level must be between 0 and 1');
+            throw new Error('invalid probability');
         }
         this.name = name;
         this.probabilityOfSuccess = probabilityOfSuccess;

@@ -23,10 +23,7 @@ describe('SkillSet', () => {
         });
 
         it('throws an error if the requested skill is not in the skillset', () => {
-            try {
-                skillSet.getSkill('combat');
-                fail('expected an error');
-            } catch (err) {}
+            expect(() => skillSet.getSkill('combat')).toThrow();
         });
     });
 });

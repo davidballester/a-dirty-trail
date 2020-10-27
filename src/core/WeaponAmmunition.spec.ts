@@ -6,24 +6,21 @@ describe('WeaponAmmunition', () => {
     });
 
     it('fails if the min is lower than 0', () => {
-        try {
-            new WeaponAmmunition({ type: 'bullets', current: -1, max: 0 });
-            fail('error expected');
-        } catch (err) {}
+        expect(
+            () => new WeaponAmmunition({ type: 'bullets', current: -1, max: 0 })
+        ).toThrow();
     });
 
     it('fails if the max is lower than 0', () => {
-        try {
-            new WeaponAmmunition({ type: 'bullets', current: 0, max: -1 });
-            fail('error expected');
-        } catch (err) {}
+        expect(
+            () => new WeaponAmmunition({ type: 'bullets', current: 0, max: -1 })
+        ).toThrow();
     });
 
     it('fails if the max is lower than the min', () => {
-        try {
-            new WeaponAmmunition({ type: 'bullets', current: 2, max: 1 });
-            fail('error expected');
-        } catch (err) {}
+        expect(
+            () => new WeaponAmmunition({ type: 'bullets', current: 2, max: 1 })
+        ).toThrow();
     });
 
     describe('getType', () => {
@@ -79,10 +76,7 @@ describe('WeaponAmmunition', () => {
         });
 
         it('throws an error if the modification would exceed the max', () => {
-            try {
-                weaponAmmunition.modify(10);
-                fail('expected an error');
-            } catch (err) {}
+            expect(() => weaponAmmunition.modify(10)).toThrow();
         });
 
         it('does not modify the ammunition if an errors is thrown because the max is exceeded', () => {
@@ -94,10 +88,7 @@ describe('WeaponAmmunition', () => {
         });
 
         it('throws an error if the modification would lower below 0', () => {
-            try {
-                weaponAmmunition.modify(-2);
-                fail('expected an error');
-            } catch (err) {}
+            expect(() => weaponAmmunition.modify(-2)).toThrow();
         });
 
         it('does not modify the ammunition if an errors is thrown because the result would be below 0', () => {

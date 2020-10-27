@@ -4,10 +4,8 @@ import WeaponAmmunition from './WeaponAmmunition';
 class Firearm extends Weapon {
     getAmmunition(): WeaponAmmunition {
         const ammunition = super.getAmmunition();
-        if (!ammunition) {
-            throw new Error('Firearm without ammunition!');
-        }
-        return ammunition;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return ammunition!;
     }
 }
 

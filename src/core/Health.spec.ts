@@ -6,24 +6,15 @@ describe('Health', () => {
     });
 
     it('fails if the current is lower than 0', () => {
-        try {
-            new Health({ current: -1, max: 0 });
-            fail('error expected');
-        } catch (err) {}
+        expect(() => new Health({ current: -1, max: 0 })).toThrow();
     });
 
     it('fails if the max is lower than 0', () => {
-        try {
-            new Health({ current: 0, max: -1 });
-            fail('error expected');
-        } catch (err) {}
+        expect(() => new Health({ current: 0, max: -1 })).toThrow();
     });
 
     it('fails if the max is lower than the current', () => {
-        try {
-            new Health({ current: 2, max: 1 });
-            fail('error expected');
-        } catch (err) {}
+        expect(() => new Health({ current: 2, max: 1 })).toThrow();
     });
 
     it('gets the current', () => {

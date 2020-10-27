@@ -20,9 +20,11 @@ abstract class Narration {
         this.currentScene = scene;
     }
 
-    abstract async initialize(): Promise<Scene>;
+    loadNextScene(nextScene: Scene) {
+        this.currentScene = nextScene;
+    }
 
-    abstract async loadNextScene(nextScene?: Scene): Promise<void>;
+    abstract async initialize(): Promise<Scene>;
 }
 
 export default Narration;

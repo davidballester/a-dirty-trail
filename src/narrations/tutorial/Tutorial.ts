@@ -1,5 +1,7 @@
 import Narration from '../../core/Narration';
 import Scene from '../../core/Scene';
+import StageCoachActBuilder from './acts/1-stage-coach/StageCoachActBuilder';
+import AlysBuilder from './AlysBuilder';
 
 class Tutorial extends Narration {
     static readonly NAME = 'Tutorial';
@@ -9,11 +11,12 @@ class Tutorial extends Narration {
     }
 
     initialize(): Promise<Scene> {
-        throw new Error('Method not implemented.');
-    }
-
-    loadNextScene(scene: Scene): Promise<void> {
-        throw new Error('Method not implemented.');
+        const stageCoachActBuilder = new StageCoachActBuilder({
+            narration: this,
+        });
+        const alysBuilder = new AlysBuilder();
+        const alys = alysBuilder.getAlys();
+        return stageCoachActBuilder.build(alys);
     }
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import MarkdownText from '../core/MarkdownText';
 import parseMarkdown from 'markdown-yaml-metadata-parser';
 
@@ -33,7 +34,7 @@ class SceneTextsReader {
         metadata: Dictionary;
         content: MarkdownText;
     }> {
-        let markdownFileContent = await this.readFileContent();
+        const markdownFileContent = await this.readFileContent();
         return parseMarkdown(markdownFileContent);
     }
 

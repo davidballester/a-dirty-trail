@@ -10,19 +10,19 @@ class Health {
         this.max = max;
     }
 
-    getCurrent() {
+    getCurrent(): number {
         return this.current;
     }
 
-    getMax() {
+    getMax(): number {
         return this.max;
     }
 
-    isAlive() {
+    isAlive(): boolean {
         return this.current > 0;
     }
 
-    modify(delta: number) {
+    modify(delta: number): void {
         this.current += delta;
         this.current = Math.min(this.current, this.getMax());
         this.current = Math.max(this.current, 0);

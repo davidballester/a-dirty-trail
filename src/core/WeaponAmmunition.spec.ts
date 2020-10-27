@@ -1,4 +1,3 @@
-import Weapon from './Weapon';
 import WeaponAmmunition from './WeaponAmmunition';
 
 describe('WeaponAmmunition', () => {

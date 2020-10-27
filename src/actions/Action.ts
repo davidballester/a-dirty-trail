@@ -35,7 +35,7 @@ abstract class Action<T> extends ThingWithId {
         return this.name;
     }
 
-    getActor() {
+    getActor(): Actor {
         return this.actor;
     }
 

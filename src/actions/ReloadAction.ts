@@ -1,6 +1,5 @@
 import Action from './Action';
 import Actor from '../core/Actor';
-import Inventory from '../core/Inventory';
 import Scene from '../core/Scene';
 import Weapon from '../core/Weapon';
 

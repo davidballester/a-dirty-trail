@@ -42,7 +42,7 @@ class ActionsMap {
         return scapeActions[0];
     }
 
-    addAction(action: Action<any>) {
+    addAction(action: Action<any>): void {
         const type = action.getType();
         let existingActionsOfType = this.innerMap[type];
         if (!existingActionsOfType) {

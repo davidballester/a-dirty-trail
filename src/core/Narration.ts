@@ -16,11 +16,11 @@ abstract class Narration {
         return this.currentScene;
     }
 
-    setCurrentScene(scene: Scene) {
+    setCurrentScene(scene: Scene): void {
         this.currentScene = scene;
     }
 
-    loadNextScene(nextScene: Scene) {
+    loadNextScene(nextScene: Scene): void {
         this.currentScene = nextScene;
     }
 

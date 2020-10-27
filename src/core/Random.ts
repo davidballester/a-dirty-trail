@@ -3,7 +3,7 @@ class Random {
         return Math.random();
     }
 
-    static getRandomInRange(min, max): number {
+    static getRandomInRange(min: number, max: number): number {
         const amplitude = max - min;
         const randomValueInAmplitude = Math.round(Math.random() * amplitude);
         const random = randomValueInAmplitude + min;

@@ -2,9 +2,6 @@ import AdvanceAction, { NextSceneDecider } from './AdvanceAction';
 import Narration from '../core/Narration';
 import Scene from '../core/Scene';
 import Actor from '../core/Actor';
-import Health from '../core/Health';
-import Inventory from '../core/Inventory';
-import SkillSet from '../core/SkillSet';
 
 describe('AdvanceAction', () => {
     let janeDoe: Actor;

@@ -18,16 +18,16 @@ class AdvanceActionWithSideEffect extends AdvanceAction {
         scene: Scene;
         narration: Narration;
         name: string;
-        nextSceneDecider?: NextSceneDecider;
+        nextSceneDecider: NextSceneDecider;
         sideEffect: SideEffect;
     }) {
         super({ actor, scene, narration, name, nextSceneDecider });
         this.sideEffect = sideEffect;
     }
 
-    execute() {
+    async execute(): Promise<void> {
         this.sideEffect(this.scene);
-        super.execute();
+        await super.execute();
     }
 }
 

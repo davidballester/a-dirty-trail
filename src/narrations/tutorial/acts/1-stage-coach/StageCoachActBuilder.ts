@@ -247,7 +247,7 @@ class StageCoachActBuilder extends ActBuilder {
                 playerName: player.getName(),
             },
         });
-        const { setup, actionsText } = await sceneTextsReader.getTexts();
+        const { setup } = await sceneTextsReader.getTexts();
         const scene = new Scene({
             title: StageCoachActBuilder.TITLE,
             actors: [],

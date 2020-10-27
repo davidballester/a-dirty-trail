@@ -20,19 +20,19 @@ class WeaponAmmunition {
         this.max = max;
     }
 
-    getType() {
+    getType(): string {
         return this.type;
     }
 
-    getCurrent() {
+    getCurrent(): number {
         return this.current;
     }
 
-    getMax() {
+    getMax(): number {
         return this.max;
     }
 
-    modify(delta: number) {
+    modify(delta: number): void {
         const newCurrent = this.current + delta;
         if (newCurrent < 0) {
             throw new Error('out of ammunition');

@@ -1,4 +1,3 @@
-import Actor from '../../core/Actor';
 import AlysBuilder from './AlysBuilder';
 
 describe('AlysBuilder', () => {

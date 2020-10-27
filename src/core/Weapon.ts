@@ -39,7 +39,7 @@ class Weapon extends ThingWithId {
         return this.name;
     }
 
-    changeName(name: string) {
+    changeName(name: string): void {
         this.name = name;
     }
 
@@ -81,7 +81,7 @@ class Weapon extends ThingWithId {
         };
     }
 
-    reload(ammunition: number) {
+    reload(ammunition: number): number {
         const weaponAmmunition = this.getAmmunition();
         if (!weaponAmmunition) {
             throw new Error('weapon does not require ammunition');

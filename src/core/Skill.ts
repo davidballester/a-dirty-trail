@@ -20,11 +20,11 @@ class Skill extends ThingWithId {
         this.probabilityOfSuccess = probabilityOfSuccess;
     }
 
-    getName() {
+    getName(): string {
         return this.name;
     }
 
-    getProbabilityOfSuccess() {
+    getProbabilityOfSuccess(): number {
         return this.probabilityOfSuccess;
     }
 

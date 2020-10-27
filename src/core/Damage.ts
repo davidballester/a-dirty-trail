@@ -12,15 +12,15 @@ class Damage {
         this.max = max;
     }
 
-    getMin() {
+    getMin(): number {
         return this.min;
     }
 
-    getMax() {
+    getMax(): number {
         return this.max;
     }
 
-    getRandomDamage() {
+    getRandomDamage(): number {
         return Random.getRandomInRange(this.getMax(), this.getMin());
     }
 

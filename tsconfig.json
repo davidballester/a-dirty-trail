@@ -12,5 +12,5 @@
         "esModuleInterop": true,
         "resolveJsonModule": true
     },
-    "exclude": ["./babel.config.js", "./jest.config.ts"]
+    "exclude": ["./babel.config.js", "./jest.config.ts", "**/*.spec.ts"]
 }

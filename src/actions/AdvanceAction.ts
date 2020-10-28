@@ -40,6 +40,6 @@ class AdvanceAction extends Action<void> {
     }
 }
 
-export type NextSceneDecider = (currentScene: Scene) => Promise<Scene>;
+export type NextSceneDecider = (currentScene: Scene) => Scene | Promise<Scene>;
 
 export default AdvanceAction;

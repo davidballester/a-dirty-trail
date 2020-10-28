@@ -11,8 +11,13 @@ import Scene from '../../../../core/Scene';
 import Skill from '../../../../core/Skill';
 import SkillSet from '../../../../core/SkillSet';
 import WeaponAmmunition from '../../../../core/WeaponAmmunition';
-import SceneTextsReader from '../../../SceneTextsReader';
+import SceneTemplateProcessor from '../../../SceneTemplateProcessor';
 import ActBuilder from '../../ActBuilder';
+import welcomeSceneTemplate from './welcome';
+import alysSceneTemplate from './alys';
+import ladyCartwrightSceneTemplate from './ladyCartwright';
+import outsideTheStageCoachSceneTemplate from './outsideTheStageCoach';
+import afterTheshootoutSceneTemplate from './afterTheShootout';
 
 class StageCoachActBuilder extends ActBuilder {
     static readonly TITLE = 'The stage coach';
@@ -24,15 +29,15 @@ class StageCoachActBuilder extends ActBuilder {
         this.narration = narration;
     }
 
-    build(player: Actor): Promise<Scene> {
+    build(player: Actor): Scene {
         return this.buildWelcomeScene(player);
     }
 
-    private async buildWelcomeScene(player: Actor): Promise<Scene> {
-        const sceneTextsReader = new SceneTextsReader({
-            sceneSetupFilePath: './welcome.md',
+    private buildWelcomeScene(player: Actor): Scene {
+        const sceneTextsReader = new SceneTemplateProcessor({
+            sceneTemplate: welcomeSceneTemplate,
         });
-        const { setup, actionsText } = await sceneTextsReader.getTexts();
+        const { setup, actionsText } = sceneTextsReader.getTexts();
         const scene = new Scene({
             title: StageCoachActBuilder.TITLE,
             actors: [],
@@ -67,14 +72,14 @@ class StageCoachActBuilder extends ActBuilder {
         return scene;
     }
 
-    private async buildAlysScene(player: Actor): Promise<Scene> {
-        const sceneTextsReader = new SceneTextsReader({
-            sceneSetupFilePath: './alys.md',
+    private buildAlysScene(player: Actor): Scene {
+        const sceneTextsReader = new SceneTemplateProcessor({
+            sceneTemplate: alysSceneTemplate,
             input: {
                 playerName: player.getName(),
             },
         });
-        const { setup, actionsText } = await sceneTextsReader.getTexts();
+        const { setup, actionsText } = sceneTextsReader.getTexts();
         const scene = new Scene({
             title: StageCoachActBuilder.TITLE,
             actors: [],
@@ -95,14 +100,14 @@ class StageCoachActBuilder extends ActBuilder {
         return scene;
     }
 
-    private async buildLadyCartwrightScene(player: Actor): Promise<Scene> {
-        const sceneTextsReader = new SceneTextsReader({
-            sceneSetupFilePath: './ladyCartwright.md',
+    private buildLadyCartwrightScene(player: Actor): Scene {
+        const sceneTextsReader = new SceneTemplateProcessor({
+            sceneTemplate: ladyCartwrightSceneTemplate,
             input: {
                 playerName: player.getName(),
             },
         });
-        const { setup, actionsText } = await sceneTextsReader.getTexts();
+        const { setup, actionsText } = sceneTextsReader.getTexts();
         const scene = new Scene({
             title: StageCoachActBuilder.TITLE,
             actors: [],
@@ -144,14 +149,14 @@ class StageCoachActBuilder extends ActBuilder {
         });
     }
 
-    private async buildOutsideTheStageCoach(player: Actor): Promise<Scene> {
-        const sceneTextsReader = new SceneTextsReader({
-            sceneSetupFilePath: './outsideTheStageCoach.md',
+    private buildOutsideTheStageCoach(player: Actor): Scene {
+        const sceneTextsReader = new SceneTemplateProcessor({
+            sceneTemplate: outsideTheStageCoachSceneTemplate,
             input: {
                 playerName: player.getName(),
             },
         });
-        const { setup, actionsText } = await sceneTextsReader.getTexts();
+        const { setup, actionsText } = sceneTextsReader.getTexts();
         const scene = new Scene({
             title: StageCoachActBuilder.TITLE,
             actors: [],
@@ -172,7 +177,7 @@ class StageCoachActBuilder extends ActBuilder {
         return scene;
     }
 
-    private async buildCombat(player: Actor): Promise<Scene> {
+    private buildCombat(player: Actor): Scene {
         const scene = new Scene({
             title: StageCoachActBuilder.TITLE,
             actors: [this.buildScarredBrigand(), this.buildBrigand()],
@@ -240,14 +245,14 @@ class StageCoachActBuilder extends ActBuilder {
         });
     }
 
-    private async buildAfterTheShootout(player: Actor): Promise<Scene> {
-        const sceneTextsReader = new SceneTextsReader({
-            sceneSetupFilePath: './welcome.md',
+    private buildAfterTheShootout(player: Actor): Scene {
+        const sceneTextsReader = new SceneTemplateProcessor({
+            sceneTemplate: afterTheshootoutSceneTemplate,
             input: {
                 playerName: player.getName(),
             },
         });
-        const { setup } = await sceneTextsReader.getTexts();
+        const { setup, actionsText } = sceneTextsReader.getTexts();
         const scene = new Scene({
             title: StageCoachActBuilder.TITLE,
             actors: [],
@@ -255,6 +260,22 @@ class StageCoachActBuilder extends ActBuilder {
             setup,
             actions: [],
         });
+        scene.setActions([
+            new AdvanceAction({
+                actor: player,
+                scene: scene,
+                name: actionsText[0],
+                narration: this.narration,
+                nextSceneDecider: async (scene: Scene) => {
+                    const theRoadActBuilderModule = await import(
+                        '../2-the-road/TheRoadActBuilder'
+                    );
+                    const TheRoadActBuilder = theRoadActBuilderModule.default;
+                    const theRoadActBuilder = new TheRoadActBuilder();
+                    return theRoadActBuilder.build(scene.getPlayer());
+                },
+            }),
+        ]);
         return scene;
     }
 }

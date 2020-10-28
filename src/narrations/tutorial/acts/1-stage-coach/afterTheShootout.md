@@ -1,3 +1,7 @@
+---
+action1: Leave
+---
+
 When the smoke dissipated, her hands started shaking so bad the revolver fell to the mud.
 
 "You did good, {{playerName}}," said the minister, jumping out of the stage coach and looking around. "You saved us both from these brigands."

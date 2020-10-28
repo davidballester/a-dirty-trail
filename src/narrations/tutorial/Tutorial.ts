@@ -16,7 +16,7 @@ class Tutorial extends Narration {
         });
         const alysBuilder = new AlysBuilder();
         const alys = alysBuilder.getAlys();
-        return stageCoachActBuilder.build(alys);
+        return Promise.resolve(stageCoachActBuilder.build(alys));
     }
 }
 

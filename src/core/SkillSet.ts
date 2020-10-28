@@ -7,7 +7,7 @@ class SkillSet {
         this.skills = skills.reduce(
             (skillsMap, skill) => ({
                 ...skillsMap,
-                [skill.name]: skill,
+                [skill.getName()]: skill,
             }),
             {}
         );

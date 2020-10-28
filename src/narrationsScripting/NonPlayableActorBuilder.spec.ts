@@ -4,38 +4,28 @@ import { v4 as uuidv4 } from 'uuid';
 import NonPlayableActor from '../core/NonPlayableActor';
 import Health from '../core/Health';
 import Inventory from '../core/Inventory';
-import Firearm from '../core/Firearm';
-import Damage from '../core/Damage';
-import WeaponAmmunition from '../core/WeaponAmmunition';
 import SkillSet from '../core/SkillSet';
 import Skill from '../core/Skill';
+import InventoryBuilder from './InventoryBuilder';
+jest.mock('./InventoryBuilder');
 jest.mock('uuid');
 
 describe(NonPlayableActorBuilder.name, () => {
     let nonPlayableActorBuilder: NonPlayableActorBuilder;
     let sceneTemplate: SceneTemplate;
+    let inventory: Inventory;
     beforeEach(() => {
         const uuidv4Mock = (uuidv4 as unknown) as jest.Mock;
         uuidv4Mock.mockReturnValue(undefined);
+        const inventoryTemplate = {
+            id: 'inventory-template',
+        };
         sceneTemplate = ({
             metadata: {
                 actors: {
                     'Scarred brigand': {
                         health: '1-2',
-                        inventory: {
-                            ammunitions: {
-                                'big bullets': 4,
-                            },
-                            weapons: {
-                                'One-shot rifle': {
-                                    type: 'rifle',
-                                    damage: '1-2',
-                                    skill: 'aim',
-                                    ammunitionType: 'big bullets',
-                                    ammunition: '0-1',
-                                },
-                            },
-                        },
+                        inventory: inventoryTemplate,
                         skills: {
                             aim: 0.4,
                         },
@@ -43,6 +33,15 @@ describe(NonPlayableActorBuilder.name, () => {
                 },
             },
         } as unknown) as SceneTemplate;
+        inventory = ({
+            id: 'inventory',
+        } as unknown) as Inventory;
+        const build = jest.fn().mockReturnValue(inventory);
+        const inventoryBuilderMock = (InventoryBuilder as unknown) as jest.Mock;
+        inventoryBuilderMock.mockReturnValue({
+            build,
+        });
+
         nonPlayableActorBuilder = new NonPlayableActorBuilder({
             sceneTemplate,
         });
@@ -55,22 +54,7 @@ describe(NonPlayableActorBuilder.name, () => {
                 new NonPlayableActor({
                     name: 'Scarred brigand',
                     health: new Health({ current: 1, max: 2 }),
-                    inventory: new Inventory({
-                        ammunitionsByType: { 'big bullets': 4 },
-                        weapons: [
-                            new Firearm({
-                                name: 'One-shot rifle',
-                                type: 'rifle',
-                                damage: new Damage({ min: 1, max: 2 }),
-                                skill: 'aim',
-                                ammunition: new WeaponAmmunition({
-                                    type: 'big bullets',
-                                    current: 0,
-                                    max: 1,
-                                }),
-                            }),
-                        ],
-                    }),
+                    inventory: inventory,
                     skillSet: new SkillSet({
                         skills: [
                             new Skill({

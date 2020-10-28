@@ -1,6 +1,6 @@
 import AdvanceActionWithSideEffect from '../actions/AdvanceActionWithSideEffect';
 import Narration from '../core/Narration';
-import SceneTemplate from './SceneTemplate';
+import SceneTemplate, { SceneTemplateSideEffect } from './SceneTemplate';
 import AdvanceAction from '../actions/AdvanceAction';
 import Scene from '../core/Scene';
 import NextSceneDeciderBuilder from './NextSceneDeciderBuilder';
@@ -69,7 +69,7 @@ class SceneActionBuilder {
 
     private buildAdvanceActionWithSideEffect(
         text: string,
-        sideEffectScript: string,
+        sideEffectScript: SceneTemplateSideEffect,
         sceneTemplateAction: SceneTemplateAction
     ): AdvanceActionWithSideEffect {
         const markdownText = this.resolvePlaceholders(text);
@@ -116,10 +116,13 @@ class SceneActionBuilder {
         });
     }
 
-    private sideEffect(scene: Scene, sideEffectScript: string) {
+    private sideEffect(
+        scene: Scene,
+        sideEffectTemplate: SceneTemplateSideEffect
+    ) {
         const sideEffectBuilder = new SideEffectBuilder({
             scene,
-            sideEffectScript: sideEffectScript,
+            sideEffectTemplate,
         });
         sideEffectBuilder.build();
     }

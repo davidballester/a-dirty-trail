@@ -13,23 +13,28 @@ export interface SceneTemplateMetadata {
 }
 
 export interface SceneTemplateAction {
-    sideEffect?: Rule;
+    sideEffect?: SceneTemplateSideEffect;
     goTo: string;
 }
 
+export interface SceneTemplateSideEffect {
+    loot?: SceneTemplateInventory;
+    rename?: string;
+}
+
 export interface SceneTemplateActor {
-    health: Rule;
-    inventory: SceneTemplateActorInventory;
+    health: string;
+    inventory: SceneTemplateInventory;
     skills: {
         [name: string]: number;
     };
 }
 
-export interface SceneTemplateActorInventory {
-    ammunitions: {
+export interface SceneTemplateInventory {
+    ammunitions?: {
         [type: string]: number;
     };
-    weapons: { [name: string]: SceneTemplateWeapon };
+    weapons?: { [name: string]: SceneTemplateWeapon };
 }
 
 export interface SceneTemplateWeapon {
@@ -38,8 +43,7 @@ export interface SceneTemplateWeapon {
     skill: string;
     ammunitionType?: string;
     ammunition?: string;
+    canBeLooted?: boolean;
 }
-
-type Rule = string;
 
 export default SceneTemplate;

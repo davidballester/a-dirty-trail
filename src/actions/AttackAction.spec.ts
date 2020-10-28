@@ -40,9 +40,9 @@ describe('AttackAction', () => {
             }),
         });
         scene = new Scene({
+            title: 'Foo',
             player: janeDoe,
             actors: [johnDoe],
-            setup: [],
             actions: [],
         });
     });

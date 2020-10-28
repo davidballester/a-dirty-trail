@@ -1,5 +1,8 @@
 ---
-action1: Leave
+title: The stage coach
+actions:
+    'Start walking':
+        goTo: ../2-the-road/theRoad
 ---
 
 When the smoke dissipated, her hands started shaking so bad the revolver fell to the mud.

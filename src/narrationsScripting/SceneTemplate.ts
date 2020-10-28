@@ -2,12 +2,12 @@ import MarkdownText from '../core/MarkdownText';
 
 interface SceneTemplate {
     modulePath?: string;
-    title: MarkdownText;
     metadata: SceneTemplateMetadata;
     setup: MarkdownText;
 }
 
 export interface SceneTemplateMetadata {
+    title: MarkdownText;
     player?: ActorTemplate;
     actions?: { [key: string]: ActionTemplate };
     actors?: { [key: string]: ActorTemplate };

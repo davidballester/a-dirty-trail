@@ -50,7 +50,9 @@ class SceneBuilder {
 
     private buildSceneBase(): Scene {
         const setup = this.resolvePlaceholders(this.sceneTemplate.setup);
-        const title = this.resolvePlaceholders(this.sceneTemplate.title);
+        const title = this.resolvePlaceholders(
+            this.sceneTemplate.metadata.title
+        );
         const actors = this.buildActors();
         return new Scene({
             title,

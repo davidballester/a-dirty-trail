@@ -1,6 +1,8 @@
+import SceneBuilder from '../narrationsScripting/SceneBuilder';
+import SceneTemplate from '../narrationsScripting/SceneTemplate';
 import Scene from './Scene';
 
-abstract class Narration {
+class Narration {
     private title: string;
     private currentScene?: Scene;
 
@@ -24,7 +26,15 @@ abstract class Narration {
         this.currentScene = nextScene;
     }
 
-    abstract async initialize(): Promise<Scene>;
+    initialize(sceneTemplate: SceneTemplate): Scene {
+        const sceneBuilder = new SceneBuilder({
+            sceneTemplate,
+            narration: this,
+        });
+        const scene = sceneBuilder.build();
+        this.loadNextScene(scene);
+        return scene;
+    }
 }
 
 export default Narration;

@@ -117,9 +117,9 @@ describe(SceneBuilder.name, () => {
                 build: jest.fn().mockReturnValue(actors),
             });
             sceneTemplate = ({
-                title: 'The misfortunes of {{playerName}}',
                 setup: 'Setup for {{playerName}}',
                 metadata: {
+                    title: 'The misfortunes of {{playerName}}',
                     actors: [],
                     actions: [],
                 },
@@ -154,9 +154,9 @@ describe(SceneBuilder.name, () => {
                 id: 'player-template',
             } as unknown) as ActorTemplate;
             sceneTemplate = ({
-                title: 'The misfortunes of {{playerName}}',
                 setup: 'Setup for {{playerName}}',
                 metadata: {
+                    title: 'The misfortunes of {{playerName}}',
                     player: actorTemplate,
                     actors: [],
                     actions: [],

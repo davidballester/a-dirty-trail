@@ -1,20 +1,17 @@
 import Narration from './Narration';
 import Scene from './Scene';
+import SceneBuilder from '../narrationsScripting/SceneBuilder';
+import SceneTemplate from '../narrationsScripting/SceneTemplate';
+jest.mock('../narrationsScripting/SceneBuilder');
 
 describe('Narration', () => {
-    class CustomNarration extends Narration {
-        initialize(): Promise<Scene> {
-            throw new Error('Method not implemented.');
-        }
-    }
-
     it('initializes without errors', () => {
-        new CustomNarration({ title: 'My narration' });
+        new Narration({ title: 'My narration' });
     });
 
     describe('getTitle', () => {
         it('returns the title', () => {
-            const narration = new CustomNarration({ title: 'My narration' });
+            const narration = new Narration({ title: 'My narration' });
             const title = narration.getTitle();
             expect(title).toEqual('My narration');
         });
@@ -23,7 +20,7 @@ describe('Narration', () => {
     describe('getCurrentScene | setCurrentScene', () => {
         let narration: Narration;
         beforeEach(() => {
-            narration = new CustomNarration({ title: 'My narration' });
+            narration = new Narration({ title: 'My narration' });
         });
 
         it('returns undefined', () => {
@@ -44,10 +41,49 @@ describe('Narration', () => {
             const scene = ({
                 id: 'scene',
             } as unknown) as Scene;
-            const narration = new CustomNarration({ title: 'My narration' });
+            const narration = new Narration({ title: 'My narration' });
             narration.loadNextScene(scene);
             const returnedScene = narration.getCurrentScene();
             expect(returnedScene).toEqual(scene);
+        });
+    });
+
+    describe('initialize', () => {
+        let sceneTemplate: SceneTemplate;
+        let scene: Scene;
+        let sceneBuilderMock: jest.Mock;
+        let narration: Narration;
+        beforeEach(() => {
+            sceneTemplate = ({
+                id: 'scene-template',
+            } as unknown) as SceneTemplate;
+            scene = ({
+                id: 'scene',
+            } as unknown) as Scene;
+            sceneBuilderMock = (SceneBuilder as unknown) as jest.Mock;
+            sceneBuilderMock.mockReturnValue({
+                build: jest.fn().mockReturnValue(scene),
+            });
+            narration = new Narration({ title: 'My narration' });
+        });
+
+        it('initializes a new scene builder', () => {
+            narration.initialize(sceneTemplate);
+            expect(sceneBuilderMock).toHaveBeenCalledWith({
+                sceneTemplate,
+                narration,
+            });
+        });
+
+        it('returns the scene returned by the scene builder', () => {
+            const returnedScene = narration.initialize(sceneTemplate);
+            expect(returnedScene).toEqual(scene);
+        });
+
+        it('loads the scene returned by the scene builder', () => {
+            narration.initialize(sceneTemplate);
+            const loadedScene = narration.getCurrentScene();
+            expect(loadedScene).toEqual(scene);
         });
     });
 });

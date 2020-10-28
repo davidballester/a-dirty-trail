@@ -1,6 +1,29 @@
 ---
-action1: '"Alys."'
-action2: '"Lady Cartwright."'
+title: The stage coach
+player:
+    name: The damsel
+    health: 6-6
+    inventory:
+        trinkets:
+            - name: Opened letter
+              description: A worrying farewell from her uncle.
+        weapons:
+            'Letter opener':
+                type: 'knife'
+                damage: 1-1
+                skill: stab
+    skills:
+        aim: 0.6
+        stab: 0.75
+actions:
+    '"Alys"':
+        sideEffect:
+            rename: Alys
+        goTo: ./alys
+    '"Lady Cartwright"':
+        sideEffect:
+            rename: Lady Cartwright
+        goTo: ./ladyCartwright
 ---
 
 The stage coach rumbled softly over the packed dirt of the path.

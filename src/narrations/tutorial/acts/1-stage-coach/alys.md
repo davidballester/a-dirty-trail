@@ -1,5 +1,17 @@
 ---
-action1: Alys opened the door and jumped out
+title: The stage coach
+actions:
+    'Alys opened the door and jumped out':
+        sideEffect:
+            loot:
+                weapons:
+                    'revolver':
+                        type: revolver
+                        damage: 1-2
+                        skill: aim
+                        ammunitionType: bullets
+                        ammunition: 6-6
+        goTo: ./outsideTheStageCoach
 ---
 
 "Alys it is, then," the minister said and then the driver anounced they were parting.

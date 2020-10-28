@@ -1,5 +1,17 @@
 ---
-action1: Lady Cartwright opened the door and jumped out
+title: The stage coach
+actions:
+    'Alys opened the door and jumped out':
+        sideEffect:
+            loot:
+                weapons:
+                    'revolver':
+                        type: revolver
+                        damage: 1-2
+                        skill: aim
+                        ammunitionType: bullets
+                        ammunition: 6-6
+        goTo: ./outsideTheStageCoach
 ---
 
 "Such an honor, milady," the minister said with, bowing slightly.

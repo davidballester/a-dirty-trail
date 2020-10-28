@@ -1,12 +1,13 @@
 import Narration from '../core/Narration';
-import Tutorial from './tutorial';
+import SceneTemplate from '../narrationsScripting/SceneTemplate';
+import tutorial from './tutorial';
 
 class NarrationsCatalogue {
     private narrationsByTitle: { [title: string]: () => Narration };
 
     constructor() {
         this.narrationsByTitle = {
-            [Tutorial.NAME]: () => new Tutorial(),
+            Tutorial: () => this.buildNarration('Tutorial', tutorial),
         };
     }
 
@@ -20,6 +21,17 @@ class NarrationsCatalogue {
             throw new Error('Unknown narration');
         }
         return narrationBuilder();
+    }
+
+    private buildNarration(
+        title: string,
+        sceneTemplate: SceneTemplate
+    ): Narration {
+        const narration = new Narration({
+            title,
+        });
+        narration.initialize(sceneTemplate);
+        return narration;
     }
 }
 

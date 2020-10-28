@@ -1,5 +1,8 @@
 ---
-action1: She raised the revolver.
+title: The stage coach
+actions:
+    'She raised the revolver':
+        goTo: ./combat
 ---
 
 The sun was still up, but it was cold. It had rained the day before and the road was muddy.

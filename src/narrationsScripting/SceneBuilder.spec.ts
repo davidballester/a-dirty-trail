@@ -1,15 +1,17 @@
 import Actor from '../core/Actor';
 import Narration from '../core/Narration';
 import SceneBuilder from './SceneBuilder';
-import SceneTemplate from './SceneTemplate';
+import SceneTemplate, { ActorTemplate } from './SceneTemplate';
 import Scene from '../core/Scene';
 import SceneActionBuilder from './SceneActionBuilder';
 import AdvanceAction from '../actions/AdvanceAction';
 import NonPlayableActorBuilder from './NonPlayableActorBuilder';
+import ActorBuilder from './ActorBuilder';
 import NonPlayableActor from '../core/NonPlayableActor';
 jest.mock('../core/Scene');
 jest.mock('./SceneActionBuilder');
 jest.mock('./NonPlayableActorBuilder');
+jest.mock('./ActorBuilder');
 
 describe(SceneBuilder.name, () => {
     let sceneBuilder: SceneBuilder;
@@ -32,10 +34,55 @@ describe(SceneBuilder.name, () => {
                 actions: [],
             },
         } as unknown) as SceneTemplate;
-        sceneBuilder = new SceneBuilder({
-            narration,
-            player,
-            sceneTemplate,
+    });
+
+    it('throws if neither a player nor an actor template is provided', () => {
+        expect(
+            () =>
+                new SceneBuilder({
+                    narration,
+                    sceneTemplate,
+                })
+        ).toThrow();
+    });
+
+    describe('player building', () => {
+        let actorBuilder: jest.Mock;
+        let actorTemplate: ActorTemplate;
+        beforeEach(() => {
+            actorTemplate = ({
+                id: 'player-template',
+            } as unknown) as ActorTemplate;
+            sceneTemplate = ({
+                title: 'The misfortunes of {{playerName}}',
+                setup: 'Setup for {{playerName}}',
+                metadata: {
+                    player: actorTemplate,
+                    actors: [],
+                    actions: [],
+                },
+            } as unknown) as SceneTemplate;
+            actorBuilder = (ActorBuilder as unknown) as jest.Mock;
+            actorBuilder.mockReturnValue({
+                build: jest.fn().mockReturnValue(player),
+            });
+        });
+
+        it('calls the actor builder with the player template', () => {
+            new SceneBuilder({
+                narration,
+                sceneTemplate,
+            });
+            expect(actorBuilder).toHaveBeenCalledWith({ actorTemplate });
+        });
+
+        it('does not call it if a player is provided', () => {
+            new SceneBuilder({
+                narration,
+                sceneTemplate,
+                player,
+            });
+            expect(actorBuilder).not.toHaveBeenCalled();
         });
     });
 
@@ -69,9 +116,22 @@ describe(SceneBuilder.name, () => {
             nonPlayableActorBuilderMock.mockReturnValue({
                 build: jest.fn().mockReturnValue(actors),
             });
+            sceneTemplate = ({
+                title: 'The misfortunes of {{playerName}}',
+                setup: 'Setup for {{playerName}}',
+                metadata: {
+                    actors: [],
+                    actions: [],
+                },
+            } as unknown) as SceneTemplate;
+            sceneBuilder = new SceneBuilder({
+                narration,
+                player,
+                sceneTemplate,
+            });
         });
 
-        it('creates a actors builder', () => {
+        it('creates an actor builder', () => {
             sceneBuilder.build();
             expect(nonPlayableActorBuilderMock).toHaveBeenCalledWith({
                 sceneTemplate,
@@ -80,6 +140,39 @@ describe(SceneBuilder.name, () => {
 
         it('creates a new scene', () => {
             sceneBuilder.build();
+            expect(sceneMock).toHaveBeenCalledWith({
+                title: 'The misfortunes of Jane Doe',
+                setup: 'Setup for Jane Doe',
+                actors,
+                player,
+                actions: [],
+            });
+        });
+
+        it('creates a new scene if it has to build the player too', () => {
+            const actorTemplate = ({
+                id: 'player-template',
+            } as unknown) as ActorTemplate;
+            sceneTemplate = ({
+                title: 'The misfortunes of {{playerName}}',
+                setup: 'Setup for {{playerName}}',
+                metadata: {
+                    player: actorTemplate,
+                    actors: [],
+                    actions: [],
+                },
+            } as unknown) as SceneTemplate;
+            const actorBuilder = (ActorBuilder as unknown) as jest.Mock;
+            actorBuilder.mockReturnValue({
+                build: jest.fn().mockReturnValue(player),
+            });
+            sceneBuilder = new SceneBuilder({
+                narration,
+                sceneTemplate,
+            });
+
+            sceneBuilder.build();
+
             expect(sceneMock).toHaveBeenCalledWith({
                 title: 'The misfortunes of Jane Doe',
                 setup: 'Setup for Jane Doe',

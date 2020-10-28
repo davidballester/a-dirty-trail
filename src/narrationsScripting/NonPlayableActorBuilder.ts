@@ -1,13 +1,6 @@
-import SceneTemplate, {
-    ActorTemplate,
-    InventoryTemplate,
-} from './SceneTemplate';
+import SceneTemplate, { ActorTemplate } from './SceneTemplate';
 import NonPlayableActor from '../core/NonPlayableActor';
-import Health from '../core/Health';
-import Inventory from '../core/Inventory';
-import SkillSet from '../core/SkillSet';
-import Skill from '../core/Skill';
-import InventoryBuilder from './InventoryBuilder';
+import ActorBuilder from './ActorBuilder';
 
 class NonPlayableActorBuilder {
     private actors: { [key: string]: ActorTemplate };
@@ -26,33 +19,13 @@ class NonPlayableActorBuilder {
         name: string,
         actorTemplate: ActorTemplate
     ): NonPlayableActor {
+        const actorBuilder = new ActorBuilder({ actorTemplate });
+        const baseActor = actorBuilder.build();
         return new NonPlayableActor({
             name,
-            health: this.buildHealth(actorTemplate.health),
-            inventory: this.buildInventory(actorTemplate.inventory),
-            skillSet: this.buildSkillSet(actorTemplate.skills),
-        });
-    }
-
-    private buildHealth(rule: string): Health {
-        const [current, max] = rule.split('-');
-        return new Health({ current: parseInt(current), max: parseInt(max) });
-    }
-
-    private buildInventory(inventoryTemplate: InventoryTemplate): Inventory {
-        const inventoryBuilder = new InventoryBuilder({ inventoryTemplate });
-        return inventoryBuilder.build();
-    }
-
-    private buildSkillSet(skills: { [name: string]: number }): SkillSet {
-        return new SkillSet({
-            skills: Object.keys(skills).map(
-                (skillName) =>
-                    new Skill({
-                        name: skillName,
-                        probabilityOfSuccess: skills[skillName],
-                    })
-            ),
+            health: baseActor.getHealth(),
+            inventory: baseActor.getInventory(),
+            skillSet: baseActor.getSkillSet(),
         });
     }
 }

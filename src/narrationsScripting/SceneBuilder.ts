@@ -1,11 +1,12 @@
 import Actor from '../core/Actor';
 import Scene from '../core/Scene';
-import SceneTemplate from './SceneTemplate';
+import SceneTemplate, { ActorTemplate } from './SceneTemplate';
 import Narration from '../core/Narration';
 import AdvanceAction from '../actions/AdvanceAction';
 import SceneActionBuilder from './SceneActionBuilder';
 import NonPlayableActor from '../core/NonPlayableActor';
 import NonPlayableActorBuilder from './NonPlayableActorBuilder';
+import ActorBuilder from './ActorBuilder';
 
 class SceneBuilder {
     private sceneTemplate: SceneTemplate;
@@ -20,11 +21,24 @@ class SceneBuilder {
     }: {
         sceneTemplate: SceneTemplate;
         narration: Narration;
-        player: Actor;
+        player?: Actor;
     }) {
         this.sceneTemplate = sceneTemplate;
         this.narration = narration;
-        this.player = player;
+        if (!player && !this.sceneTemplate.metadata.player) {
+            throw new Error('no player!');
+        }
+        if (!player) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.player = this.buildPlayer(this.sceneTemplate.metadata.player!);
+        } else {
+            this.player = player;
+        }
+    }
+
+    private buildPlayer(actorTemplate: ActorTemplate): Actor {
+        const actorBuilder = new ActorBuilder({ actorTemplate });
+        return actorBuilder.build();
     }
 
     build(): Scene {

@@ -8,6 +8,7 @@ interface SceneTemplate {
 }
 
 export interface SceneTemplateMetadata {
+    player?: ActorTemplate;
     actions?: { [key: string]: ActionTemplate };
     actors?: { [key: string]: ActorTemplate };
 }
@@ -23,6 +24,7 @@ export interface SideEffectTemplate {
 }
 
 export interface ActorTemplate {
+    name?: string;
     health: string;
     inventory: InventoryTemplate;
     skills: {

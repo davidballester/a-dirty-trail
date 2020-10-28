@@ -1,9 +1,14 @@
+import Trinket from '../../build/core/Trinket';
 import Damage from '../core/Damage';
 import Firearm from '../core/Firearm';
 import Inventory from '../core/Inventory';
 import Weapon from '../core/Weapon';
 import WeaponAmmunition from '../core/WeaponAmmunition';
-import { InventoryTemplate, WeaponTemplate } from './SceneTemplate';
+import {
+    InventoryTemplate,
+    TrinketTemplate,
+    WeaponTemplate,
+} from './SceneTemplate';
 
 class InventoryBuilder {
     private inventoryTemplate: InventoryTemplate;
@@ -18,9 +23,11 @@ class InventoryBuilder {
 
     build(): Inventory {
         const weapons = this.buildWeapons();
+        const trinkets = this.buildTrinkets();
         return new Inventory({
             ammunitionsByType: this.inventoryTemplate.ammunitions,
             weapons,
+            trinkets,
         });
     }
 
@@ -62,6 +69,18 @@ class InventoryBuilder {
             skill: weaponTemplate.skill,
             canBeLooted: weaponTemplate.canBeLooted,
         });
+    }
+
+    private buildTrinkets(): Trinket[] {
+        const trinkets = this.inventoryTemplate.trinkets;
+        if (!trinkets) {
+            return [];
+        }
+        return trinkets.map((trinket) => this.buildTrinket(trinket));
+    }
+
+    private buildTrinket(trinketTemplate: TrinketTemplate): Trinket {
+        return new Trinket(trinketTemplate);
     }
 }
 

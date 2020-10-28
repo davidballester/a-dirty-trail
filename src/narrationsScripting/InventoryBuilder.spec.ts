@@ -6,6 +6,7 @@ import WeaponAmmunition from '../core/WeaponAmmunition';
 import InventoryBuilder from './InventoryBuilder';
 import { InventoryTemplate } from './SceneTemplate';
 import { v4 as uuidv4 } from 'uuid';
+import Trinket from '../core/Trinket';
 jest.mock('uuid');
 
 describe(InventoryBuilder.name, () => {
@@ -33,6 +34,12 @@ describe(InventoryBuilder.name, () => {
                     canBeLooted: false,
                 },
             },
+            trinkets: [
+                {
+                    name: 'watch',
+                    description: '_clunky_',
+                },
+            ],
         };
         inventoryBuilder = new InventoryBuilder({ inventoryTemplate });
     });
@@ -62,6 +69,9 @@ describe(InventoryBuilder.name, () => {
                             skill: 'stab',
                             canBeLooted: false,
                         }),
+                    ],
+                    trinkets: [
+                        new Trinket({ name: 'watch', description: '_clunky_' }),
                     ],
                 })
             );

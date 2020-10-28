@@ -48,6 +48,9 @@ class SceneBuilder {
     }
 
     private buildActions(scene: Scene): AdvanceAction[] {
+        if (!this.sceneTemplate.metadata.actions) {
+            return [];
+        }
         const sceneActionBuilder = new SceneActionBuilder({
             narration: this.narration,
             scene: scene,
@@ -78,6 +81,9 @@ class SceneBuilder {
     }
 
     private buildActors(): NonPlayableActor[] {
+        if (!this.sceneTemplate.metadata.actors) {
+            return [];
+        }
         const actorBuilder = new NonPlayableActorBuilder({
             sceneTemplate: this.sceneTemplate,
         });

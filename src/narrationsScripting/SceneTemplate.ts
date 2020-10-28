@@ -35,6 +35,12 @@ export interface InventoryTemplate {
         [type: string]: number;
     };
     weapons?: { [name: string]: WeaponTemplate };
+    trinkets?: TrinketTemplate[];
+}
+
+export interface TrinketTemplate {
+    name: string;
+    description?: string;
 }
 
 export interface WeaponTemplate {

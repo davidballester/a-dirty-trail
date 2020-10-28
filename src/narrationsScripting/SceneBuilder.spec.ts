@@ -5,8 +5,11 @@ import SceneTemplate from './SceneTemplate';
 import Scene from '../core/Scene';
 import SceneActionBuilder from './SceneActionBuilder';
 import AdvanceAction from '../actions/AdvanceAction';
+import NonPlayableActorBuilder from './NonPlayableActorBuilder';
+import NonPlayableActor from '../core/NonPlayableActor';
 jest.mock('../core/Scene');
 jest.mock('./SceneActionBuilder');
+jest.mock('./NonPlayableActorBuilder');
 
 describe(SceneBuilder.name, () => {
     let sceneBuilder: SceneBuilder;
@@ -24,6 +27,10 @@ describe(SceneBuilder.name, () => {
         sceneTemplate = ({
             title: 'The misfortunes of {{playerName}}',
             setup: 'Setup for {{playerName}}',
+            metadata: {
+                actors: [],
+                actions: [],
+            },
         } as unknown) as SceneTemplate;
         sceneBuilder = new SceneBuilder({
             narration,
@@ -38,6 +45,8 @@ describe(SceneBuilder.name, () => {
         let setActions: jest.SpyInstance;
         let sceneActionBuilderMock: jest.Mock;
         let actions: AdvanceAction[];
+        let actors: NonPlayableActor[];
+        let nonPlayableActorBuilderMock: jest.Mock;
         beforeEach(() => {
             setActions = jest.fn();
             scene = ({
@@ -51,6 +60,22 @@ describe(SceneBuilder.name, () => {
             sceneActionBuilderMock.mockReturnValue({
                 build: jest.fn().mockReturnValue(actions),
             });
+            actors = [
+                ({
+                    id: 'actor',
+                } as unknown) as NonPlayableActor,
+            ];
+            nonPlayableActorBuilderMock = (NonPlayableActorBuilder as unknown) as jest.Mock;
+            nonPlayableActorBuilderMock.mockReturnValue({
+                build: jest.fn().mockReturnValue(actors),
+            });
+        });
+
+        it('creates a actors builder', () => {
+            sceneBuilder.build();
+            expect(nonPlayableActorBuilderMock).toHaveBeenCalledWith({
+                sceneTemplate,
+            });
         });
 
         it('creates a new scene', () => {
@@ -58,7 +83,7 @@ describe(SceneBuilder.name, () => {
             expect(sceneMock).toHaveBeenCalledWith({
                 title: 'The misfortunes of Jane Doe',
                 setup: 'Setup for Jane Doe',
-                actors: [],
+                actors,
                 player,
                 actions: [],
             });

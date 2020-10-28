@@ -4,6 +4,8 @@ import SceneTemplate from './SceneTemplate';
 import Narration from '../core/Narration';
 import AdvanceAction from '../actions/AdvanceAction';
 import SceneActionBuilder from './SceneActionBuilder';
+import NonPlayableActor from '../core/NonPlayableActor';
+import NonPlayableActorBuilder from './NonPlayableActorBuilder';
 
 class SceneBuilder {
     private sceneTemplate: SceneTemplate;
@@ -35,9 +37,10 @@ class SceneBuilder {
     private buildSceneBase(): Scene {
         const setup = this.resolvePlaceholders(this.sceneTemplate.setup);
         const title = this.resolvePlaceholders(this.sceneTemplate.title);
+        const actors = this.buildActors();
         return new Scene({
             title,
-            actors: [],
+            actors,
             player: this.player,
             setup: setup,
             actions: [],
@@ -72,6 +75,13 @@ class SceneBuilder {
                 inputValue
             );
         }, string.trim());
+    }
+
+    private buildActors(): NonPlayableActor[] {
+        const actorBuilder = new NonPlayableActorBuilder({
+            sceneTemplate: this.sceneTemplate,
+        });
+        return actorBuilder.build();
     }
 }
 

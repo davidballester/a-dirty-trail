@@ -1,21 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Scene from '../core/Scene';
-import {
-    SceneTemplateInventory,
-    SceneTemplateSideEffect,
-} from './SceneTemplate';
+import { InventoryTemplate, SideEffectTemplate } from './SceneTemplate';
 import InventoryBuilder from './InventoryBuilder';
 
 class SideEffectBuilder {
     private scene: Scene;
-    private sideEffectTemplate: SceneTemplateSideEffect;
+    private sideEffectTemplate: SideEffectTemplate;
 
     constructor({
         scene,
         sideEffectTemplate,
     }: {
         scene: Scene;
-        sideEffectTemplate: SceneTemplateSideEffect;
+        sideEffectTemplate: SideEffectTemplate;
     }) {
         this.scene = scene;
         this.sideEffectTemplate = sideEffectTemplate;
@@ -35,7 +32,7 @@ class SideEffectBuilder {
         player.changeName(newName);
     }
 
-    private loot(sceneTemplateInventory: SceneTemplateInventory): void {
+    private loot(sceneTemplateInventory: InventoryTemplate): void {
         const inventoryBuilder = new InventoryBuilder({
             inventoryTemplate: sceneTemplateInventory,
         });

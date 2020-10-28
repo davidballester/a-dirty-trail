@@ -1,6 +1,6 @@
 import SceneTemplate, {
-    SceneTemplateActor,
-    SceneTemplateInventory,
+    ActorTemplate,
+    InventoryTemplate,
 } from './SceneTemplate';
 import NonPlayableActor from '../core/NonPlayableActor';
 import Health from '../core/Health';
@@ -10,7 +10,7 @@ import Skill from '../core/Skill';
 import InventoryBuilder from './InventoryBuilder';
 
 class NonPlayableActorBuilder {
-    private actors: { [key: string]: SceneTemplateActor };
+    private actors: { [key: string]: ActorTemplate };
 
     constructor({ sceneTemplate }: { sceneTemplate: SceneTemplate }) {
         this.actors = sceneTemplate.metadata.actors || {};
@@ -24,7 +24,7 @@ class NonPlayableActorBuilder {
 
     private buildActor(
         name: string,
-        actorTemplate: SceneTemplateActor
+        actorTemplate: ActorTemplate
     ): NonPlayableActor {
         return new NonPlayableActor({
             name,
@@ -39,9 +39,7 @@ class NonPlayableActorBuilder {
         return new Health({ current: parseInt(current), max: parseInt(max) });
     }
 
-    private buildInventory(
-        inventoryTemplate: SceneTemplateInventory
-    ): Inventory {
+    private buildInventory(inventoryTemplate: InventoryTemplate): Inventory {
         const inventoryBuilder = new InventoryBuilder({ inventoryTemplate });
         return inventoryBuilder.build();
     }

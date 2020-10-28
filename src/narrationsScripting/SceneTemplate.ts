@@ -8,36 +8,36 @@ interface SceneTemplate {
 }
 
 export interface SceneTemplateMetadata {
-    actions?: { [key: string]: SceneTemplateAction };
-    actors?: { [key: string]: SceneTemplateActor };
+    actions?: { [key: string]: ActionTemplate };
+    actors?: { [key: string]: ActorTemplate };
 }
 
-export interface SceneTemplateAction {
-    sideEffect?: SceneTemplateSideEffect;
+export interface ActionTemplate {
+    sideEffect?: SideEffectTemplate;
     goTo: string;
 }
 
-export interface SceneTemplateSideEffect {
-    loot?: SceneTemplateInventory;
+export interface SideEffectTemplate {
+    loot?: InventoryTemplate;
     rename?: string;
 }
 
-export interface SceneTemplateActor {
+export interface ActorTemplate {
     health: string;
-    inventory: SceneTemplateInventory;
+    inventory: InventoryTemplate;
     skills: {
         [name: string]: number;
     };
 }
 
-export interface SceneTemplateInventory {
+export interface InventoryTemplate {
     ammunitions?: {
         [type: string]: number;
     };
-    weapons?: { [name: string]: SceneTemplateWeapon };
+    weapons?: { [name: string]: WeaponTemplate };
 }
 
-export interface SceneTemplateWeapon {
+export interface WeaponTemplate {
     type: string;
     damage: string;
     skill: string;

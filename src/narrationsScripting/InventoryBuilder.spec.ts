@@ -4,13 +4,13 @@ import Inventory from '../core/Inventory';
 import Weapon from '../core/Weapon';
 import WeaponAmmunition from '../core/WeaponAmmunition';
 import InventoryBuilder from './InventoryBuilder';
-import { SceneTemplateInventory } from './SceneTemplate';
+import { InventoryTemplate } from './SceneTemplate';
 import { v4 as uuidv4 } from 'uuid';
 jest.mock('uuid');
 
 describe(InventoryBuilder.name, () => {
     let inventoryBuilder: InventoryBuilder;
-    let inventoryTemplate: SceneTemplateInventory;
+    let inventoryTemplate: InventoryTemplate;
     beforeEach(() => {
         const uuidv4Mock = (uuidv4 as unknown) as jest.Mock;
         uuidv4Mock.mockReturnValue(undefined);

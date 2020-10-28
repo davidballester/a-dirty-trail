@@ -1,10 +1,10 @@
 import AdvanceActionWithSideEffect from '../actions/AdvanceActionWithSideEffect';
 import Narration from '../core/Narration';
-import SceneTemplate, { SceneTemplateSideEffect } from './SceneTemplate';
+import SceneTemplate, { SideEffectTemplate } from './SceneTemplate';
 import AdvanceAction from '../actions/AdvanceAction';
 import Scene from '../core/Scene';
 import NextSceneDeciderBuilder from './NextSceneDeciderBuilder';
-import { SceneTemplateAction } from './SceneTemplate';
+import { ActionTemplate } from './SceneTemplate';
 import SideEffectBuilder from './SideEffectBuilder';
 
 class SceneActionBuilder {
@@ -54,7 +54,7 @@ class SceneActionBuilder {
 
     private buildAction(
         text: string,
-        sceneTemplateAction: SceneTemplateAction
+        sceneTemplateAction: ActionTemplate
     ): AdvanceAction {
         if (sceneTemplateAction.sideEffect) {
             return this.buildAdvanceActionWithSideEffect(
@@ -69,8 +69,8 @@ class SceneActionBuilder {
 
     private buildAdvanceActionWithSideEffect(
         text: string,
-        sideEffectScript: SceneTemplateSideEffect,
-        sceneTemplateAction: SceneTemplateAction
+        sideEffectScript: SideEffectTemplate,
+        sceneTemplateAction: ActionTemplate
     ): AdvanceActionWithSideEffect {
         const markdownText = this.resolvePlaceholders(text);
         return new AdvanceActionWithSideEffect({
@@ -89,7 +89,7 @@ class SceneActionBuilder {
 
     private nextSceneDecider(
         scene: Scene,
-        sceneTemplateAction: SceneTemplateAction
+        sceneTemplateAction: ActionTemplate
     ): Promise<Scene> {
         const nextSceneDecider = new NextSceneDeciderBuilder({
             narration: this.narration,
@@ -102,7 +102,7 @@ class SceneActionBuilder {
 
     private buildAdvanceAction(
         text: string,
-        sceneTemplateAction: SceneTemplateAction
+        sceneTemplateAction: ActionTemplate
     ): AdvanceAction {
         const markdownText = this.resolvePlaceholders(text);
         return new AdvanceAction({
@@ -116,10 +116,7 @@ class SceneActionBuilder {
         });
     }
 
-    private sideEffect(
-        scene: Scene,
-        sideEffectTemplate: SceneTemplateSideEffect
-    ) {
+    private sideEffect(scene: Scene, sideEffectTemplate: SideEffectTemplate) {
         const sideEffectBuilder = new SideEffectBuilder({
             scene,
             sideEffectTemplate,

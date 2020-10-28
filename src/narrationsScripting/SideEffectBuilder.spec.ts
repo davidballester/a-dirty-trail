@@ -3,7 +3,7 @@ import InventoryBuilder from './InventoryBuilder';
 import Inventory from '../core/Inventory';
 import Actor from '../core/Actor';
 import Scene from '../core/Scene';
-import { SceneTemplateSideEffect } from './SceneTemplate';
+import { SideEffectTemplate } from './SceneTemplate';
 jest.mock('./InventoryBuilder');
 
 describe(SideEffectBuilder.name, () => {
@@ -12,7 +12,7 @@ describe(SideEffectBuilder.name, () => {
     let loot: jest.SpyInstance;
     let inventory: Inventory;
     let changeName: jest.SpyInstance;
-    let sideEffectTemplate: SceneTemplateSideEffect;
+    let sideEffectTemplate: SideEffectTemplate;
     let sideEffectBuilder: SideEffectBuilder;
     beforeEach(() => {
         changeName = jest.fn();

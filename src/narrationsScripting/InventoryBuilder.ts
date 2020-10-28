@@ -3,15 +3,15 @@ import Firearm from '../core/Firearm';
 import Inventory from '../core/Inventory';
 import Weapon from '../core/Weapon';
 import WeaponAmmunition from '../core/WeaponAmmunition';
-import { SceneTemplateInventory, SceneTemplateWeapon } from './SceneTemplate';
+import { InventoryTemplate, WeaponTemplate } from './SceneTemplate';
 
 class InventoryBuilder {
-    private inventoryTemplate: SceneTemplateInventory;
+    private inventoryTemplate: InventoryTemplate;
 
     constructor({
         inventoryTemplate,
     }: {
-        inventoryTemplate: SceneTemplateInventory;
+        inventoryTemplate: InventoryTemplate;
     }) {
         this.inventoryTemplate = inventoryTemplate;
     }
@@ -34,10 +34,7 @@ class InventoryBuilder {
         );
     }
 
-    private buildWeapon(
-        name: string,
-        weaponTemplate: SceneTemplateWeapon
-    ): Weapon {
+    private buildWeapon(name: string, weaponTemplate: WeaponTemplate): Weapon {
         const [minDamage, maxDamage] = weaponTemplate.damage.split('-');
         const damage = new Damage({
             min: parseInt(minDamage),

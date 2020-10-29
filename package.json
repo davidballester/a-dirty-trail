@@ -26,6 +26,11 @@
         "lint": "eslint --max-warnings=0 src --ext=.ts",
         "lint-fix": "npm run lint -- --fix"
     },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged && npm run lint"
+        }
+    },
     "dependencies": {
         "@types/jest": "^26.0.15",
         "install": "^0.13.0",

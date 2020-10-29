@@ -14,11 +14,9 @@
         "/build"
     ],
     "scripts": {
-        "buildSceneTemplatesForDev": "node markdownAssetsProcessor.js src src",
-        "buildSceneTemplates": "node markdownAssetsProcessor.js src build",
-        "prebuild": "rimraf ./build",
+        "buildSceneTemplates": "node markdownAssetsProcessor.js src src",
+        "prebuild": "rimraf ./build && npm run buildSceneTemplates",
         "build": "tsc",
-        "postbuild": "npm run buildSceneTemplates",
         "predev": "npm run build",
         "prepare": "npm run build",
         "test": "jest src/.*.spec.ts",

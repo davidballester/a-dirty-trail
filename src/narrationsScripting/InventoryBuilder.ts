@@ -1,4 +1,4 @@
-import Trinket from '../../build/core/Trinket';
+import Trinket from '../core/Trinket';
 import Damage from '../core/Damage';
 import Firearm from '../core/Firearm';
 import Inventory from '../core/Inventory';

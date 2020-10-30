@@ -1,5 +1,5 @@
-import SceneBuilder from '../narrationsScripting/SceneBuilder';
-import SceneTemplate from '../narrationsScripting/SceneTemplate';
+import SceneBuilder from '../templateSystem/SceneBuilder';
+import SceneTemplate from '../templateSystem/SceneTemplate';
 import Scene from './Scene';
 
 class Narration {

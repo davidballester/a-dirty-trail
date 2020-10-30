@@ -1,5 +1,5 @@
 import Narration from '../core/Narration';
-import SceneTemplate from '../narrationsScripting/SceneTemplate';
+import SceneTemplate from '../templateSystem/SceneTemplate';
 import tutorial from './tutorial';
 
 class NarrationsCatalogue {

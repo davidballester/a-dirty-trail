@@ -1,4 +1,4 @@
-import SceneTemplate from '../../narrationsScripting/SceneTemplate';
+import SceneTemplate from '../../templateSystem/SceneTemplate';
 import welcome from './acts/1-stage-coach/welcome';
 
 const firstSceneTemplate = welcome as SceneTemplate;

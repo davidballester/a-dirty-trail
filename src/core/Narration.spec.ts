@@ -1,8 +1,8 @@
 import Narration from './Narration';
 import Scene from './Scene';
-import SceneBuilder from '../narrationsScripting/SceneBuilder';
-import SceneTemplate from '../narrationsScripting/SceneTemplate';
-jest.mock('../narrationsScripting/SceneBuilder');
+import SceneBuilder from '../templateSystem/SceneBuilder';
+import SceneTemplate from '../templateSystem/SceneTemplate';
+jest.mock('../templateSystem/SceneBuilder');
 
 describe('Narration', () => {
     it('initializes without errors', () => {

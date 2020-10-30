@@ -1,5 +1,5 @@
 ---
-title: The stage coach
+title: Brigands on the road
 actions:
     'Continue':
         goTo: ./afterTheShootout

@@ -1,5 +1,5 @@
 ---
-title: The stage coach
+title: Outside the stage coach
 actions:
     'She raised the revolver':
         goTo: ./combat

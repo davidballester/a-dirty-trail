@@ -1,5 +1,5 @@
 ---
-title: The stage coach
+title: Lady Cartwright
 actions:
     'Alys opened the door and jumped out':
         sideEffect:

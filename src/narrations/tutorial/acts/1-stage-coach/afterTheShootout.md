@@ -1,5 +1,5 @@
 ---
-title: The stage coach
+title: After the shootout
 actions:
     'Start walking':
         goTo: ../2-the-road/theRoad

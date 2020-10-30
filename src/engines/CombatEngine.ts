@@ -21,10 +21,14 @@ class CombatEngine {
         this.actorsTurns = [];
         const aliveActors = this.scene.getAliveActors();
         const player = this.scene.getPlayer();
-        aliveActors.forEach((oponent) => {
+        if (!aliveActors.length) {
             this.actorsTurns.push(player);
-            this.actorsTurns.push(oponent);
-        });
+        } else {
+            aliveActors.forEach((oponent) => {
+                this.actorsTurns.push(player);
+                this.actorsTurns.push(oponent);
+            });
+        }
     }
 
     getActorCurrentTurn(): Actor {
@@ -107,7 +111,8 @@ class CombatEngine {
         }
         const currentOponent = this.getActorCurrentTurn() as NonPlayableActor;
         const nextOponentAction = currentOponent.getNextAction(this.scene);
-        if (!nextOponentAction.canExecute()) {
+        if (!nextOponentAction || !nextOponentAction.canExecute()) {
+            this.updateTurn();
             return undefined;
         }
         const outcome = await this.executeAction(nextOponentAction);

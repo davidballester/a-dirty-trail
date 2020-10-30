@@ -203,6 +203,14 @@ describe('CombatEngine', () => {
             expect(actionAndOutcome).toBeUndefined();
         });
 
+        it('advances the turn if the action cannot be executed', async () => {
+            johnDoeActionCanExecute.mockReturnValue(false);
+            await combatEngine.executePlayerAction(janeDoeAction);
+            await combatEngine.executeNextOponentAction();
+            const nextActor = combatEngine.getActorCurrentTurn();
+            expect(nextActor.equals(johnDoe)).toBeFalsy();
+        });
+
         it('returns the action and the outcome', async () => {
             await combatEngine.executePlayerAction(janeDoeAction);
             const actionAndOutcome = await combatEngine.executeNextOponentAction();
@@ -210,6 +218,13 @@ describe('CombatEngine', () => {
                 johnDoeAction,
                 johnDoeActionOutcome,
             ]);
+        });
+
+        it('advances the turn if the action cannot be executed', async () => {
+            await combatEngine.executePlayerAction(janeDoeAction);
+            await combatEngine.executeNextOponentAction();
+            const nextActor = combatEngine.getActorCurrentTurn();
+            expect(nextActor.equals(johnDoe)).toBeFalsy();
         });
     });
 

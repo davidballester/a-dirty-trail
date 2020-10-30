@@ -153,15 +153,13 @@ describe('NonPlayableActor', () => {
             expect(returnedAction).toEqual(scapeAction);
         });
 
-        it('throws an error if no actions are possible', () => {
+        it('returns undefined if no actions are possible', () => {
             getAttackActions.mockReturnValue([]);
             getReloadActions.mockReturnValue([]);
             getScapeAction.mockReturnValue(undefined);
             getWeapons.mockReturnValue([]);
-            try {
-                janeDoe.getNextAction(scene);
-                fail('error expected');
-            } catch (err) {}
+            const returnedAction = janeDoe.getNextAction(scene);
+            expect(returnedAction).toBeUndefined();
         });
     });
 });

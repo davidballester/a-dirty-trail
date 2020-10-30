@@ -1,18 +1,18 @@
-import Action from '../actions/Action';
-import AttackAction from '../actions/AttackAction';
-import NonPlayableActorActionBuilder from '../actions/NonPlayableActorActionBuilder';
-import ReloadAction from '../actions/ReloadAction';
-import ActionsMap from './ActionsMap';
-import Actor from './Actor';
-import ChallengeRate from './ChallengeRate';
-import Scene from './Scene';
-import Weapon from './Weapon';
+import Action from '../src/actions/Action';
+import ActionBuilder from '../src/actions/ActionBuilder';
+import AttackAction from '../src/actions/AttackAction';
+import ReloadAction from '../src/actions/ReloadAction';
+import ActionsMap from '../src/core/ActionsMap';
+import Actor from '../src/core/Actor';
+import ChallengeRate from '../src/core/ChallengeRate';
+import Scene from '../src/core/Scene';
+import Weapon from '../src/core/Weapon';
 
-class NonPlayableActor extends Actor {
+class AI extends Actor {
     private deadliestWeapon?: Weapon;
 
     getNextAction(scene: Scene): Action<any> | undefined {
-        const actionBuilder = new NonPlayableActorActionBuilder({
+        const actionBuilder = new ActionBuilder({
             scene,
             actor: this,
         });
@@ -86,4 +86,4 @@ class NonPlayableActor extends Actor {
     }
 }
 
-export default NonPlayableActor;
+export default AI;

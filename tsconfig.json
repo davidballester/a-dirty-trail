@@ -16,6 +16,7 @@
         "./babel.config.js",
         "./jest.config.ts",
         "**/*.spec.ts",
-        "./tests"
+        "./tests",
+        "./build"
     ]
 }

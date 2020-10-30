@@ -118,6 +118,10 @@ class CombatSceneEngine {
         const outcome = await this.executeAction(nextOponentAction);
         return [nextOponentAction, outcome];
     }
+
+    isCombatOver(): boolean {
+        return !this.scene.isCombat();
+    }
 }
 
 export default CombatSceneEngine;

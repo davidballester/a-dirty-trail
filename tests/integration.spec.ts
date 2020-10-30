@@ -100,7 +100,7 @@ describe('Integration tests', () => {
         const player = combatScene.getPlayer();
         const playerAi = buildPlayerAi(player);
         const combatSceneEngine = new CombatSceneEngine({ scene: combatScene });
-        while (player.isAlive() && combatScene.isCombat()) {
+        while (player.isAlive() && !combatSceneEngine.isCombatOver()) {
             await simulateTurn(combatSceneEngine, playerAi, combatScene);
         }
         return player.isAlive();

@@ -48,13 +48,15 @@ await narrativeSceneEngine.executePlayerAction(advanceAction);
 Combat scenes are turn-based. The player always acts first and then a single oponent. The combat goes on until there are no more enemies left on the scene.
 
 ```ts
-if (combatSceneEngine.getActorCurrentTurn().equals(player)) {
-    const actionsMap = combatSceneEngine.getPlayerActions();
-    const attackActions = actionsMap.getAttackActions();
-    const action = attackActions[0];
-    await combatSceneEngine.executePlayerAction(action);
-} else {
-    await combatSceneEngine.executeNextOponentAction();
+if (!combatSceneEngine.isCombatOver()) {
+    if (combatSceneEngine.getActorCurrentTurn().equals(player)) {
+        const actionsMap = combatSceneEngine.getPlayerActions();
+        const attackActions = actionsMap.getAttackActions();
+        const action = attackActions[0];
+        await combatSceneEngine.executePlayerAction(action);
+    } else {
+        await combatSceneEngine.executeNextOponentAction();
+    }
 }
 ```
 

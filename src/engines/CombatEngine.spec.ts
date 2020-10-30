@@ -14,6 +14,7 @@ describe('CombatSceneEngine', () => {
     let scene: Scene;
     let sceneGetAliveActors: jest.SpyInstance;
     let sceneContainsActor: jest.SpyInstance;
+    let sceneIsCombat: jest.SpyInstance;
     let janeDoe: Actor;
     let janeDoeAction: AttackAction;
     let janeDoeActionOutcome: AttackOutcome;
@@ -93,10 +94,12 @@ describe('CombatSceneEngine', () => {
         sceneGetAliveActors = jest.fn().mockReturnValue([johnDoe, jillBloggs]);
         const getPlayer = jest.fn().mockReturnValue(janeDoe);
         sceneContainsActor = jest.fn().mockReturnValue(true);
+        sceneIsCombat = jest.fn().mockReturnValue(true);
         scene = ({
             getAliveActors: sceneGetAliveActors,
             getPlayer,
             containsActor: sceneContainsActor,
+            isCombat: sceneIsCombat,
         } as unknown) as Scene;
     };
 
@@ -329,6 +332,19 @@ describe('CombatSceneEngine', () => {
         it('returns the actions map', () => {
             const playerActions = combatSceneEngine.getPlayerActions();
             expect(playerActions).toEqual(janeDoeActions);
+        });
+    });
+
+    describe('isCombatOver', () => {
+        it('returns false if the scene is combat', () => {
+            const isCombatOver = combatSceneEngine.isCombatOver();
+            expect(isCombatOver).toBeFalsy();
+        });
+
+        it('returns true if the scene is not combat', () => {
+            sceneIsCombat.mockReturnValue(false);
+            const isCombatOver = combatSceneEngine.isCombatOver();
+            expect(isCombatOver).toBeTruthy();
         });
     });
 });

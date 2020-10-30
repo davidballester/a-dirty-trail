@@ -1,7 +1,7 @@
 import Narration from '../src/core/Narration';
 import Scene from '../src/core/Scene';
 import NarrationsCatalogue from '../src/narrations/NarrationsCatalogue';
-import NarrationEngine from '../src/engines/NarrationEngine';
+import NarrativeSceneEngine from '../src/engines/NarrativeSceneEngine';
 import CombatSceneEngine from '../src/engines/CombatSceneEngine';
 import AdvanceAction from '../src/actions/AdvanceAction';
 import Actor from '../src/core/Actor';
@@ -45,12 +45,12 @@ describe('Integration tests', () => {
     };
 
     const testNarrativeScene = async (scene: Scene, narration: Narration) => {
-        const narrationEngine = new NarrationEngine({ scene });
-        if (narrationEngine.isNarrationFinished()) {
+        const narrativeSceneEngine = new NarrativeSceneEngine({ scene });
+        if (narrativeSceneEngine.isNarrationFinished()) {
             console.log('Narration finished!');
             return;
         }
-        const advanceActions = narrationEngine
+        const advanceActions = narrativeSceneEngine
             .getPlayerActions()
             .getAdvanceActions();
         await advance(advanceActions, narration);

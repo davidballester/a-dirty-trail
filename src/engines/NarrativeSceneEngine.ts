@@ -2,7 +2,7 @@ import ActionBuilder from '../actions/ActionBuilder';
 import ActionsMap from '../core/ActionsMap';
 import Scene from '../core/Scene';
 
-class NarrationEngine {
+class NarrativeSceneEngine {
     private scene: Scene;
     private playerActions: ActionsMap;
 
@@ -26,4 +26,4 @@ class NarrationEngine {
     }
 }
 
-export default NarrationEngine;
+export default NarrativeSceneEngine;

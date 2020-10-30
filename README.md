@@ -25,13 +25,13 @@ const player = scene.getPlayer()
 There are two kinds of scenes: action scenes and narrative scenes. Based on its kind, instantiate an engine to operate on it.
 
 ```ts
-import { NarrationEngine, CombatSceneEngine } from 'a-dirty-trail'
+import { NarrativeSceneEngine, CombatSceneEngine } from 'a-dirty-trail'
 ...
 if (scene.isCombat()) {
     const combatSceneEngine = new CombatSceneEngine({ scene })
     ...
 } else {
-    const narrationEngine = new NarrationEngine({ scene })
+    const narrativeSceneEngine = new NarrativeSceneEngine({ scene })
     ...
 }
 ```
@@ -39,7 +39,7 @@ if (scene.isCombat()) {
 Narrative scenes are quite simple. The player can choose to execute a number of actions on them. The moment they execute an `AdvanceAction`, they will move to a new scene.
 
 ```ts
-const actionsMap = narrationEngine.getPlayerActions();
+const actionsMap = narrativeSceneEngine.getPlayerActions();
 const advanceActions = actionsMap.getAdvanceActions();
 ```
 
@@ -59,7 +59,8 @@ if (combatSceneEngine.getActorCurrentTurn().equals(player)) {
 The game ends when the player is dead or when the narration engine says so.
 
 ```ts
-const gameOver = !player.isAlive() || narrationEngine.isNarrationFinished();
+const gameOver =
+    !player.isAlive() || narrativeSceneEngine.isNarrationFinished();
 ```
 
 Simple as that!

@@ -3,6 +3,8 @@ import ActionBuilder from '../actions/ActionBuilder';
 import ActionsMap from '../core/ActionsMap';
 import Scene from '../core/Scene';
 import Actor from '../core/Actor';
+import LootAction from '../actions/LootAction';
+import Inventory from '../core/Inventory';
 jest.mock('../actions/ActionBuilder');
 
 describe('NarrativeSceneEngine', () => {
@@ -59,6 +61,43 @@ describe('NarrativeSceneEngine', () => {
             getAdvanceActions.mockReturnValue([{}]);
             const isNarrationFinished = narrativeSceneEngine.isNarrationFinished();
             expect(isNarrationFinished).toBeFalsy();
+        });
+    });
+
+    describe('executePlayerAction', () => {
+        let lootAction: LootAction;
+        let outcome: Inventory;
+        let canExecute: jest.SpyInstance;
+        let execute: jest.SpyInstance;
+        beforeEach(() => {
+            canExecute = jest.fn().mockReturnValue(true);
+            outcome = ({
+                id: 'inventory',
+            } as unknown) as Inventory;
+            execute = jest.fn().mockReturnValue(outcome);
+            lootAction = ({
+                canExecute,
+                execute,
+            } as unknown) as LootAction;
+        });
+
+        it('executes the action', () => {
+            narrativeSceneEngine.executePlayerAction(lootAction);
+            expect(execute).toHaveBeenCalled();
+        });
+
+        it('returns the outcome', () => {
+            const returnedOutcome = narrativeSceneEngine.executePlayerAction(
+                lootAction
+            );
+            expect(returnedOutcome).toEqual(outcome);
+        });
+
+        it('throws an error if the action cannot be executed', () => {
+            canExecute.mockReturnValue(false);
+            expect(() =>
+                narrativeSceneEngine.executePlayerAction(lootAction)
+            ).toThrow();
         });
     });
 });

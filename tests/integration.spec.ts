@@ -53,22 +53,17 @@ describe('Integration tests', () => {
         const advanceActions = narrativeSceneEngine
             .getPlayerActions()
             .getAdvanceActions();
-        await advance(advanceActions, narration);
+        await advance(advanceActions, narration, narrativeSceneEngine);
     };
 
     const advance = async (
         advanceActions: AdvanceAction[],
-        narration: Narration
+        narration: Narration,
+        narrativeSceneEngine: NarrativeSceneEngine
     ) => {
         for (const advanceAction of advanceActions) {
-            if (!advanceAction.canExecute()) {
-                console.log(
-                    `Abandoning advance action! ${advanceAction.getName()}`
-                );
-            } else {
-                await advanceAction.execute();
-                await testScene(narration.getCurrentScene(), narration);
-            }
+            await narrativeSceneEngine.executePlayerAction(advanceAction);
+            await testScene(narration.getCurrentScene(), narration);
         }
     };
 
@@ -81,7 +76,11 @@ describe('Integration tests', () => {
         const advanceActions = combatSceneEngine
             .getPlayerActions()
             .getAdvanceActions();
-        await advance(advanceActions, narration);
+        await advance(
+            advanceActions,
+            narration,
+            new NarrativeSceneEngine({ scene })
+        );
     };
 
     const getSurvivability = async (scene: Scene) => {

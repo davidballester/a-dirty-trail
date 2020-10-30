@@ -41,6 +41,8 @@ Narrative scenes are quite simple. The player can choose to execute a number of 
 ```ts
 const actionsMap = narrativeSceneEngine.getPlayerActions();
 const advanceActions = actionsMap.getAdvanceActions();
+const advanceAction = advanceActions[0];
+await narrativeSceneEngine.executePlayerAction(advanceAction);
 ```
 
 Combat scenes are turn-based. The player always acts first and then a single oponent. The combat goes on until there are no more enemies left on the scene.
@@ -50,7 +52,7 @@ if (combatSceneEngine.getActorCurrentTurn().equals(player)) {
     const actionsMap = combatSceneEngine.getPlayerActions();
     const attackActions = actionsMap.getAttackActions();
     const action = attackActions[0];
-    combatSceneEngine.executePlayerAction(action);
+    await combatSceneEngine.executePlayerAction(action);
 } else {
     await combatSceneEngine.executeNextOponentAction();
 }

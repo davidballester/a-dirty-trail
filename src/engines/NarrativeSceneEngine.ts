@@ -1,3 +1,4 @@
+import Action from '../actions/Action';
 import ActionBuilder from '../actions/ActionBuilder';
 import ActionsMap from '../core/ActionsMap';
 import Scene from '../core/Scene';
@@ -17,6 +18,13 @@ class NarrativeSceneEngine {
 
     getPlayerActions(): ActionsMap {
         return this.playerActions;
+    }
+
+    executePlayerAction<T>(action: Action<T>): T | Promise<T> {
+        if (!action.canExecute()) {
+            throw new Error('The action cannot be executed!');
+        }
+        return action.execute();
     }
 
     isNarrationFinished(): boolean {

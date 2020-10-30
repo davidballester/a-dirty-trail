@@ -20,6 +20,12 @@ class SkillSet {
         }
         return skill;
     }
+
+    getAll(): Skill[] {
+        return Object.keys(this.skills).map((skillName) =>
+            this.getSkill(skillName)
+        );
+    }
 }
 
 export default SkillSet;

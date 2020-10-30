@@ -26,4 +26,20 @@ describe('SkillSet', () => {
             expect(() => skillSet.getSkill('combat')).toThrow();
         });
     });
+
+    describe('getAll', () => {
+        let aim: Skill;
+        let stab: Skill;
+        let skillSet: SkillSet;
+        beforeEach(() => {
+            aim = new Skill({ name: 'aim', probabilityOfSuccess: 0.47 });
+            stab = new Skill({ name: 'stab', probabilityOfSuccess: 0.81 });
+            skillSet = new SkillSet({ skills: [aim, stab] });
+        });
+
+        it('returns all the skills', () => {
+            const returnedSkills = skillSet.getAll();
+            expect(returnedSkills).toEqual([aim, stab]);
+        });
+    });
 });

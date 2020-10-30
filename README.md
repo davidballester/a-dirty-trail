@@ -25,10 +25,10 @@ const player = scene.getPlayer()
 There are two kinds of scenes: action scenes and narrative scenes. Based on its kind, instantiate an engine to operate on it.
 
 ```ts
-import { NarrationEngine, CombatEngine } from 'a-dirty-trail'
+import { NarrationEngine, CombatSceneEngine } from 'a-dirty-trail'
 ...
 if (scene.isCombat()) {
-    const combatEngine = new CombatEngine({ scene })
+    const combatSceneEngine = new CombatSceneEngine({ scene })
     ...
 } else {
     const narrationEngine = new NarrationEngine({ scene })
@@ -46,13 +46,13 @@ const advanceActions = actionsMap.getAdvanceActions();
 Combat scenes are turn-based. The player always acts first and then a single oponent. The combat goes on until there are no more enemies left on the scene.
 
 ```ts
-if (combatEngine.getActorCurrentTurn().equals(player)) {
-    const actionsMap = combatEngine.getPlayerActions();
+if (combatSceneEngine.getActorCurrentTurn().equals(player)) {
+    const actionsMap = combatSceneEngine.getPlayerActions();
     const attackActions = actionsMap.getAttackActions();
     const action = attackActions[0];
-    combatEngine.executePlayerAction(action);
+    combatSceneEngine.executePlayerAction(action);
 } else {
-    await combatEngine.executeNextOponentAction();
+    await combatSceneEngine.executeNextOponentAction();
 }
 ```
 

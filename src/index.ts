@@ -1,7 +1,7 @@
 import NarrationsCatalogue from './narrations/NarrationsCatalogue';
 import Narration from './core/Narration';
 import NarrationEngine from './engines/NarrationEngine';
-import CombatEngine from './engines/CombatEngine';
+import CombatSceneEngine from './engines/CombatSceneEngine';
 import Scene from './core/Scene';
 import Player from './core/Actor';
 
@@ -11,5 +11,5 @@ export {
     Scene,
     Player,
     NarrationEngine,
-    CombatEngine,
+    CombatSceneEngine,
 };

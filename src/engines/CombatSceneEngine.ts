@@ -5,7 +5,7 @@ import Actor from '../core/Actor';
 import NonPlayableActor from '../core/NonPlayableActor';
 import Scene from '../core/Scene';
 
-class CombatEngine {
+class CombatSceneEngine {
     private scene: Scene;
     private actorsTurns: Actor[];
     private currentTurn: number;
@@ -120,4 +120,4 @@ class CombatEngine {
     }
 }
 
-export default CombatEngine;
+export default CombatSceneEngine;

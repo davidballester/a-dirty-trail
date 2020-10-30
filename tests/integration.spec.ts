@@ -2,7 +2,7 @@ import Narration from '../src/core/Narration';
 import Scene from '../src/core/Scene';
 import NarrationsCatalogue from '../src/narrations/NarrationsCatalogue';
 import NarrationEngine from '../src/engines/NarrationEngine';
-import CombatEngine from '../src/engines/CombatEngine';
+import CombatSceneEngine from '../src/engines/CombatSceneEngine';
 import AdvanceAction from '../src/actions/AdvanceAction';
 import Actor from '../src/core/Actor';
 import { cloneScene } from './clone';
@@ -77,8 +77,8 @@ describe('Integration tests', () => {
         console.log(`${scene.getTitle()} survability rate: ${survivability}`);
         expect(survivability).toBeGreaterThan(0.3);
         await bypassCombat(scene);
-        const combatEngine = new CombatEngine({ scene });
-        const advanceActions = combatEngine
+        const combatSceneEngine = new CombatSceneEngine({ scene });
+        const advanceActions = combatSceneEngine
             .getPlayerActions()
             .getAdvanceActions();
         await advance(advanceActions, narration);
@@ -100,9 +100,9 @@ describe('Integration tests', () => {
         const combatScene = cloneScene(scene);
         const player = combatScene.getPlayer();
         const playerAi = buildPlayerAi(player);
-        const combatEngine = new CombatEngine({ scene: combatScene });
+        const combatSceneEngine = new CombatSceneEngine({ scene: combatScene });
         while (player.isAlive() && combatScene.isCombat()) {
-            await simulateTurn(combatEngine, playerAi, combatScene);
+            await simulateTurn(combatSceneEngine, playerAi, combatScene);
         }
         return player.isAlive();
     };
@@ -119,24 +119,24 @@ describe('Integration tests', () => {
     };
 
     const simulateTurn = async (
-        combatEngine: CombatEngine,
+        combatSceneEngine: CombatSceneEngine,
         playerAi: AI,
         scene: Scene
     ) => {
-        if (combatEngine.getActorCurrentTurn().equals(playerAi)) {
-            await simulatePlayerTurn(combatEngine, playerAi, scene);
+        if (combatSceneEngine.getActorCurrentTurn().equals(playerAi)) {
+            await simulatePlayerTurn(combatSceneEngine, playerAi, scene);
         } else {
-            await combatEngine.executeNextOponentAction();
+            await combatSceneEngine.executeNextOponentAction();
         }
     };
 
     const simulatePlayerTurn = async (
-        combatEngine: CombatEngine,
+        combatSceneEngine: CombatSceneEngine,
         playerAi: AI,
         scene: Scene
     ) => {
         const nextAction = playerAi.getNextAction(scene);
-        await combatEngine.executePlayerAction(nextAction);
+        await combatSceneEngine.executePlayerAction(nextAction);
     };
 
     const bypassCombat = async (scene: Scene) => {

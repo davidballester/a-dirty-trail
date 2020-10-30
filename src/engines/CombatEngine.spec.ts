@@ -4,13 +4,13 @@ import Actor from '../core/Actor';
 import NonPlayableActor from '../core/NonPlayableActor';
 import Scene from '../core/Scene';
 import { AttackOutcome } from '../core/Weapon';
-import CombatEngine from './CombatEngine';
+import CombatSceneEngine from './CombatSceneEngine';
 import ActionBuilder from '../actions/ActionBuilder';
 import ActionsMap from '../core/ActionsMap';
 jest.mock('../actions/ActionBuilder');
 
-describe('CombatEngine', () => {
-    let combatEngine: CombatEngine;
+describe('CombatSceneEngine', () => {
+    let combatSceneEngine: CombatSceneEngine;
     let scene: Scene;
     let sceneGetAliveActors: jest.SpyInstance;
     let sceneContainsActor: jest.SpyInstance;
@@ -117,52 +117,52 @@ describe('CombatEngine', () => {
         initializeJillBloggs();
         initializeScene();
         initializeActionBuilder();
-        combatEngine = new CombatEngine({ scene });
+        combatSceneEngine = new CombatSceneEngine({ scene });
     });
 
     describe('getActorCurrentTurn', () => {
         it('returns the player', () => {
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(janeDoe);
         });
 
         it('is the second oponent actor after advancing turn', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(johnDoe);
         });
 
         it('is the player oponent actor after advancing turn twice', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            await combatEngine.executeNextOponentAction();
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(janeDoe);
         });
 
         it('is the second oponent actor after advancing turn three times', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            await combatEngine.executeNextOponentAction();
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(jillBloggs);
         });
     });
 
     describe('getOponentsInActionOrder', () => {
         it('returns the oponents in the order specified on the scene', () => {
-            const oponentsInActionOrder = combatEngine.getOponentsInActionOrder();
+            const oponentsInActionOrder = combatSceneEngine.getOponentsInActionOrder();
             expect(oponentsInActionOrder).toEqual([johnDoe, jillBloggs]);
         });
     });
 
     describe('executePlayerAction', () => {
         it('executes the action', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
             expect(janeDoeActionExecute).toHaveBeenCalled();
         });
 
         it('returns the action outcome', async () => {
-            const outcome = await combatEngine.executePlayerAction(
+            const outcome = await combatSceneEngine.executePlayerAction(
                 janeDoeAction
             );
             expect(outcome).toEqual(janeDoeActionOutcome);
@@ -171,17 +171,17 @@ describe('CombatEngine', () => {
         it('throws an error if the action cannot be executed', async () => {
             janeDoeActionCanExecute.mockReturnValue(false);
             try {
-                await combatEngine.executePlayerAction(janeDoeAction);
+                await combatSceneEngine.executePlayerAction(janeDoeAction);
                 fail('expected an error');
             } catch (err) {}
             expect(janeDoeActionExecute).not.toHaveBeenCalled();
         });
 
         it('throws an error if it is not the player turn', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
             janeDoeActionExecute.mockClear();
             try {
-                await combatEngine.executePlayerAction(janeDoeAction);
+                await combatSceneEngine.executePlayerAction(janeDoeAction);
                 fail('expected an error');
             } catch (err) {}
             expect(janeDoeActionExecute).not.toHaveBeenCalled();
@@ -191,29 +191,29 @@ describe('CombatEngine', () => {
     describe('executeNextOponentAction', () => {
         it('throws an error if it is not the oponent turn', async () => {
             try {
-                await combatEngine.executeNextOponentAction();
+                await combatSceneEngine.executeNextOponentAction();
                 fail('expected an error');
             } catch (err) {}
         });
 
         it('returns undefined if the action cannot be executed', async () => {
             johnDoeActionCanExecute.mockReturnValue(false);
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actionAndOutcome = await combatEngine.executeNextOponentAction();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actionAndOutcome = await combatSceneEngine.executeNextOponentAction();
             expect(actionAndOutcome).toBeUndefined();
         });
 
         it('advances the turn if the action cannot be executed', async () => {
             johnDoeActionCanExecute.mockReturnValue(false);
-            await combatEngine.executePlayerAction(janeDoeAction);
-            await combatEngine.executeNextOponentAction();
-            const nextActor = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            const nextActor = combatSceneEngine.getActorCurrentTurn();
             expect(nextActor.equals(johnDoe)).toBeFalsy();
         });
 
         it('returns the action and the outcome', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actionAndOutcome = await combatEngine.executeNextOponentAction();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actionAndOutcome = await combatSceneEngine.executeNextOponentAction();
             expect(actionAndOutcome).toEqual([
                 johnDoeAction,
                 johnDoeActionOutcome,
@@ -221,9 +221,9 @@ describe('CombatEngine', () => {
         });
 
         it('advances the turn if the action cannot be executed', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            await combatEngine.executeNextOponentAction();
-            const nextActor = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            const nextActor = combatSceneEngine.getActorCurrentTurn();
             expect(nextActor.equals(johnDoe)).toBeFalsy();
         });
     });
@@ -235,21 +235,21 @@ describe('CombatEngine', () => {
         });
 
         it('is the player turn again', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(janeDoe);
         });
 
         it('is the second oponent turn after the player', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(jillBloggs);
         });
 
         it('updates the list of oponents in order', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const oponentsInActionOrder = combatEngine.getOponentsInActionOrder();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const oponentsInActionOrder = combatSceneEngine.getOponentsInActionOrder();
             expect(oponentsInActionOrder).toEqual([jillBloggs]);
         });
     });
@@ -261,73 +261,73 @@ describe('CombatEngine', () => {
         });
 
         it('is john doe turn', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(johnDoe);
         });
 
         it('is player turn after john doe', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            await combatEngine.executeNextOponentAction();
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(janeDoe);
         });
 
         it('is john doe turn again after the player', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            await combatEngine.executeNextOponentAction();
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(johnDoe);
         });
 
         it('updates the list of oponents in order', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const oponentsInActionOrder = combatEngine.getOponentsInActionOrder();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const oponentsInActionOrder = combatSceneEngine.getOponentsInActionOrder();
             expect(oponentsInActionOrder).toEqual([johnDoe]);
         });
     });
 
     describe('current oponent scapes', () => {
         beforeEach(async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
             sceneGetAliveActors.mockReturnValue([jillBloggs]);
             when(sceneContainsActor)
                 .mockReturnValue(true)
                 .calledWith(johnDoe)
                 .mockReturnValue(false);
-            await combatEngine.executeNextOponentAction();
+            await combatSceneEngine.executeNextOponentAction();
         });
 
         it('is the player turn again', () => {
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(janeDoe);
         });
 
         it('is the second oponent turn after the player', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const actorCurrentTurn = combatEngine.getActorCurrentTurn();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(jillBloggs);
         });
 
         it('updates the list of oponents in order', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
-            const oponentsInActionOrder = combatEngine.getOponentsInActionOrder();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const oponentsInActionOrder = combatSceneEngine.getOponentsInActionOrder();
             expect(oponentsInActionOrder).toEqual([jillBloggs]);
         });
     });
 
     describe('getPlayerActions', () => {
         it('throws an error if it is not the player turn', async () => {
-            await combatEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
             try {
-                combatEngine.getPlayerActions();
+                combatSceneEngine.getPlayerActions();
                 fail('expected an error');
             } catch (err) {}
         });
 
         it('returns the actions map', () => {
-            const playerActions = combatEngine.getPlayerActions();
+            const playerActions = combatSceneEngine.getPlayerActions();
             expect(playerActions).toEqual(janeDoeActions);
         });
     });

@@ -19,8 +19,7 @@
         "build": "tsc",
         "predev": "npm run build",
         "prepare": "npm run build",
-        "test": "jest src/.*.spec.ts",
-        "test-integration": "jest tests/.*.spec.ts",
+        "test": "jest src/.*.spec.ts tests/.*.spec.ts",
         "test-coverage": "npm run test -- --coverage",
         "lint": "eslint --max-warnings=0 src --ext=.ts",
         "lint-fix": "npm run lint -- --fix"

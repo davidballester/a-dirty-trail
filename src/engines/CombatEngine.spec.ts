@@ -347,4 +347,17 @@ describe('CombatSceneEngine', () => {
             expect(isCombatOver).toBeTruthy();
         });
     });
+
+    describe('isPlayerTurn', () => {
+        it('returns true if it is the player turn', () => {
+            const isPlayerTurn = combatSceneEngine.isPlayerTurn();
+            expect(isPlayerTurn).toBeTruthy();
+        });
+
+        it('returns true if it is not the player turn', async () => {
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const isPlayerTurn = combatSceneEngine.isPlayerTurn();
+            expect(isPlayerTurn).toBeFalsy();
+        });
+    });
 });

@@ -122,6 +122,11 @@ class CombatSceneEngine {
     isCombatOver(): boolean {
         return !this.scene.isCombat();
     }
+
+    isPlayerTurn(): boolean {
+        const player = this.scene.getPlayer();
+        return this.getActorCurrentTurn().equals(player);
+    }
 }
 
 export default CombatSceneEngine;

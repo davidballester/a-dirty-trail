@@ -49,7 +49,7 @@ Combat scenes are turn-based. The player always acts first and then a single opo
 
 ```ts
 if (!combatSceneEngine.isCombatOver()) {
-    if (combatSceneEngine.getActorCurrentTurn().equals(player)) {
+    if (combatSceneEngine.isPlayerTurn()) {
         const actionsMap = combatSceneEngine.getPlayerActions();
         const attackActions = actionsMap.getAttackActions();
         const action = attackActions[0];

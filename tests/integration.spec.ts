@@ -122,7 +122,7 @@ describe('Integration tests', () => {
         playerAi: AI,
         scene: Scene
     ) => {
-        if (combatSceneEngine.getActorCurrentTurn().equals(playerAi)) {
+        if (combatSceneEngine.isPlayerTurn()) {
             await simulatePlayerTurn(combatSceneEngine, playerAi, scene);
         } else {
             await combatSceneEngine.executeNextOponentAction();

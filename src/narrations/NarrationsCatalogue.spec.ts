@@ -1,68 +1,49 @@
 import NarrationsCatalogue from './NarrationsCatalogue';
+import SceneTemplateResolver from '../templateSystem/SceneTemplateResolver';
 import Narration from '../core/Narration';
-import tutorial from './tutorial';
-jest.mock('./tutorial', () => ({
-    __esModule: true,
-    id: 'tutorial',
-}));
-jest.mock('../core/Narration');
+import Scene from '../core/Scene';
 
 describe('NarrationsCatalogue', () => {
-    describe('getNarration', () => {
-        let narrationsCatalogue: NarrationsCatalogue;
-        let narrationMock: jest.Mock;
-        let narration: Narration;
-        let initialize: jest.SpyInstance;
-        beforeEach(() => {
-            initialize = jest.fn();
-            narration = ({
-                initialize,
-            } as unknown) as Narration;
-            narrationMock = (Narration as unknown) as jest.Mock;
-            narrationMock.mockReturnValue(narration);
-            narrationsCatalogue = new NarrationsCatalogue();
-        });
+    class MyNarrationsCatalogue extends NarrationsCatalogue {
+        fetchNarrations(): Promise<Narration[]> {
+            throw new Error('Method not implemented.');
+        }
+    }
 
-        it('throws an error when asked about an unknown narration', () => {
-            try {
-                narrationsCatalogue.getNarration('foo');
-                fail('error expected');
-            } catch (err) {}
-        });
-
-        it('returns the narration', () => {
-            const tutorial = narrationsCatalogue.getNarration('Tutorial');
-            expect(tutorial).toEqual(narration);
-        });
-
-        it('instantiates the narration with its title', () => {
-            narrationsCatalogue.getNarration('Tutorial');
-            expect(narrationMock).toHaveBeenCalledWith({ title: 'Tutorial' });
-        });
-
-        it('initializes the narration with the scene template', () => {
-            narrationsCatalogue.getNarration('Tutorial');
-            expect(initialize).toHaveBeenCalledWith(tutorial);
+    let scene: Scene;
+    let narrationsCatalogue: NarrationsCatalogue;
+    beforeEach(() => {
+        scene = ({
+            id: 'scene',
+        } as unknown) as Scene;
+        const sceneTemplateResolver = ({
+            fetchScene: jest.fn().mockReturnValue(scene),
+        } as unknown) as SceneTemplateResolver;
+        narrationsCatalogue = new MyNarrationsCatalogue({
+            sceneTemplateResolver,
         });
     });
 
-    describe('getNarrationsTitles', () => {
-        let narrationsCatalogue: NarrationsCatalogue;
+    describe('initializeNarration', () => {
+        let narration: Narration;
+        let setCurrentScene: jest.SpyInstance;
         beforeEach(() => {
-            narrationsCatalogue = new NarrationsCatalogue();
+            setCurrentScene = jest.fn();
+            narration = ({
+                setCurrentScene,
+            } as unknown) as Narration;
         });
 
-        it('returns narration titles', () => {
-            const narrationTitles = narrationsCatalogue.getNarrationTitles();
-            expect(narrationTitles.length).toBeGreaterThan(0);
+        it('sets the scene returned by the scene template resolver in the narration', async () => {
+            await narrationsCatalogue.initializeNarration(narration);
+            expect(setCurrentScene).toHaveBeenCalledWith(scene);
         });
 
-        it('each title refers to a known narration', () => {
-            const narrationTitles = narrationsCatalogue.getNarrationTitles();
-            narrationTitles.forEach((title) => {
-                const tutorial = narrationsCatalogue.getNarration(title);
-                expect(tutorial).toBeDefined();
-            });
+        it('returns the narration', async () => {
+            const returnedNarration = await narrationsCatalogue.initializeNarration(
+                narration
+            );
+            expect(returnedNarration).toEqual(narration);
         });
     });
 });

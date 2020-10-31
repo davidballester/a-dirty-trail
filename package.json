@@ -14,12 +14,11 @@
         "/build"
     ],
     "scripts": {
-        "buildSceneTemplates": "node markdownAssetsProcessor.js src src",
-        "prebuild": "rimraf ./build && npm run buildSceneTemplates",
+        "prebuild": "rimraf ./build",
         "build": "tsc",
         "predev": "npm run build",
         "prepare": "npm run build",
-        "test": "jest src/.*.spec.ts tests/.*.spec.ts",
+        "test": "jest src/.*.spec.ts",
         "test-coverage": "npm run test -- --coverage",
         "lint": "eslint --max-warnings=0 src --ext=.ts",
         "lint-fix": "npm run lint -- --fix"
@@ -32,6 +31,7 @@
     "dependencies": {
         "@types/jest": "^26.0.15",
         "install": "^0.13.0",
+        "markdown-yaml-metadata-parser": "^2.1.1",
         "npm": "^6.14.8",
         "ts-node": "^9.0.0",
         "uuid": "^8.3.0"
@@ -50,7 +50,6 @@
         "husky": "^4.3.0",
         "jest": "^26.6.0",
         "jest-when": "^2.8.0",
-        "markdown-yaml-metadata-parser": "^2.1.1",
         "prettier": "^2.1.2",
         "pretty-quick": "^3.1.0",
         "rimraf": "^3.0.2",

@@ -1,7 +1,6 @@
 import MarkdownText from '../core/MarkdownText';
 
 interface SceneTemplate {
-    modulePath?: string;
     metadata: SceneTemplateMetadata;
     setup: MarkdownText;
 }
@@ -15,7 +14,7 @@ export interface SceneTemplateMetadata {
 
 export interface ActionTemplate {
     sideEffect?: SideEffectTemplate;
-    goTo: string;
+    nextSceneTitle: string;
 }
 
 export interface SideEffectTemplate {

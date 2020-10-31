@@ -2,15 +2,72 @@
 
 A minimalistic narrative-first game with simple mechanics.
 
-## How to use
+## What's here
 
-First, access the narrations catalogue and choose a narration:
+The model, mechanics and most of the bootstrapping utilities to set up games.
+
+_But, where are the actual narratives?_
+
+You provide them! With simple YAML metadata in markdown files, you create your own narratives.
+
+_Oh, so with that, I got myself a working game?_
+
+Almost there, but not yet. You also need to write some code to fetch the scenes of your narratives as the game goes on. It's quite simple, though, don't worry.
+
+## Set up
+
+You'll need to extend two abstract classes: [NarrationsCatalogue](src/narrations/NarrationsCatalogue) and [SceneTemplateResolver](src/templateSystem/SceneTemplateResolver).
+
+For the first one, `NarrationsCatalogue`, implement `fetchNarrations`. Here's an example on how to do it assuming you're fetching data from a remote API:
 
 ```ts
-import { NarrationsCatalogue, Narration } from 'a-dirty-trail'
-...
-const narrationTitles: string[] = narrationsCatalogue.getNarrationTitles()
-const narration: Narration = narrationsCatalogue.getNarration('Tutorial')
+import { NarrationsCatalogue, Narration } from 'a-dirty-trail';
+
+class MyNarrationsCatalogue extends NarrationsCatalogue {
+    abstract fetchNarrations(): Promise<Narration[]> {
+        const titles = await fetch('https://mysite.tech/narrations');
+        return titles.map((title) => new Narration({ title }));
+    }
+}
+```
+
+Now you also need to extend `SceneTemplateResolver` and implement `fetchMarkdownSceneTemplate`. Another example right below:
+
+```ts
+import { SceneTemplateResolver } from 'a-dirty-trail';
+
+class MySceneTemplateResolver extends SceneTemplateResolver {
+    protected abstract fetchMarkdownSceneTemplate(
+        narrationTitle: string,
+        sceneTitle?: string
+    ): Promise<string> {
+        return fetch(
+            `https://mysite.tech/narrations/${narrationTitle}/${sceneTitle}.md`
+        );
+    }
+}
+```
+
+You're done with the development bits! Now, to the usage.
+
+## How to use
+
+First, instantiate your `SceneTemplateResolver` and `NarrationsCatalogue`:
+
+```ts
+const sceneTemplateResolver = new MySceneTemplateResolver();
+const narrationsCatalogue = new MyNarrationsCatalogue({
+    sceneTemplateResolver,
+});
+```
+
+Then, access the list of narrations and pick one
+
+```ts
+import { Narration } from 'a-dirty-trail'
+
+const narrations: Narration[] = await narrationsCatalogue.fetchNarrations()
+const myNarration = narrations[0
 ```
 
 A narration is a set of scenes. Each narration holds a reference to the current scene you can access.
@@ -76,8 +133,6 @@ There is a single build step.
 ```
 npm run build
 ```
-
-Part of this step is turning the Markdown files of the scenes that compose narrations into TS files. These are stored along the original MD files. **Do not modify the TS files yourself.** They will be overwritten. Modify the Markdown files itself.
 
 ## Template language
 

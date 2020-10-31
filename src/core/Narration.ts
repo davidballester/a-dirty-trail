@@ -1,5 +1,3 @@
-import SceneBuilder from '../templateSystem/SceneBuilder';
-import SceneTemplate from '../templateSystem/SceneTemplate';
 import Scene from './Scene';
 
 class Narration {
@@ -24,16 +22,6 @@ class Narration {
 
     loadNextScene(nextScene: Scene): void {
         this.currentScene = nextScene;
-    }
-
-    initialize(sceneTemplate: SceneTemplate): Scene {
-        const sceneBuilder = new SceneBuilder({
-            sceneTemplate,
-            narration: this,
-        });
-        const scene = sceneBuilder.build();
-        this.loadNextScene(scene);
-        return scene;
     }
 }
 

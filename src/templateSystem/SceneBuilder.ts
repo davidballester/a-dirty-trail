@@ -7,22 +7,27 @@ import SceneActionBuilder from './SceneActionBuilder';
 import NonPlayableActor from '../core/NonPlayableActor';
 import NonPlayableActorBuilder from './NonPlayableActorBuilder';
 import ActorBuilder from './ActorBuilder';
+import SceneTemplateResolver from './SceneTemplateResolver';
 
 class SceneBuilder {
+    private sceneTemplateResolver: SceneTemplateResolver;
     private sceneTemplate: SceneTemplate;
     private narration: Narration;
     private player: Actor;
     private scene?: Scene;
 
     constructor({
+        sceneTemplateResolver,
         sceneTemplate,
         narration,
         player,
     }: {
+        sceneTemplateResolver: SceneTemplateResolver;
         sceneTemplate: SceneTemplate;
         narration: Narration;
         player?: Actor;
     }) {
+        this.sceneTemplateResolver = sceneTemplateResolver;
         this.sceneTemplate = sceneTemplate;
         this.narration = narration;
         if (!player && !this.sceneTemplate.metadata.player) {
@@ -68,6 +73,7 @@ class SceneBuilder {
             return [];
         }
         const sceneActionBuilder = new SceneActionBuilder({
+            sceneTemplateResolver: this.sceneTemplateResolver,
             narration: this.narration,
             scene: scene,
             resolvePlaceholders: (string: string) =>

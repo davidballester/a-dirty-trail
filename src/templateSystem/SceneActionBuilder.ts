@@ -3,33 +3,32 @@ import Narration from '../core/Narration';
 import SceneTemplate, { SideEffectTemplate } from './SceneTemplate';
 import AdvanceAction from '../actions/AdvanceAction';
 import Scene from '../core/Scene';
-import NextSceneDeciderBuilder from './NextSceneDeciderBuilder';
 import { ActionTemplate } from './SceneTemplate';
 import SideEffectBuilder from './SideEffectBuilder';
+import SceneTemplateResolver from './SceneTemplateResolver';
 
 class SceneActionBuilder {
+    private sceneTemplateResolver: SceneTemplateResolver;
     private sceneTemplate: SceneTemplate;
-    private sceneTemplatePath: string;
     private scene: Scene;
     private narration: Narration;
     private resolvePlaceholders: (string: string) => string;
 
     constructor({
+        sceneTemplateResolver,
         sceneTemplate,
         scene,
         narration,
         resolvePlaceholders,
     }: {
+        sceneTemplateResolver: SceneTemplateResolver;
         sceneTemplate: SceneTemplate;
         scene: Scene;
         narration: Narration;
         resolvePlaceholders: (string: string) => string;
     }) {
-        if (!sceneTemplate.modulePath) {
-            throw new Error('module path is required');
-        }
+        this.sceneTemplateResolver = sceneTemplateResolver;
         this.sceneTemplate = sceneTemplate;
-        this.sceneTemplatePath = sceneTemplate.modulePath;
         this.scene = scene;
         this.narration = narration;
         this.resolvePlaceholders = resolvePlaceholders;
@@ -78,26 +77,16 @@ class SceneActionBuilder {
             narration: this.narration,
             scene: this.scene,
             name: markdownText,
-            nextSceneDecider: (scene: Scene) => {
-                return this.nextSceneDecider(scene, sceneTemplateAction);
+            nextSceneDecider: () => {
+                return this.sceneTemplateResolver.fetchScene(
+                    this.narration,
+                    sceneTemplateAction.nextSceneTitle
+                );
             },
             sideEffect: (scene: Scene) => {
                 this.sideEffect(scene, sideEffectScript);
             },
         });
-    }
-
-    private nextSceneDecider(
-        scene: Scene,
-        sceneTemplateAction: ActionTemplate
-    ): Promise<Scene> {
-        const nextSceneDecider = new NextSceneDeciderBuilder({
-            narration: this.narration,
-            baseSceneTemplatePath: this.sceneTemplatePath,
-            nextSceneRelativePath: sceneTemplateAction.goTo,
-            player: scene.getPlayer(),
-        });
-        return nextSceneDecider.build();
     }
 
     private buildAdvanceAction(
@@ -110,8 +99,11 @@ class SceneActionBuilder {
             narration: this.narration,
             scene: this.scene,
             name: markdownText,
-            nextSceneDecider: (scene: Scene) => {
-                return this.nextSceneDecider(scene, sceneTemplateAction);
+            nextSceneDecider: () => {
+                return this.sceneTemplateResolver.fetchScene(
+                    this.narration,
+                    sceneTemplateAction.nextSceneTitle
+                );
             },
         });
     }

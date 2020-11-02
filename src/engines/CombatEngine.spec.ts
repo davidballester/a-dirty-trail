@@ -321,12 +321,10 @@ describe('CombatSceneEngine', () => {
     });
 
     describe('getPlayerActions', () => {
-        it('throws an error if it is not the player turn', async () => {
+        it('returns an empty actions map if it is not the player turn', async () => {
             await combatSceneEngine.executePlayerAction(janeDoeAction);
-            try {
-                combatSceneEngine.getPlayerActions();
-                fail('expected an error');
-            } catch (err) {}
+            const playerActions = combatSceneEngine.getPlayerActions();
+            expect(playerActions).toEqual(new ActionsMap({ actions: [] }));
         });
 
         it('returns the actions map', () => {

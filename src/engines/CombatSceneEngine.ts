@@ -53,7 +53,7 @@ class CombatSceneEngine {
     getPlayerActions(): ActionsMap {
         const player = this.scene.getPlayer();
         if (!this.isActorTurn(player)) {
-            throw new Error('Not the turn of the player!');
+            return new ActionsMap({ actions: [] });
         }
         const actionsBuilder = new ActionBuilder({
             scene: this.scene,

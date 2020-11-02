@@ -127,6 +127,11 @@ class CombatSceneEngine {
         const player = this.scene.getPlayer();
         return this.getActorCurrentTurn().equals(player);
     }
+
+    getActorNextTurn(): Actor {
+        const nextTurn = (this.currentTurn + 1) % this.actorsTurns.length;
+        return this.actorsTurns[nextTurn];
+    }
 }
 
 export default CombatSceneEngine;

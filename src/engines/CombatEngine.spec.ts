@@ -358,4 +358,25 @@ describe('CombatSceneEngine', () => {
             expect(isPlayerTurn).toBeFalsy();
         });
     });
+
+    describe('getActorNextTurn', () => {
+        it('returns the first oponent when it is the player first turn', () => {
+            const actorNextTurn = combatSceneEngine.getActorNextTurn();
+            expect(actorNextTurn).toEqual(johnDoe);
+        });
+
+        it('returns the player when it is the first oponent turn', async () => {
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorNextTurn = combatSceneEngine.getActorNextTurn();
+            expect(actorNextTurn).toEqual(janeDoe);
+        });
+
+        it('returns the player when it is last oponent turn', async () => {
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorNextTurn = combatSceneEngine.getActorNextTurn();
+            expect(actorNextTurn).toEqual(janeDoe);
+        });
+    });
 });

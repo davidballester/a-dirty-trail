@@ -25,6 +25,9 @@ class SideEffectBuilder {
         if (this.sideEffectTemplate.rename) {
             this.rename(this.sideEffectTemplate.rename);
         }
+        if (this.sideEffectTemplate.modifyHealth) {
+            this.modifyHealth(this.sideEffectTemplate.modifyHealth);
+        }
     }
 
     private rename(newName: string): void {
@@ -39,6 +42,11 @@ class SideEffectBuilder {
         const lootInventory = inventoryBuilder.build();
         const player = this.scene.getPlayer();
         player.getInventory().loot(lootInventory);
+    }
+
+    private modifyHealth(modifyHealth: number): void {
+        const player = this.scene.getPlayer();
+        player.getHealth().modify(modifyHealth);
     }
 }
 

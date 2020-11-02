@@ -12,6 +12,7 @@ describe(SideEffectBuilder.name, () => {
     let loot: jest.SpyInstance;
     let inventory: Inventory;
     let changeName: jest.SpyInstance;
+    let modifyHealth: jest.SpyInstance;
     let sideEffectTemplate: SideEffectTemplate;
     let sideEffectBuilder: SideEffectBuilder;
     beforeEach(() => {
@@ -20,10 +21,12 @@ describe(SideEffectBuilder.name, () => {
         getInventory = jest.fn().mockReturnValue({
             loot,
         });
+        modifyHealth = jest.fn();
         player = ({
             id: 'player',
             changeName,
             getInventory,
+            getHealth: jest.fn().mockReturnValue({ modify: modifyHealth }),
         } as unknown) as Actor;
         const getPlayer = jest.fn().mockReturnValue(player);
         const scene = ({
@@ -39,6 +42,7 @@ describe(SideEffectBuilder.name, () => {
         sideEffectTemplate = {
             loot: {},
             rename: 'Roland Deschain',
+            modifyHealth: -2,
         };
         sideEffectBuilder = new SideEffectBuilder({
             scene,
@@ -55,6 +59,11 @@ describe(SideEffectBuilder.name, () => {
         it('loots the inventory returned by the inventory builder', () => {
             sideEffectBuilder.build();
             expect(loot).toHaveBeenCalledWith(inventory);
+        });
+
+        it('modifies the health of the player', () => {
+            sideEffectBuilder.build();
+            expect(modifyHealth).toHaveBeenCalledWith(-2);
         });
     });
 });

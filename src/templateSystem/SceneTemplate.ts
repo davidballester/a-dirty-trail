@@ -20,6 +20,7 @@ export interface ActionTemplate {
 export interface SideEffectTemplate {
     loot?: InventoryTemplate;
     rename?: string;
+    modifyHealth?: number;
 }
 
 export interface ActorTemplate {

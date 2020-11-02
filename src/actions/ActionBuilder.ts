@@ -13,9 +13,6 @@ class ActionBuilder {
     protected actor: Actor;
 
     constructor({ scene, actor }: { scene: Scene; actor: Actor }) {
-        if (!scene.containsActor(actor) || !actor.isAlive()) {
-            throw new Error('invalid actor');
-        }
         this.scene = scene;
         this.actor = actor;
     }

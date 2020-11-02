@@ -87,14 +87,6 @@ describe('ActionBuilder', () => {
         new ActionBuilder({ actor: janeDoe, scene });
     });
 
-    it('fails to initialize if the actor is no in the scene', () => {
-        sceneContainsActor.mockReturnValue(false);
-        try {
-            new ActionBuilder({ actor: janeDoe, scene });
-            fail('expected an error');
-        } catch (err) {}
-    });
-
     describe('buildActions', () => {
         let actionBuilder: ActionBuilder;
         beforeEach(() => {

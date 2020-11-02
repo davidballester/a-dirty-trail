@@ -83,14 +83,6 @@ describe('NonPlayableActorActionBuilder', () => {
         new NonPlayableActorActionBuilder({ actor: johnDoe, scene });
     });
 
-    it('fails to initialize if the actor is no in the scene', () => {
-        sceneContainsActor.mockReturnValue(false);
-        try {
-            new NonPlayableActorActionBuilder({ actor: johnDoe, scene });
-            fail('expected an error');
-        } catch (err) {}
-    });
-
     describe('buildActions', () => {
         let actionBuilder: NonPlayableActorActionBuilder;
         beforeEach(() => {

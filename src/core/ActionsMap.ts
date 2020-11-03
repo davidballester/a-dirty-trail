@@ -1,6 +1,7 @@
 import Action from '../actions/Action';
 import AdvanceAction from '../actions/AdvanceAction';
 import AttackAction from '../actions/AttackAction';
+import DiscardWeaponAction from '../actions/DiscardWeaponAction';
 import LootAction from '../actions/LootAction';
 import ReloadAction from '../actions/ReloadAction';
 import ScapeAction from '../actions/ScapeAction';
@@ -31,6 +32,14 @@ class ActionsMap {
     getUnloadActions(): UnloadAction[] {
         const unloadActions = this.innerMap[UnloadAction.TYPE] || [];
         return unloadActions.map((action) => action as UnloadAction);
+    }
+
+    getDiscardWeaponActions(): DiscardWeaponAction[] {
+        const discardWeaponActions =
+            this.innerMap[DiscardWeaponAction.TYPE] || [];
+        return discardWeaponActions.map(
+            (action) => action as DiscardWeaponAction
+        );
     }
 
     getLootActions(): LootAction[] {

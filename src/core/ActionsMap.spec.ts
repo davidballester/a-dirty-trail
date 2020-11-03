@@ -1,6 +1,7 @@
 import Action from '../actions/Action';
 import AdvanceAction from '../actions/AdvanceAction';
 import AttackAction from '../actions/AttackAction';
+import DiscardWeaponAction from '../actions/DiscardWeaponAction';
 import LootAction from '../actions/LootAction';
 import ReloadAction from '../actions/ReloadAction';
 import ScapeAction from '../actions/ScapeAction';
@@ -52,6 +53,7 @@ describe('ActionsMap', () => {
         let attackAction: AttackAction;
         let reloadAction: ReloadAction;
         let unloadAction: UnloadAction;
+        let discardWeaponAction: DiscardWeaponAction;
         let lootAction: LootAction;
         let advanceAction: AdvanceAction;
         let scapeAction: ScapeAction;
@@ -67,6 +69,10 @@ describe('ActionsMap', () => {
             unloadAction = ({
                 id: 'unload-action',
                 getType: jest.fn().mockReturnValue(UnloadAction.TYPE),
+            } as unknown) as UnloadAction;
+            discardWeaponAction = ({
+                id: 'discard-weapon-action',
+                getType: jest.fn().mockReturnValue(DiscardWeaponAction.TYPE),
             } as unknown) as UnloadAction;
             lootAction = ({
                 id: 'loot-action',
@@ -86,6 +92,7 @@ describe('ActionsMap', () => {
                     attackAction,
                     reloadAction,
                     unloadAction,
+                    discardWeaponAction,
                     lootAction,
                     advanceAction,
                     scapeAction,
@@ -111,6 +118,13 @@ describe('ActionsMap', () => {
             it('returns the unload actions', () => {
                 const unloadActions = actionsMap.getUnloadActions();
                 expect(unloadActions).toEqual([unloadAction]);
+            });
+        });
+
+        describe('getDiscardWeaponActions', () => {
+            it('returns the discard weapon actions', () => {
+                const discardWeaponActions = actionsMap.getDiscardWeaponActions();
+                expect(discardWeaponActions).toEqual([discardWeaponAction]);
             });
         });
 

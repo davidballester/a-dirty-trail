@@ -26,6 +26,10 @@ class Inventory extends ThingWithId {
         return this.weapons.getAll();
     }
 
+    removeWeapon(weapon: Weapon): void {
+        this.weapons.remove(weapon);
+    }
+
     getAmmunitionsByType(): AmmunitionByType {
         return this.ammunitions.getByType();
     }
@@ -67,6 +71,12 @@ class WeaponsInventory {
 
     loot(weapons: Weapon[] = []) {
         this.weapons = [...this.weapons, ...weapons];
+    }
+
+    remove(weapon: Weapon): void {
+        this.weapons = this.weapons.filter(
+            (candidate) => !candidate.equals(weapon)
+        );
     }
 }
 

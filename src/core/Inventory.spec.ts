@@ -35,6 +35,27 @@ describe('Inventory', () => {
         expect(weapons).toEqual([revolver]);
     });
 
+    describe('removeWeapon', () => {
+        let inventory: Inventory;
+        beforeEach(() => {
+            inventory = new Inventory({ weapons: [revolver] });
+        });
+
+        it('removes the weapon from the inventory', () => {
+            inventory.removeWeapon(revolver);
+            const weapons = inventory.getWeapons();
+            expect(
+                weapons.find((weapon) => weapon.equals(revolver))
+            ).toBeFalsy();
+        });
+
+        it('does nothing if the weapon is not in the inventory', () => {
+            inventory.removeWeapon(rifle);
+            const weapons = inventory.getWeapons();
+            expect(weapons).toEqual([revolver]);
+        });
+    });
+
     it('gets the ammunitions', () => {
         const inventory = new Inventory({ ammunitionsByType: { bullets: 5 } });
         const ammunitionsByType = inventory.getAmmunitionsByType();

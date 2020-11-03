@@ -6,10 +6,12 @@ import ActionBuilder from './ActionBuilder';
 import AttackAction from './AttackAction';
 import ReloadAction from './ReloadAction';
 import UnloadAction from './UnloadAction';
+import DiscardWeaponAction from './DiscardWeaponAction';
 import LootAction from './LootAction';
 jest.mock('./AttackAction');
-jest.mock('./Reloadaction');
-jest.mock('./Unloadaction');
+jest.mock('./ReloadAction');
+jest.mock('./UnloadAction');
+jest.mock('./DiscardWeaponAction');
 jest.mock('./LootAction');
 
 describe('ActionBuilder', () => {
@@ -30,10 +32,12 @@ describe('ActionBuilder', () => {
     let attackActionMock: jest.Mock;
     let reloadActionMock: jest.Mock;
     let unloadActionMock: jest.Mock;
+    let discardWeaponActionMock: jest.Mock;
     let lootActionMock: jest.Mock;
     let attackActionCanExecute: jest.SpyInstance;
     let reloadActionCanExecute: jest.SpyInstance;
     let unloadActionCanExecute: jest.SpyInstance;
+    let discardWeaponActionCanExecute: jest.SpyInstance;
     let lootActionCanExecute: jest.SpyInstance;
     beforeEach(() => {
         weaponGetAmmunition = jest.fn().mockReturnValue(true);
@@ -85,6 +89,13 @@ describe('ActionBuilder', () => {
         unloadActionMock.mockImplementation(() => ({
             canExecute: unloadActionCanExecute,
             getType: jest.fn().mockReturnValue(UnloadAction.TYPE),
+        }));
+
+        discardWeaponActionMock = (DiscardWeaponAction as unknown) as jest.Mock;
+        discardWeaponActionCanExecute = jest.fn().mockReturnValue(true);
+        discardWeaponActionMock.mockImplementation(() => ({
+            canExecute: discardWeaponActionCanExecute,
+            getType: jest.fn().mockReturnValue(DiscardWeaponAction.TYPE),
         }));
 
         lootActionMock = (LootAction as unknown) as jest.Mock;
@@ -205,6 +216,32 @@ describe('ActionBuilder', () => {
                     .buildActions()
                     .getUnloadActions();
                 expect(unloadActions.length).toEqual(0);
+            });
+        });
+
+        describe('discard weapon actions', () => {
+            it('creates a discard weapon action with the expected arguments', () => {
+                actionBuilder.buildActions();
+                expect(discardWeaponActionMock).toHaveBeenCalledWith({
+                    actor: janeDoe,
+                    scene,
+                    weapon,
+                });
+            });
+
+            it('returns a discard weapon action', () => {
+                const discardWeaponActions = actionBuilder
+                    .buildActions()
+                    .getDiscardWeaponActions();
+                expect(discardWeaponActions.length).toEqual(1);
+            });
+
+            it('does not return the discard weapon if it cannot be executed', () => {
+                discardWeaponActionCanExecute.mockReturnValue(false);
+                const discardWeaponActions = actionBuilder
+                    .buildActions()
+                    .getDiscardWeaponActions();
+                expect(discardWeaponActions.length).toEqual(0);
             });
         });
 

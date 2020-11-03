@@ -5,6 +5,7 @@ import NonPlayableActor from '../core/NonPlayableActor';
 import Scene from '../core/Scene';
 import Weapon from '../core/Weapon';
 import AttackAction from './AttackAction';
+import DiscardWeaponAction from './DiscardWeaponAction';
 import LootAction from './LootAction';
 import ReloadAction from './ReloadAction';
 import UnloadAction from './UnloadAction';
@@ -22,12 +23,14 @@ class ActionBuilder {
         const attackActions = this.buildAttackActions();
         const reloadActions = this.buildReloadActions();
         const unloadActions = this.buildUnloadActions();
+        const discardWeaponsActions = this.buildDiscardWeaponActions();
         const lootActions = this.buildLootActions();
         const sceneActions = this.scene.getActions();
         const actions = [
             ...attackActions,
             ...reloadActions,
             ...unloadActions,
+            ...discardWeaponsActions,
             ...lootActions,
             ...sceneActions,
         ];
@@ -106,6 +109,22 @@ class ActionBuilder {
             scene: this.scene,
             actor: this.actor,
             weapon: firearm,
+        });
+    }
+
+    protected buildDiscardWeaponActions(): DiscardWeaponAction[] {
+        const weapons = this.actor.getInventory().getWeapons();
+        const discardWeaponActions = weapons.map((weapon) =>
+            this.buildDiscardWeaponAction(weapon)
+        );
+        return discardWeaponActions;
+    }
+
+    protected buildDiscardWeaponAction(weapon: Weapon): DiscardWeaponAction {
+        return new DiscardWeaponAction({
+            scene: this.scene,
+            actor: this.actor,
+            weapon,
         });
     }
 

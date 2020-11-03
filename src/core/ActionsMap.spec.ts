@@ -4,6 +4,7 @@ import AttackAction from '../actions/AttackAction';
 import LootAction from '../actions/LootAction';
 import ReloadAction from '../actions/ReloadAction';
 import ScapeAction from '../actions/ScapeAction';
+import UnloadAction from '../actions/UnloadAction';
 import ActionsMap from './ActionsMap';
 
 describe('ActionsMap', () => {
@@ -50,6 +51,7 @@ describe('ActionsMap', () => {
     describe('get specific action types', () => {
         let attackAction: AttackAction;
         let reloadAction: ReloadAction;
+        let unloadAction: UnloadAction;
         let lootAction: LootAction;
         let advanceAction: AdvanceAction;
         let scapeAction: ScapeAction;
@@ -62,6 +64,10 @@ describe('ActionsMap', () => {
                 id: 'reload-action',
                 getType: jest.fn().mockReturnValue(ReloadAction.TYPE),
             } as unknown) as ReloadAction;
+            unloadAction = ({
+                id: 'unload-action',
+                getType: jest.fn().mockReturnValue(UnloadAction.TYPE),
+            } as unknown) as UnloadAction;
             lootAction = ({
                 id: 'loot-action',
                 getType: jest.fn().mockReturnValue(LootAction.TYPE),
@@ -79,6 +85,7 @@ describe('ActionsMap', () => {
                 actions: [
                     attackAction,
                     reloadAction,
+                    unloadAction,
                     lootAction,
                     advanceAction,
                     scapeAction,
@@ -97,6 +104,13 @@ describe('ActionsMap', () => {
             it('returns the reload actions', () => {
                 const reloadActions = actionsMap.getReloadActions();
                 expect(reloadActions).toEqual([reloadAction]);
+            });
+        });
+
+        describe('getUnloadActions', () => {
+            it('returns the unload actions', () => {
+                const unloadActions = actionsMap.getUnloadActions();
+                expect(unloadActions).toEqual([unloadAction]);
             });
         });
 

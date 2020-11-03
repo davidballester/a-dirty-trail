@@ -4,6 +4,7 @@ import AttackAction from '../actions/AttackAction';
 import LootAction from '../actions/LootAction';
 import ReloadAction from '../actions/ReloadAction';
 import ScapeAction from '../actions/ScapeAction';
+import UnloadAction from '../actions/UnloadAction';
 
 class ActionsMap {
     private innerMap: InnerMap;
@@ -25,6 +26,11 @@ class ActionsMap {
     getReloadActions(): ReloadAction[] {
         const reloadActions = this.innerMap[ReloadAction.TYPE] || [];
         return reloadActions.map((action) => action as ReloadAction);
+    }
+
+    getUnloadActions(): UnloadAction[] {
+        const unloadActions = this.innerMap[UnloadAction.TYPE] || [];
+        return unloadActions.map((action) => action as UnloadAction);
     }
 
     getLootActions(): LootAction[] {

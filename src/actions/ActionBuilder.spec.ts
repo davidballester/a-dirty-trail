@@ -5,9 +5,11 @@ import Weapon from '../core/Weapon';
 import ActionBuilder from './ActionBuilder';
 import AttackAction from './AttackAction';
 import ReloadAction from './ReloadAction';
+import UnloadAction from './UnloadAction';
 import LootAction from './LootAction';
 jest.mock('./AttackAction');
 jest.mock('./Reloadaction');
+jest.mock('./Unloadaction');
 jest.mock('./LootAction');
 
 describe('ActionBuilder', () => {
@@ -27,9 +29,11 @@ describe('ActionBuilder', () => {
 
     let attackActionMock: jest.Mock;
     let reloadActionMock: jest.Mock;
+    let unloadActionMock: jest.Mock;
     let lootActionMock: jest.Mock;
     let attackActionCanExecute: jest.SpyInstance;
     let reloadActionCanExecute: jest.SpyInstance;
+    let unloadActionCanExecute: jest.SpyInstance;
     let lootActionCanExecute: jest.SpyInstance;
     beforeEach(() => {
         weaponGetAmmunition = jest.fn().mockReturnValue(true);
@@ -75,6 +79,14 @@ describe('ActionBuilder', () => {
             canExecute: reloadActionCanExecute,
             getType: jest.fn().mockReturnValue(ReloadAction.TYPE),
         }));
+
+        unloadActionMock = (UnloadAction as unknown) as jest.Mock;
+        unloadActionCanExecute = jest.fn().mockReturnValue(true);
+        unloadActionMock.mockImplementation(() => ({
+            canExecute: unloadActionCanExecute,
+            getType: jest.fn().mockReturnValue(UnloadAction.TYPE),
+        }));
+
         lootActionMock = (LootAction as unknown) as jest.Mock;
         lootActionCanExecute = jest.fn().mockReturnValue(true);
         lootActionMock.mockImplementation(() => ({
@@ -159,6 +171,40 @@ describe('ActionBuilder', () => {
                     .buildActions()
                     .getReloadActions();
                 expect(reloadActions.length).toEqual(0);
+            });
+        });
+
+        describe('unload actions', () => {
+            it('creates an unload action with the expected arguments', () => {
+                actionBuilder.buildActions();
+                expect(unloadActionMock).toHaveBeenCalledWith({
+                    actor: janeDoe,
+                    scene,
+                    weapon,
+                });
+            });
+
+            it('returns an unload action', () => {
+                const unloadActions = actionBuilder
+                    .buildActions()
+                    .getUnloadActions();
+                expect(unloadActions.length).toEqual(1);
+            });
+
+            it('does not return an unload action if the weapon does not use ammunition', () => {
+                weaponGetAmmunition.mockReturnValue(false);
+                const unloadActions = actionBuilder
+                    .buildActions()
+                    .getUnloadActions();
+                expect(unloadActions.length).toEqual(0);
+            });
+
+            it('does not return the unload action if it cannot be executed', () => {
+                unloadActionCanExecute.mockReturnValue(false);
+                const unloadActions = actionBuilder
+                    .buildActions()
+                    .getUnloadActions();
+                expect(unloadActions.length).toEqual(0);
             });
         });
 

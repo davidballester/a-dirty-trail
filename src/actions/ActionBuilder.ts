@@ -7,6 +7,7 @@ import Weapon from '../core/Weapon';
 import AttackAction from './AttackAction';
 import LootAction from './LootAction';
 import ReloadAction from './ReloadAction';
+import UnloadAction from './UnloadAction';
 
 class ActionBuilder {
     protected scene: Scene;
@@ -20,11 +21,13 @@ class ActionBuilder {
     buildActions(): ActionsMap {
         const attackActions = this.buildAttackActions();
         const reloadActions = this.buildReloadActions();
+        const unloadActions = this.buildUnloadActions();
         const lootActions = this.buildLootActions();
         const sceneActions = this.scene.getActions();
         const actions = [
             ...attackActions,
             ...reloadActions,
+            ...unloadActions,
             ...lootActions,
             ...sceneActions,
         ];
@@ -81,6 +84,25 @@ class ActionBuilder {
 
     protected buildReloadAction(firearm: Firearm): ReloadAction {
         return new ReloadAction({
+            scene: this.scene,
+            actor: this.actor,
+            weapon: firearm,
+        });
+    }
+
+    protected buildUnloadActions(): UnloadAction[] {
+        const weapons = this.actor.getInventory().getWeapons();
+        const firearms = weapons
+            .filter((weapon) => !!weapon.getAmmunition())
+            .map((weapon) => weapon as Firearm);
+        const unloadActions = firearms.map((weapon) =>
+            this.buildUnloadAction(weapon)
+        );
+        return unloadActions;
+    }
+
+    protected buildUnloadAction(firearm: Firearm): UnloadAction {
+        return new UnloadAction({
             scene: this.scene,
             actor: this.actor,
             weapon: firearm,

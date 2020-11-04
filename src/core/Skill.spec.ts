@@ -70,7 +70,7 @@ describe('Skill', () => {
         });
     });
 
-    describe('rollSuccessWithOpposition', () => {
+    describe('rollSuccessWithModifier', () => {
         let randomGetRandom: jest.SpyInstance;
         let skill: Skill;
         beforeEach(() => {
@@ -83,19 +83,19 @@ describe('Skill', () => {
 
         it('succeeds if the random number is lower than the probability of success minus the opposition', () => {
             randomGetRandom.mockReturnValue(0.1);
-            const result = skill.rollSuccessWithOpposition(0.1);
+            const result = skill.rollSuccessWithModifier(-0.1);
             expect(result).toBeTruthy();
         });
 
         it('succeeds if the random number is equal than the probability of success minus the opposition', () => {
             randomGetRandom.mockReturnValue(0.4);
-            const result = skill.rollSuccessWithOpposition(0.1);
+            const result = skill.rollSuccessWithModifier(-0.1);
             expect(result).toBeTruthy();
         });
 
         it('fails if the random number is higher than the probability of success minus the opposition', () => {
             randomGetRandom.mockReturnValue(0.4);
-            const result = skill.rollSuccessWithOpposition(0.2);
+            const result = skill.rollSuccessWithModifier(-0.2);
             expect(result).toBeFalsy();
         });
     });

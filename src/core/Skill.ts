@@ -29,11 +29,11 @@ class Skill extends ThingWithId {
     }
 
     rollSuccess(): boolean {
-        return this.rollSuccessWithOpposition(0);
+        return this.rollSuccessWithModifier(0);
     }
 
-    rollSuccessWithOpposition(opposition: number): boolean {
-        const level = this.getProbabilityOfSuccess() - opposition;
+    rollSuccessWithModifier(modifier: number): boolean {
+        const level = this.getProbabilityOfSuccess() + modifier;
         const random = Random.getRandom();
         return random <= level;
     }

@@ -14,7 +14,8 @@ export interface SceneTemplateMetadata {
 
 export interface ActionTemplate {
     sideEffect?: SideEffectTemplate;
-    nextSceneTitle: string;
+    check?: CheckTemplate;
+    nextSceneTitle?: string;
 }
 
 export interface SideEffectTemplate {
@@ -52,6 +53,17 @@ export interface WeaponTemplate {
     ammunitionType?: string;
     ammunition?: string;
     canBeLooted?: boolean;
+}
+
+export interface CheckTemplate {
+    skill: string;
+    modifier?: number;
+    success: CheckTemplateResolution;
+    failure: CheckTemplateResolution;
+}
+
+export interface CheckTemplateResolution {
+    nextSceneTitle: string;
 }
 
 export default SceneTemplate;

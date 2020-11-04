@@ -158,4 +158,26 @@ describe('Inventory', () => {
             });
         });
     });
+
+    describe('hasTrinket', () => {
+        let inventory: Inventory;
+        beforeEach(() => {
+            inventory = new Inventory({ trinkets: [watch] });
+        });
+
+        it('returns true if the inventory has the specified trinket', () => {
+            const response = inventory.hasTrinket('watch');
+            expect(response).toBeTruthy();
+        });
+
+        it('returns true if the inventory has the specified trinket with different notation', () => {
+            const response = inventory.hasTrinket(' Watch  ');
+            expect(response).toBeTruthy();
+        });
+
+        it('returns false if the inventory does not have the specified trinket with different notation', () => {
+            const response = inventory.hasTrinket('match');
+            expect(response).toBeFalsy;
+        });
+    });
 });

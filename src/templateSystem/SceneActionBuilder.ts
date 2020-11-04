@@ -7,6 +7,7 @@ import AdvanceAction, {
 import Scene from '../core/Scene';
 import {
     CheckTemplate,
+    ConditionTemplate,
     SceneActionTemplate,
     SideEffectTemplate,
 } from './SceneActionTemplate';
@@ -45,16 +46,42 @@ class SceneActionBuilder {
         if (!sceneTemplateActions) {
             return [];
         }
-        return Object.keys(sceneTemplateActions).map(
-            (sceneTemplateActionText) => {
+        return Object.keys(sceneTemplateActions)
+            .map((sceneTemplateActionText): AdvanceAction | undefined => {
                 const sceneTemplateAction =
                     sceneTemplateActions[sceneTemplateActionText];
-                return this.buildAction(
-                    sceneTemplateActionText,
-                    sceneTemplateAction
-                );
-            }
+                if (this.meetsActionCondition(sceneTemplateAction.condition)) {
+                    return this.buildAction(
+                        sceneTemplateActionText,
+                        sceneTemplateAction
+                    );
+                }
+            })
+            .filter(Boolean) as AdvanceAction[];
+    }
+
+    private meetsActionCondition(
+        condition: ConditionTemplate | undefined
+    ): boolean {
+        if (!condition) {
+            return true;
+        }
+        const mandatoryTrinket = condition.hasTrinket;
+        const hasMandatoryTrinket =
+            !!mandatoryTrinket && this.playerHasTrinket(mandatoryTrinket);
+        const forbiddenTrinket = condition.doesNotHaveTrinket;
+        const hasForbiddenTrinket =
+            !!forbiddenTrinket && this.playerHasTrinket(forbiddenTrinket);
+        return (
+            (!mandatoryTrinket || hasMandatoryTrinket) &&
+            (!hasForbiddenTrinket || !hasForbiddenTrinket)
         );
+    }
+
+    private playerHasTrinket(trinketName: string): boolean {
+        const player = this.scene.getPlayer();
+        const inventory = player.getInventory();
+        return inventory.hasTrinket(trinketName);
     }
 
     private buildAction(

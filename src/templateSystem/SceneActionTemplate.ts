@@ -4,6 +4,7 @@ export interface SceneActionTemplate {
     sideEffect?: SideEffectTemplate;
     check?: CheckTemplate;
     nextSceneTitle?: string;
+    condition?: ConditionTemplate;
 }
 
 export interface SideEffectTemplate {
@@ -21,4 +22,9 @@ export interface CheckTemplate {
 
 export interface CheckTemplateResolution {
     nextSceneTitle: string;
+}
+
+export interface ConditionTemplate {
+    hasTrinket?: string;
+    doesNotHaveTrinket?: string;
 }

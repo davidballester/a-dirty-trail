@@ -23,6 +23,7 @@ describe(SceneActionBuilder.name, () => {
     let sceneTemplateResolver: SceneTemplateResolver;
     let nextScene: Scene;
     let fetchScene: jest.SpyInstance;
+    let hasTrinket: jest.SpyInstance;
     beforeEach(() => {
         sideEffectTemplate = ('a side effect' as unknown) as SideEffectTemplate;
         sceneTemplate = ({
@@ -48,6 +49,37 @@ describe(SceneActionBuilder.name, () => {
                             },
                         },
                     },
+                    'Give the watch': {
+                        condition: {
+                            hasTrinket: 'watch',
+                        },
+                        nextSceneTitle: 'corge.md',
+                    },
+                    'Give the matches': {
+                        condition: {
+                            hasTrinket: 'matches',
+                        },
+                        nextSceneTitle: 'graulpy.md',
+                    },
+                    '"Sorry, I have no watch"': {
+                        condition: {
+                            doesNotHaveTrinket: 'watch',
+                        },
+                        nextSceneTitle: 'grault.md',
+                    },
+                    '"Sorry, I have no matches"': {
+                        condition: {
+                            doesNotHaveTrinket: 'matches',
+                        },
+                        nextSceneTitle: 'grault.md',
+                    },
+                    'Work something out': {
+                        condition: {
+                            doesNotHaveTrinket: 'matches',
+                            hasTrinket: 'watch',
+                        },
+                        nextSceneTitle: 'grault.md',
+                    },
                 },
             },
         } as unknown) as SceneTemplate;
@@ -57,8 +89,16 @@ describe(SceneActionBuilder.name, () => {
         resolvePlaceholders = jest
             .fn()
             .mockImplementation((source: string) => source);
+        hasTrinket = jest.fn();
+        when(hasTrinket)
+            .mockReturnValue(false)
+            .calledWith('watch')
+            .mockReturnValue(true);
         actor = ({
             id: 'actor',
+            getInventory: jest.fn().mockReturnValue({
+                hasTrinket,
+            }),
         } as unknown) as Actor;
         const getPlayer = jest.fn().mockReturnValue(actor);
         scene = ({
@@ -246,6 +286,68 @@ describe(SceneActionBuilder.name, () => {
                     );
                     expect(nextScene).toEqual('failureScene');
                 });
+            });
+        });
+
+        describe('condition', () => {
+            it('creates the action that requires of a trinket the player has', () => {
+                sceneActionBuilder.build();
+                expect(advanceActionMock).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        actor,
+                        narration,
+                        scene,
+                        name: 'Give the watch',
+                    })
+                );
+            });
+
+            it('creates the action that requires not having a trinket the player does not have', () => {
+                sceneActionBuilder.build();
+                expect(advanceActionMock).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        actor,
+                        narration,
+                        scene,
+                        name: '"Sorry, I have no matches"',
+                    })
+                );
+            });
+
+            it('does not create the action that requires of not having a trinket the player has', () => {
+                sceneActionBuilder.build();
+                expect(advanceActionMock).not.toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        actor,
+                        narration,
+                        scene,
+                        name: '"Sorry, I have no watch"',
+                    })
+                );
+            });
+
+            it('does not create the action that requires of a trinket the player does not have', () => {
+                sceneActionBuilder.build();
+                expect(advanceActionMock).not.toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        actor,
+                        narration,
+                        scene,
+                        name: 'Give the matches',
+                    })
+                );
+            });
+
+            it('creates an action that requires a trinket the player has and not having a trinket the player does not have', () => {
+                sceneActionBuilder.build();
+                expect(advanceActionMock).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        actor,
+                        narration,
+                        scene,
+                        name: 'Work something out',
+                    })
+                );
             });
         });
     });

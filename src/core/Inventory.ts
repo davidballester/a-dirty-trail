@@ -54,6 +54,10 @@ class Inventory extends ThingWithId {
         });
         return loot;
     }
+
+    hasTrinket(trinketName: string): boolean {
+        return this.trinkets.has(trinketName);
+    }
 }
 
 export default Inventory;
@@ -119,5 +123,13 @@ class TrinketInventory {
 
     loot(trinkets: Trinket[]) {
         this.trinkets = [...this.trinkets, ...trinkets];
+    }
+
+    has(trinketName = ''): boolean {
+        return !!this.trinkets.find(
+            (trinket) =>
+                trinket.getName().trim().toLowerCase() ===
+                trinketName.trim().toLowerCase()
+        );
     }
 }

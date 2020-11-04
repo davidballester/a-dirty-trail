@@ -1,6 +1,6 @@
 import NonPlayableActorBuilder from './NonPlayableActorBuilder';
 import ActorBuilder from './ActorBuilder';
-import SceneTemplate from './SceneTemplate';
+import { SceneTemplate } from './SceneTemplate';
 import { v4 as uuidv4 } from 'uuid';
 import NonPlayableActor from '../core/NonPlayableActor';
 import Health from '../core/Health';

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Scene from '../core/Scene';
-import { InventoryTemplate, SideEffectTemplate } from './SceneTemplate';
+import { InventoryTemplate } from './InventoryTemplate';
 import InventoryBuilder from './InventoryBuilder';
+import { SideEffectTemplate } from './SceneActionTemplate';
 
 class SideEffectBuilder {
     private scene: Scene;

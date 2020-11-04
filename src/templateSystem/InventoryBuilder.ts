@@ -8,7 +8,7 @@ import {
     InventoryTemplate,
     TrinketTemplate,
     WeaponTemplate,
-} from './SceneTemplate';
+} from './InventoryTemplate';
 
 class InventoryBuilder {
     private inventoryTemplate: InventoryTemplate;

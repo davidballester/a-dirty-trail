@@ -1,14 +1,15 @@
 import Narration from '../core/Narration';
-import SceneTemplate, {
-    CheckTemplate,
-    SideEffectTemplate,
-} from './SceneTemplate';
+import { SceneTemplate } from './SceneTemplate';
 import AdvanceAction, {
     NextSceneDecider,
     SideEffect,
 } from '../actions/AdvanceAction';
 import Scene from '../core/Scene';
-import { ActionTemplate } from './SceneTemplate';
+import {
+    CheckTemplate,
+    SceneActionTemplate,
+    SideEffectTemplate,
+} from './SceneActionTemplate';
 import SideEffectBuilder from './SideEffectBuilder';
 import SceneTemplateResolver from './SceneTemplateResolver';
 
@@ -58,7 +59,7 @@ class SceneActionBuilder {
 
     private buildAction(
         text: string,
-        sceneTemplateAction: ActionTemplate
+        sceneTemplateAction: SceneActionTemplate
     ): AdvanceAction {
         const markdownText = this.resolvePlaceholders(text);
         const sideEffectScript = sceneTemplateAction.sideEffect;
@@ -90,7 +91,7 @@ class SceneActionBuilder {
     }
 
     private buildNextSceneDecider(
-        sceneTemplateAction: ActionTemplate
+        sceneTemplateAction: SceneActionTemplate
     ): NextSceneDecider {
         if (sceneTemplateAction.nextSceneTitle) {
             return () => {

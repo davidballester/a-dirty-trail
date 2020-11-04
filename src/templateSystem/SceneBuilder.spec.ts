@@ -1,13 +1,14 @@
 import Actor from '../core/Actor';
 import Narration from '../core/Narration';
 import SceneBuilder from './SceneBuilder';
-import SceneTemplate, { ActorTemplate } from './SceneTemplate';
+import { SceneTemplate, ActorTemplate } from './SceneTemplate';
 import Scene from '../core/Scene';
 import SceneActionBuilder from './SceneActionBuilder';
 import AdvanceAction from '../actions/AdvanceAction';
 import NonPlayableActorBuilder from './NonPlayableActorBuilder';
 import ActorBuilder from './ActorBuilder';
 import NonPlayableActor from '../core/NonPlayableActor';
+import SceneTemplateResolver from './SceneTemplateResolver';
 jest.mock('../core/Scene');
 jest.mock('./SceneActionBuilder');
 jest.mock('./NonPlayableActorBuilder');
@@ -18,6 +19,7 @@ describe(SceneBuilder.name, () => {
     let narration: Narration;
     let player: Actor;
     let sceneTemplate: SceneTemplate;
+    let sceneTemplateResolver: SceneTemplateResolver;
     beforeEach(() => {
         narration = ({
             id: 'narration',
@@ -34,6 +36,9 @@ describe(SceneBuilder.name, () => {
                 actions: [],
             },
         } as unknown) as SceneTemplate;
+        sceneTemplateResolver = ({
+            id: 'sceneTemplateResolver',
+        } as unknown) as SceneTemplateResolver;
     });
 
     it('throws if neither a player nor an actor template is provided', () => {
@@ -42,6 +47,7 @@ describe(SceneBuilder.name, () => {
                 new SceneBuilder({
                     narration,
                     sceneTemplate,
+                    sceneTemplateResolver,
                 })
         ).toThrow();
     });
@@ -72,6 +78,7 @@ describe(SceneBuilder.name, () => {
             new SceneBuilder({
                 narration,
                 sceneTemplate,
+                sceneTemplateResolver,
             });
             expect(actorBuilder).toHaveBeenCalledWith({ actorTemplate });
         });
@@ -81,6 +88,7 @@ describe(SceneBuilder.name, () => {
                 narration,
                 sceneTemplate,
                 player,
+                sceneTemplateResolver,
             });
             expect(actorBuilder).not.toHaveBeenCalled();
         });
@@ -128,6 +136,7 @@ describe(SceneBuilder.name, () => {
                 narration,
                 player,
                 sceneTemplate,
+                sceneTemplateResolver,
             });
         });
 
@@ -169,6 +178,7 @@ describe(SceneBuilder.name, () => {
             sceneBuilder = new SceneBuilder({
                 narration,
                 sceneTemplate,
+                sceneTemplateResolver,
             });
 
             sceneBuilder.build();
@@ -194,6 +204,7 @@ describe(SceneBuilder.name, () => {
                 scene,
                 resolvePlaceholders: expect.anything(),
                 sceneTemplate,
+                sceneTemplateResolver,
             });
         });
 

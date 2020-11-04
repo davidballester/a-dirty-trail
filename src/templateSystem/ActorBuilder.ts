@@ -1,4 +1,5 @@
-import { ActorTemplate, InventoryTemplate } from './SceneTemplate';
+import { ActorTemplate } from './SceneTemplate';
+import { InventoryTemplate } from './InventoryTemplate';
 import Health from '../core/Health';
 import Inventory from '../core/Inventory';
 import SkillSet from '../core/SkillSet';

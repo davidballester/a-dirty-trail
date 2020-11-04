@@ -3,7 +3,7 @@ import InventoryBuilder from './InventoryBuilder';
 import Inventory from '../core/Inventory';
 import Actor from '../core/Actor';
 import Scene from '../core/Scene';
-import { SideEffectTemplate } from './SceneTemplate';
+import { SideEffectTemplate } from './SceneActionTemplate';
 jest.mock('./InventoryBuilder');
 
 describe(SideEffectBuilder.name, () => {

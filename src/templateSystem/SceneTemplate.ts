@@ -1,6 +1,8 @@
 import MarkdownText from '../core/MarkdownText';
+import { InventoryTemplate } from './InventoryTemplate';
+import { SceneActionTemplate } from './SceneActionTemplate';
 
-interface SceneTemplate {
+export interface SceneTemplate {
     metadata: SceneTemplateMetadata;
     setup: MarkdownText;
 }
@@ -8,20 +10,8 @@ interface SceneTemplate {
 export interface SceneTemplateMetadata {
     title: MarkdownText;
     player?: ActorTemplate;
-    actions?: { [key: string]: ActionTemplate };
+    actions?: { [key: string]: SceneActionTemplate };
     actors?: { [key: string]: ActorTemplate };
-}
-
-export interface ActionTemplate {
-    sideEffect?: SideEffectTemplate;
-    check?: CheckTemplate;
-    nextSceneTitle?: string;
-}
-
-export interface SideEffectTemplate {
-    loot?: InventoryTemplate;
-    rename?: string;
-    modifyHealth?: number;
 }
 
 export interface ActorTemplate {
@@ -32,38 +22,3 @@ export interface ActorTemplate {
         [name: string]: number;
     };
 }
-
-export interface InventoryTemplate {
-    ammunitions?: {
-        [type: string]: number;
-    };
-    weapons?: { [name: string]: WeaponTemplate };
-    trinkets?: TrinketTemplate[];
-}
-
-export interface TrinketTemplate {
-    name: string;
-    description?: string;
-}
-
-export interface WeaponTemplate {
-    type: string;
-    damage: string;
-    skill: string;
-    ammunitionType?: string;
-    ammunition?: string;
-    canBeLooted?: boolean;
-}
-
-export interface CheckTemplate {
-    skill: string;
-    modifier?: number;
-    success: CheckTemplateResolution;
-    failure: CheckTemplateResolution;
-}
-
-export interface CheckTemplateResolution {
-    nextSceneTitle: string;
-}
-
-export default SceneTemplate;

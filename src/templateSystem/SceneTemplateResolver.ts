@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import SceneTemplate from './SceneTemplate';
+import { SceneTemplate } from './SceneTemplate';
 import parseMarkdown from 'markdown-yaml-metadata-parser';
 import SceneBuilder from './SceneBuilder';
 import Narration from '../core/Narration';

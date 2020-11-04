@@ -4,7 +4,7 @@ import Inventory from '../core/Inventory';
 import Weapon from '../core/Weapon';
 import WeaponAmmunition from '../core/WeaponAmmunition';
 import InventoryBuilder from './InventoryBuilder';
-import { InventoryTemplate } from './SceneTemplate';
+import { InventoryTemplate } from './InventoryTemplate';
 import { v4 as uuidv4 } from 'uuid';
 import Trinket from '../core/Trinket';
 jest.mock('uuid');

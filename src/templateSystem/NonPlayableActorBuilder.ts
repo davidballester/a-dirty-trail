@@ -1,4 +1,4 @@
-import SceneTemplate, { ActorTemplate } from './SceneTemplate';
+import { SceneTemplate, ActorTemplate } from './SceneTemplate';
 import NonPlayableActor from '../core/NonPlayableActor';
 import ActorBuilder from './ActorBuilder';
 

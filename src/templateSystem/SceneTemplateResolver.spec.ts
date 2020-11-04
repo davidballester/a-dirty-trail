@@ -1,5 +1,5 @@
 import SceneTemplateResolver from './SceneTemplateResolver';
-import SceneTemplate from './SceneTemplate';
+import { SceneTemplate } from './SceneTemplate';
 import parseMarkdown from 'markdown-yaml-metadata-parser';
 import SceneBuilder from './SceneBuilder';
 import Narration from '../core/Narration';

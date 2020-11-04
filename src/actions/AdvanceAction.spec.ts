@@ -94,5 +94,19 @@ describe('AdvanceAction', () => {
             await action.execute();
             expect(loadSpy).toHaveBeenCalledWith(nextScene);
         });
+
+        it('invokes the side effect as part of the execution', async () => {
+            const sideEffect = jest.fn();
+            const action = new AdvanceAction({
+                scene,
+                actor: janeDoe,
+                name: 'Go on',
+                narration,
+                nextSceneDecider,
+                sideEffect,
+            });
+            await action.execute();
+            expect(sideEffect).toHaveBeenCalledWith(scene);
+        });
     });
 });

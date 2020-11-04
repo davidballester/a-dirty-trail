@@ -8,6 +8,7 @@ class AdvanceAction extends Action<void> {
 
     private narration: Narration;
     private nextSceneDecider: NextSceneDecider;
+    private sideEffect: SideEffect;
 
     constructor({
         actor,
@@ -15,16 +16,20 @@ class AdvanceAction extends Action<void> {
         narration,
         name,
         nextSceneDecider,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        sideEffect = () => {},
     }: {
         actor: Actor;
         scene: Scene;
         narration: Narration;
         name?: string;
         nextSceneDecider: NextSceneDecider;
+        sideEffect?: SideEffect;
     }) {
         super({ type: AdvanceAction.TYPE, name, scene, actor });
         this.narration = narration;
         this.nextSceneDecider = nextSceneDecider;
+        this.sideEffect = sideEffect;
     }
 
     canExecute(): boolean {
@@ -35,11 +40,13 @@ class AdvanceAction extends Action<void> {
     }
 
     async execute(): Promise<void> {
+        this.sideEffect(this.scene);
         const nextScene = await this.nextSceneDecider(this.scene);
         this.narration.loadNextScene(nextScene);
     }
 }
 
 export type NextSceneDecider = (currentScene: Scene) => Scene | Promise<Scene>;
+export type SideEffect = (scene: Scene) => void;
 
 export default AdvanceAction;

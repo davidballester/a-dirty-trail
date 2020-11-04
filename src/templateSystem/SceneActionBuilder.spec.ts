@@ -5,11 +5,9 @@ import SceneActionBuilder from './SceneActionBuilder';
 import SceneTemplate, { SideEffectTemplate } from './SceneTemplate';
 import SideEffectBuilder from './SideEffectBuilder';
 import AdvanceAction from '../actions/AdvanceAction';
-import AdvanceActionWithSideEffect from '../actions/AdvanceActionWithSideEffect';
 import SceneTemplateResolver from './SceneTemplateResolver';
 jest.mock('./SideEffectBuilder');
 jest.mock('../actions/AdvanceAction');
-jest.mock('../actions/AdvanceActionWithSideEffect');
 jest.mock('./SceneTemplateResolver');
 
 describe(SceneActionBuilder.name, () => {
@@ -74,23 +72,14 @@ describe(SceneActionBuilder.name, () => {
         let sideEffectBuilderMock: jest.Mock;
         let sideEffectBuild: jest.SpyInstance;
         let advanceActionMock: jest.Mock;
-        let advanceActionWithSideEffectMock: jest.Mock;
         let advanceAction: AdvanceAction;
-        let advanceActionWithSideEffect: AdvanceActionWithSideEffect;
         beforeEach(() => {
             sideEffectBuilderMock = (SideEffectBuilder as unknown) as jest.Mock;
             advanceActionMock = (AdvanceAction as unknown) as jest.Mock;
-            advanceActionWithSideEffectMock = (AdvanceActionWithSideEffect as unknown) as jest.Mock;
             advanceAction = ({
                 id: 'advance action',
             } as unknown) as AdvanceAction;
-            advanceActionWithSideEffect = ({
-                id: 'advance action with side effect',
-            } as unknown) as AdvanceActionWithSideEffect;
             advanceActionMock.mockReturnValue(advanceAction);
-            advanceActionWithSideEffectMock.mockReturnValue(
-                advanceActionWithSideEffect
-            );
             sideEffectBuild = jest.fn();
             sideEffectBuilderMock.mockReturnValue({
                 build: sideEffectBuild,
@@ -108,14 +97,9 @@ describe(SceneActionBuilder.name, () => {
             });
         });
 
-        it('returns the advance action', () => {
-            const actions = sceneActionBuilder.build();
-            expect(actions).toContain(advanceAction);
-        });
-
         it('creates an advance action with side effect', () => {
             sceneActionBuilder.build();
-            expect(advanceActionWithSideEffectMock).toHaveBeenCalledWith({
+            expect(advanceActionMock).toHaveBeenCalledWith({
                 actor,
                 narration,
                 scene,
@@ -123,11 +107,6 @@ describe(SceneActionBuilder.name, () => {
                 nextSceneDecider: expect.anything(),
                 sideEffect: expect.anything(),
             });
-        });
-
-        it('returns the advance action with side effect', () => {
-            const actions = sceneActionBuilder.build();
-            expect(actions).toContain(advanceActionWithSideEffect);
         });
 
         it('creates a next scene decider that returns the result of fetching the next scene', async () => {
@@ -141,16 +120,14 @@ describe(SceneActionBuilder.name, () => {
         it('creates a next scene decider for the side effect advance action that returns the result of fetching the next scene', async () => {
             sceneActionBuilder.build();
             const nextSceneDecider =
-                advanceActionWithSideEffectMock.mock.calls[0][0]
-                    .nextSceneDecider;
+                advanceActionMock.mock.calls[0][0].nextSceneDecider;
             const response = await nextSceneDecider.call(sceneActionBuilder);
             expect(response).toEqual(nextScene);
         });
 
         it('creates a side effect builder with the provided scene and the side effect template', async () => {
             sceneActionBuilder.build();
-            const sideEffect =
-                advanceActionWithSideEffectMock.mock.calls[0][0].sideEffect;
+            const sideEffect = advanceActionMock.mock.calls[0][0].sideEffect;
             await sideEffect.call(sceneActionBuilder, scene);
             expect(sideEffectBuilderMock).toHaveBeenCalledWith({
                 scene,
@@ -160,8 +137,7 @@ describe(SceneActionBuilder.name, () => {
 
         it('invokes the build method of the side effect builder', async () => {
             sceneActionBuilder.build();
-            const sideEffect =
-                advanceActionWithSideEffectMock.mock.calls[0][0].sideEffect;
+            const sideEffect = advanceActionMock.mock.calls[0][0].sideEffect;
             await sideEffect.call(sceneActionBuilder);
             expect(sideEffectBuild).toHaveBeenCalled();
         });

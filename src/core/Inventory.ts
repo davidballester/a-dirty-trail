@@ -74,7 +74,17 @@ class WeaponsInventory {
     }
 
     loot(weapons: Weapon[] = []) {
-        this.weapons = [...this.weapons, ...weapons];
+        const weaponsToLoot = this.getWeaponsNotYetOwned(weapons);
+        this.weapons = [...this.weapons, ...weaponsToLoot];
+    }
+
+    private getWeaponsNotYetOwned(weapons: Weapon[]): Weapon[] {
+        return weapons.filter((weapon) => {
+            const isInInventory = !!this.weapons.find(
+                (candidate) => candidate.getName() === weapon.getName()
+            );
+            return !isInInventory;
+        });
     }
 
     remove(weapon: Weapon): void {

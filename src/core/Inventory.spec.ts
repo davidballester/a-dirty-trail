@@ -93,6 +93,15 @@ describe('Inventory', () => {
             expect(weapons).toEqual([revolver, rifle]);
         });
 
+        it('does not loot an owned weapon', () => {
+            inventory = new Inventory({
+                weapons: [revolver, rifle],
+            });
+            inventory.loot(lootInventory);
+            const weapons = inventory.getWeapons();
+            expect(weapons).toEqual([revolver, rifle]);
+        });
+
         it('now has 10 bullets', () => {
             inventory.loot(lootInventory);
             const ammunitionsByType = inventory.getAmmunitionsByType();

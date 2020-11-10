@@ -102,4 +102,56 @@ describe('Actor', () => {
             expect(returnedSkill).toEqual(charisma);
         });
     });
+
+    describe('flags', () => {
+        describe('addFlag', () => {
+            it('adds a flag without issues', () => {
+                actor.addFlag('charismatic');
+            });
+
+            it('does not add the same flag twice', () => {
+                actor.addFlag('charismatic');
+                actor.addFlag('charismatic');
+                actor.removeFlag('charismatic');
+                const hasFlag = actor.hasFlag('charismatic');
+                expect(hasFlag).toBeFalsy();
+            });
+        });
+
+        describe('hasFlag', () => {
+            beforeEach(() => {
+                actor.addFlag('charismatic');
+            });
+
+            it('returns true for the added flag', () => {
+                const hasFlag = actor.hasFlag('charismatic');
+                expect(hasFlag).toBeTruthy();
+            });
+
+            it('returns false for an unknown flag', () => {
+                const hasFlag = actor.hasFlag('solemn');
+                expect(hasFlag).toBeFalsy();
+            });
+        });
+
+        describe('removeFlag', () => {
+            beforeEach(() => {
+                actor.addFlag('charismatic');
+            });
+
+            it('removes the flag without issues', () => {
+                actor.removeFlag('charismatic');
+            });
+
+            it('cannot get a removed flag', () => {
+                actor.removeFlag('charismatic');
+                const hasFlag = actor.hasFlag('charismatic');
+                expect(hasFlag).toBeFalsy();
+            });
+
+            it('does not fail to remove an unknown flag', () => {
+                actor.removeFlag('solemn');
+            });
+        });
+    });
 });

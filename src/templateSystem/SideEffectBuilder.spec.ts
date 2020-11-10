@@ -7,6 +7,7 @@ import { SideEffectTemplate } from './SceneActionTemplate';
 jest.mock('./InventoryBuilder');
 
 describe(SideEffectBuilder.name, () => {
+    let scene: Scene;
     let player: Actor;
     let getInventory: jest.SpyInstance;
     let loot: jest.SpyInstance;
@@ -15,6 +16,8 @@ describe(SideEffectBuilder.name, () => {
     let modifyHealth: jest.SpyInstance;
     let sideEffectTemplate: SideEffectTemplate;
     let sideEffectBuilder: SideEffectBuilder;
+    let addFlag: jest.SpyInstance;
+    let removeFlag: jest.SpyInstance;
     beforeEach(() => {
         changeName = jest.fn();
         loot = jest.fn();
@@ -22,14 +25,18 @@ describe(SideEffectBuilder.name, () => {
             loot,
         });
         modifyHealth = jest.fn();
+        addFlag = jest.fn();
+        removeFlag = jest.fn();
         player = ({
             id: 'player',
             changeName,
             getInventory,
             getHealth: jest.fn().mockReturnValue({ modify: modifyHealth }),
+            addFlag,
+            removeFlag,
         } as unknown) as Actor;
         const getPlayer = jest.fn().mockReturnValue(player);
-        const scene = ({
+        scene = ({
             getPlayer,
         } as unknown) as Scene;
         inventory = ({
@@ -64,6 +71,37 @@ describe(SideEffectBuilder.name, () => {
         it('modifies the health of the player', () => {
             sideEffectBuilder.build();
             expect(modifyHealth).toHaveBeenCalledWith(-2);
+        });
+
+        describe('flags', () => {
+            beforeEach(() => {
+                sideEffectTemplate = {
+                    ...sideEffectTemplate,
+                    addFlag: 'charismatic',
+                    addFlags: ['approachable', 'fun'],
+                    removeFlag: 'sulky',
+                    removeFlags: ['solemn', 'sad'],
+                };
+                sideEffectBuilder = new SideEffectBuilder({
+                    scene,
+                    sideEffectTemplate,
+                });
+                sideEffectBuilder.build();
+            });
+
+            it('adds the flags', () => {
+                expect(addFlag).toHaveBeenCalledWith('charismatic');
+                expect(addFlag).toHaveBeenCalledWith('approachable');
+                expect(addFlag).toHaveBeenCalledWith('fun');
+                expect(addFlag).toHaveBeenCalledTimes(3);
+            });
+
+            it('removes the flags', () => {
+                expect(removeFlag).toHaveBeenCalledWith('sulky');
+                expect(removeFlag).toHaveBeenCalledWith('solemn');
+                expect(removeFlag).toHaveBeenCalledWith('sad');
+                expect(removeFlag).toHaveBeenCalledTimes(3);
+            });
         });
     });
 });

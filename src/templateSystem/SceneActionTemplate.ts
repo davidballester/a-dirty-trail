@@ -11,6 +11,10 @@ export interface SideEffectTemplate {
     loot?: InventoryTemplate;
     rename?: string;
     modifyHealth?: number;
+    addFlag?: string;
+    addFlags?: string[];
+    removeFlag?: string;
+    removeFlags?: string[];
 }
 
 export interface CheckTemplate {

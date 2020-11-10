@@ -29,6 +29,7 @@ class SideEffectBuilder {
         if (this.sideEffectTemplate.modifyHealth) {
             this.modifyHealth(this.sideEffectTemplate.modifyHealth);
         }
+        this.flagsSideEffects();
     }
 
     private rename(newName: string): void {
@@ -48,6 +49,26 @@ class SideEffectBuilder {
     private modifyHealth(modifyHealth: number): void {
         const player = this.scene.getPlayer();
         player.getHealth().modify(modifyHealth);
+    }
+
+    private flagsSideEffects(): void {
+        const player = this.scene.getPlayer();
+        if (this.sideEffectTemplate.addFlag) {
+            player.addFlag(this.sideEffectTemplate.addFlag);
+        }
+        if (this.sideEffectTemplate.addFlags) {
+            this.sideEffectTemplate.addFlags.forEach((flag) =>
+                player.addFlag(flag)
+            );
+        }
+        if (this.sideEffectTemplate.removeFlag) {
+            player.removeFlag(this.sideEffectTemplate.removeFlag);
+        }
+        if (this.sideEffectTemplate.removeFlags) {
+            this.sideEffectTemplate.removeFlags.forEach((flag) =>
+                player.removeFlag(flag)
+            );
+        }
     }
 }
 

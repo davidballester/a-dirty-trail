@@ -27,6 +27,7 @@ describe(ActorBuilder.name, () => {
             skills: {
                 aim: 1,
             },
+            flags: ['gunslinger'],
         } as unknown) as ActorTemplate;
         inventory = ({
             id: 'inventory',
@@ -45,21 +46,21 @@ describe(ActorBuilder.name, () => {
     describe('build', () => {
         it('builds an actor', () => {
             const roland = actorBuilder.build();
-            expect(roland).toEqual(
-                new Actor({
-                    name: 'Roland Deschain',
-                    health: new Health({ current: 8, max: 10 }),
-                    inventory: inventory,
-                    skillSet: new SkillSet({
-                        skills: [
-                            new Skill({
-                                name: 'aim',
-                                probabilityOfSuccess: 1,
-                            }),
-                        ],
-                    }),
-                })
-            );
+            const expectedRoland = new Actor({
+                name: 'Roland Deschain',
+                health: new Health({ current: 8, max: 10 }),
+                inventory: inventory,
+                skillSet: new SkillSet({
+                    skills: [
+                        new Skill({
+                            name: 'aim',
+                            probabilityOfSuccess: 1,
+                        }),
+                    ],
+                }),
+            });
+            expectedRoland.addFlag('gunslinger');
+            expect(roland).toEqual(expectedRoland);
         });
     });
 });

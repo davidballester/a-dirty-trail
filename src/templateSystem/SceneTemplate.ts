@@ -21,4 +21,5 @@ export interface ActorTemplate {
     skills: {
         [name: string]: number;
     };
+    flags?: string[];
 }

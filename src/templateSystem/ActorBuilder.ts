@@ -15,12 +15,14 @@ class ActorBuilder {
     }
 
     build(): Actor {
-        return new Actor({
+        let actor = new Actor({
             name: this.actorTemplate.name || 'Unknown',
             health: this.buildHealth(this.actorTemplate.health),
             inventory: this.buildInventory(this.actorTemplate.inventory),
             skillSet: this.buildSkillSet(this.actorTemplate.skills),
         });
+        actor = this.addFlags(actor);
+        return actor;
     }
 
     private buildHealth(rule: string): Health {
@@ -43,6 +45,12 @@ class ActorBuilder {
                     })
             ),
         });
+    }
+
+    private addFlags(actor: Actor): Actor {
+        const flags = this.actorTemplate.flags || [];
+        flags.forEach((flag) => actor.addFlag(flag));
+        return actor;
     }
 }
 

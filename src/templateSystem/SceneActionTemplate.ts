@@ -31,4 +31,8 @@ export interface CheckTemplateResolution {
 export interface ConditionTemplate {
     hasTrinket?: string;
     doesNotHaveTrinket?: string;
+    hasFlag?: string;
+    hasFlags?: string[];
+    hasNotFlag?: string;
+    hasNotFlags?: string[];
 }

@@ -17,6 +17,7 @@ describe(SceneActionBuilder.name, () => {
     let sceneTemplate: SceneTemplate;
     let sideEffectTemplate: SideEffectTemplate;
     let actor: Actor;
+    let hasFlag: jest.SpyInstance;
     let scene: Scene;
     let narration: Narration;
     let resolvePlaceholders: jest.SpyInstance;
@@ -37,49 +38,6 @@ describe(SceneActionBuilder.name, () => {
                     'Drink water': {
                         nextSceneTitle: 'baz.md',
                     },
-                    'Try to find a well': {
-                        check: {
-                            skill: 'perception',
-                            modifier: -0.1,
-                            success: {
-                                nextSceneTitle: 'qux.md',
-                            },
-                            failure: {
-                                nextSceneTitle: 'quux.md',
-                            },
-                        },
-                    },
-                    'Give the watch': {
-                        condition: {
-                            hasTrinket: 'watch',
-                        },
-                        nextSceneTitle: 'corge.md',
-                    },
-                    'Give the matches': {
-                        condition: {
-                            hasTrinket: 'matches',
-                        },
-                        nextSceneTitle: 'graulpy.md',
-                    },
-                    '"Sorry, I have no watch"': {
-                        condition: {
-                            doesNotHaveTrinket: 'watch',
-                        },
-                        nextSceneTitle: 'grault.md',
-                    },
-                    '"Sorry, I have no matches"': {
-                        condition: {
-                            doesNotHaveTrinket: 'matches',
-                        },
-                        nextSceneTitle: 'grault.md',
-                    },
-                    'Work something out': {
-                        condition: {
-                            doesNotHaveTrinket: 'matches',
-                            hasTrinket: 'watch',
-                        },
-                        nextSceneTitle: 'grault.md',
-                    },
                 },
             },
         } as unknown) as SceneTemplate;
@@ -94,8 +52,10 @@ describe(SceneActionBuilder.name, () => {
             .mockReturnValue(false)
             .calledWith('watch')
             .mockReturnValue(true);
+        hasFlag = jest.fn();
         actor = ({
             id: 'actor',
+            hasFlag,
             getInventory: jest.fn().mockReturnValue({
                 hasTrinket,
             }),
@@ -231,6 +191,34 @@ describe(SceneActionBuilder.name, () => {
                     .mockReturnValue('successScene')
                     .calledWith(expect.anything(), 'quux.md')
                     .mockReturnValue('failureScene');
+                sceneTemplate = ({
+                    title: 'Foo',
+                    metadata: {
+                        actions: {
+                            'Try to find a well': {
+                                check: {
+                                    skill: 'perception',
+                                    modifier: -0.1,
+                                    success: {
+                                        nextSceneTitle: 'qux.md',
+                                    },
+                                    failure: {
+                                        nextSceneTitle: 'quux.md',
+                                    },
+                                },
+                            },
+                        },
+                    },
+                } as unknown) as SceneTemplate;
+                sceneActionBuilder = new SceneActionBuilder({
+                    sceneTemplateResolver,
+                    sceneTemplate,
+                    narration,
+                    resolvePlaceholders: (resolvePlaceholders as unknown) as (
+                        string: string
+                    ) => string,
+                    scene,
+                });
             });
 
             it('creates an advance action', () => {
@@ -290,64 +278,226 @@ describe(SceneActionBuilder.name, () => {
         });
 
         describe('condition', () => {
-            it('creates the action that requires of a trinket the player has', () => {
-                sceneActionBuilder.build();
-                expect(advanceActionMock).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        actor,
+            describe('trinkets', () => {
+                beforeEach(() => {
+                    sceneTemplate = ({
+                        title: 'Foo',
+                        metadata: {
+                            actions: {
+                                'Try to find a well': {
+                                    check: {
+                                        skill: 'perception',
+                                        modifier: -0.1,
+                                        success: {
+                                            nextSceneTitle: 'qux.md',
+                                        },
+                                        failure: {
+                                            nextSceneTitle: 'quux.md',
+                                        },
+                                    },
+                                },
+                                'Give the watch': {
+                                    condition: {
+                                        hasTrinket: 'watch',
+                                    },
+                                    nextSceneTitle: 'corge.md',
+                                },
+                                'Give the matches': {
+                                    condition: {
+                                        hasTrinket: 'matches',
+                                    },
+                                    nextSceneTitle: 'graulpy.md',
+                                },
+                                '"Sorry, I have no watch"': {
+                                    condition: {
+                                        doesNotHaveTrinket: 'watch',
+                                    },
+                                    nextSceneTitle: 'grault.md',
+                                },
+                                '"Sorry, I have no matches"': {
+                                    condition: {
+                                        doesNotHaveTrinket: 'matches',
+                                    },
+                                    nextSceneTitle: 'grault.md',
+                                },
+                                'Work something out': {
+                                    condition: {
+                                        doesNotHaveTrinket: 'matches',
+                                        hasTrinket: 'watch',
+                                    },
+                                    nextSceneTitle: 'grault.md',
+                                },
+                            },
+                        },
+                    } as unknown) as SceneTemplate;
+                    sceneActionBuilder = new SceneActionBuilder({
+                        sceneTemplateResolver,
+                        sceneTemplate,
                         narration,
+                        resolvePlaceholders: (resolvePlaceholders as unknown) as (
+                            string: string
+                        ) => string,
                         scene,
-                        name: 'Give the watch',
-                    })
-                );
+                    });
+                });
+
+                it('creates the action that requires of a trinket the player has', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: 'Give the watch',
+                        })
+                    );
+                });
+
+                it('creates the action that requires not having a trinket the player does not have', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: '"Sorry, I have no matches"',
+                        })
+                    );
+                });
+
+                it('does not create the action that requires of not having a trinket the player has', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).not.toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: '"Sorry, I have no watch"',
+                        })
+                    );
+                });
+
+                it('does not create the action that requires of a trinket the player does not have', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).not.toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: 'Give the matches',
+                        })
+                    );
+                });
+
+                it('creates an action that requires a trinket the player has and not having a trinket the player does not have', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: 'Work something out',
+                        })
+                    );
+                });
             });
 
-            it('creates the action that requires not having a trinket the player does not have', () => {
-                sceneActionBuilder.build();
-                expect(advanceActionMock).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        actor,
+            describe('flags', () => {
+                beforeEach(() => {
+                    sceneTemplate = ({
+                        title: 'Foo',
+                        metadata: {
+                            actions: {
+                                Lie: {
+                                    condition: {
+                                        hasFlag: 'liar',
+                                    },
+                                    nextSceneTitle: 'corge.md',
+                                },
+                                'Lie a lot': {
+                                    condition: {
+                                        hasFlags: ['liar', 'comedian'],
+                                    },
+                                    nextSceneTitle: 'graulpy.md',
+                                },
+                                'Tell the truth': {
+                                    condition: {
+                                        hasNotFlag: 'liar',
+                                    },
+                                    nextSceneTitle: 'corge.md',
+                                },
+                                'Tell the truth seriously': {
+                                    condition: {
+                                        hasNotFlags: ['liar', 'comedian'],
+                                    },
+                                    nextSceneTitle: 'corge.md',
+                                },
+                            },
+                        },
+                    } as unknown) as SceneTemplate;
+                    when(hasFlag)
+                        .mockReturnValue(false)
+                        .calledWith('liar')
+                        .mockReturnValue(true);
+                    sceneActionBuilder = new SceneActionBuilder({
+                        sceneTemplateResolver,
+                        sceneTemplate,
                         narration,
+                        resolvePlaceholders: (resolvePlaceholders as unknown) as (
+                            string: string
+                        ) => string,
                         scene,
-                        name: '"Sorry, I have no matches"',
-                    })
-                );
-            });
+                    });
+                });
 
-            it('does not create the action that requires of not having a trinket the player has', () => {
-                sceneActionBuilder.build();
-                expect(advanceActionMock).not.toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        actor,
-                        narration,
-                        scene,
-                        name: '"Sorry, I have no watch"',
-                    })
-                );
-            });
+                it('creates the action that requires a flag the player has', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: 'Lie',
+                        })
+                    );
+                });
 
-            it('does not create the action that requires of a trinket the player does not have', () => {
-                sceneActionBuilder.build();
-                expect(advanceActionMock).not.toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        actor,
-                        narration,
-                        scene,
-                        name: 'Give the matches',
-                    })
-                );
-            });
+                it('does not create the action that requires a flag the player does not have', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).not.toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: 'Lie a lot',
+                        })
+                    );
+                });
 
-            it('creates an action that requires a trinket the player has and not having a trinket the player does not have', () => {
-                sceneActionBuilder.build();
-                expect(advanceActionMock).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        actor,
-                        narration,
-                        scene,
-                        name: 'Work something out',
-                    })
-                );
+                it('creates the action that requires not having a flag the player does not have', () => {
+                    when(hasFlag).calledWith('liar').mockReturnValue(false);
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: 'Tell the truth seriously',
+                        })
+                    );
+                });
+
+                it('does not create the action if the player has a flag that is required not to have', () => {
+                    sceneActionBuilder.build();
+                    expect(advanceActionMock).not.toHaveBeenCalledWith(
+                        expect.objectContaining({
+                            actor,
+                            narration,
+                            scene,
+                            name: 'Tell the truth',
+                        })
+                    );
+                });
             });
         });
     });

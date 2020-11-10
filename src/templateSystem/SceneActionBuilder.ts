@@ -72,9 +72,16 @@ class SceneActionBuilder {
         const forbiddenTrinket = condition.doesNotHaveTrinket;
         const hasForbiddenTrinket =
             !!forbiddenTrinket && this.playerHasTrinket(forbiddenTrinket);
+        const isFlagsCheckSuccessful = this.meetsFlagsConditions(
+            condition.hasFlag,
+            condition.hasFlags,
+            condition.hasNotFlag,
+            condition.hasNotFlags
+        );
         return (
             (!mandatoryTrinket || hasMandatoryTrinket) &&
-            (!hasForbiddenTrinket || !hasForbiddenTrinket)
+            (!hasForbiddenTrinket || !hasForbiddenTrinket) &&
+            isFlagsCheckSuccessful
         );
     }
 
@@ -153,6 +160,28 @@ class SceneActionBuilder {
                 ? checkTemplate.success.nextSceneTitle
                 : checkTemplate.failure.nextSceneTitle
         );
+    }
+
+    private meetsFlagsConditions(
+        hasFlag?: string,
+        hasFlags: string[] = [],
+        hasNotFlag?: string,
+        hasNotFlags: string[] = []
+    ): boolean {
+        if (hasFlag) {
+            hasFlags.push(hasFlag);
+        }
+        if (hasNotFlag) {
+            hasNotFlags.push(hasNotFlag);
+        }
+        const player = this.scene.getPlayer();
+        const isHasFlagsSuccessful = hasFlags.every((flag) =>
+            player.hasFlag(flag)
+        );
+        const isHasNotFlagsSuccessful = hasNotFlags.every(
+            (flag) => !player.hasFlag(flag)
+        );
+        return isHasFlagsSuccessful && isHasNotFlagsSuccessful;
     }
 }
 

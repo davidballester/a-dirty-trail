@@ -3,6 +3,7 @@ import Health from './Health';
 import Inventory from './Inventory';
 import Skill from './Skill';
 import SkillSet from './SkillSet';
+import Trinket from './Trinket';
 
 describe('Actor', () => {
     let actor: Actor;
@@ -197,6 +198,41 @@ describe('Actor', () => {
             random.mockReturnValue(0.4);
             const result = actor.rollSkill('aim', -0.2);
             expect(result).toBeFalsy();
+        });
+
+        describe('trinkets modifiers', () => {
+            beforeEach(() => {
+                actor.getInventory().loot(
+                    new Inventory({
+                        trinkets: [
+                            new Trinket({
+                                name: 'scope',
+                                skillsModifiers: {
+                                    aim: 0.2,
+                                },
+                            }),
+                        ],
+                    })
+                );
+            });
+
+            it('succeeds if the random number is lower than the probability of success minus the opposition plus the trinkets modifiers', () => {
+                random.mockReturnValue(0.5);
+                const result = actor.rollSkill('aim', -0.1);
+                expect(result).toBeTruthy();
+            });
+
+            it('succeeds if the random number is equal than the probability of success minus the opposition', () => {
+                random.mockReturnValue(0.6);
+                const result = actor.rollSkill('aim', -0.1);
+                expect(result).toBeTruthy();
+            });
+
+            it('fails if the random number is higher than the probability of success minus the opposition', () => {
+                random.mockReturnValue(0.7);
+                const result = actor.rollSkill('aim', -0.1);
+                expect(result).toBeFalsy();
+            });
         });
     });
 });

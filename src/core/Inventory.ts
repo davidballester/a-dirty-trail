@@ -38,6 +38,10 @@ class Inventory extends ThingWithId {
         return this.trinkets.getAll();
     }
 
+    getTrinketsModifiersOnSkill(skillName: string): number {
+        return this.trinkets.getModifiersOnSkill(skillName);
+    }
+
     loot(inventory: Inventory): Inventory {
         const lootableWeapons = inventory
             .getWeapons()
@@ -140,6 +144,14 @@ class TrinketInventory {
             (trinket) =>
                 trinket.getName().trim().toLowerCase() ===
                 trinketName.trim().toLowerCase()
+        );
+    }
+
+    getModifiersOnSkill(skillName: string): number {
+        return this.trinkets.reduce(
+            (modifier, trinket) =>
+                modifier + trinket.getSkillsModifiers()[skillName] || 0,
+            0
         );
     }
 }

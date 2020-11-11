@@ -82,7 +82,10 @@ class Actor extends ThingWithId {
 
     rollSkill(skillName: string, modifier = 0): boolean {
         const skill = this.getSkill(skillName);
-        return skill.rollSuccessWithModifier(modifier);
+        const trinketsModifier = this.getInventory().getTrinketsModifiersOnSkill(
+            skillName
+        );
+        return skill.rollSuccessWithModifier(modifier + trinketsModifier);
     }
 }
 

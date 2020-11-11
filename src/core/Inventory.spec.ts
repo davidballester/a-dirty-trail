@@ -21,8 +21,14 @@ describe('Inventory', () => {
             skill: 'aiming',
             damage: new Damage({ min: 1, max: 2 }),
         });
-        watch = new Trinket({ name: 'watch' });
-        boxOfMatches = new Trinket({ name: 'box of matches' });
+        watch = new Trinket({
+            name: 'watch',
+            skillsModifiers: { perception: -0.2 },
+        });
+        boxOfMatches = new Trinket({
+            name: 'box of matches',
+            skillsModifiers: { perception: 0.1 },
+        });
     });
 
     it('creates a new inventory without errors', () => {
@@ -187,6 +193,25 @@ describe('Inventory', () => {
         it('returns false if the inventory does not have the specified trinket with different notation', () => {
             const response = inventory.hasTrinket('match');
             expect(response).toBeFalsy;
+        });
+    });
+
+    describe('getTrinketsModifiersOnSkill', () => {
+        let inventory: Inventory;
+        beforeEach(() => {
+            inventory = new Inventory({ trinkets: [watch, boxOfMatches] });
+        });
+
+        it('returns the accumulated modifier on the skill', () => {
+            const modifier = inventory.getTrinketsModifiersOnSkill(
+                'perception'
+            );
+            expect(modifier).toEqual(-0.1);
+        });
+
+        it('returns 0 for a skill without modifiers', () => {
+            const modifier = inventory.getTrinketsModifiersOnSkill('aim');
+            expect(modifier).toEqual(0);
         });
     });
 });

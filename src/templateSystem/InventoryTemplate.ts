@@ -1,3 +1,5 @@
+import { SkillsModifiers } from '../core/Trinket';
+
 export interface InventoryTemplate {
     ammunitions?: {
         [type: string]: number;
@@ -9,6 +11,7 @@ export interface InventoryTemplate {
 export interface TrinketTemplate {
     name: string;
     description?: string;
+    skillsModifiers?: SkillsModifiers;
 }
 
 export interface WeaponTemplate {

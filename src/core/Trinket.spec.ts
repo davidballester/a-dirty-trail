@@ -29,4 +29,16 @@ describe('Trinket', () => {
             expect(description).toBeUndefined();
         });
     });
+
+    describe('getSkillsModifiers', () => {
+        it('gets the modifiers', () => {
+            const modifiers = { aim: 0.1 };
+            const trinket = new Trinket({
+                name: 'scope',
+                skillsModifiers: modifiers,
+            });
+            const skillsModifiers = trinket.getSkillsModifiers();
+            expect(skillsModifiers).toEqual(modifiers);
+        });
+    });
 });

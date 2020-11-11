@@ -34,6 +34,7 @@ class InventoryTemplateBuilder {
         return {
             name: trinket.getName(),
             description: trinket.getDescription(),
+            skillsModifiers: trinket.getSkillsModifiers(),
         };
     }
 

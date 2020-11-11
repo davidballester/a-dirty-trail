@@ -40,6 +40,7 @@ describe(InventoryTemplateBuilder.name, () => {
             new Trinket({
                 name: 'watch',
                 description: 'battered and old',
+                skillsModifiers: { perception: 0.05 },
             }),
         ];
         inventory = new Inventory({
@@ -53,9 +54,13 @@ describe(InventoryTemplateBuilder.name, () => {
         inventoryTemplate = inventoryTemplateBuilder.build();
     });
 
-    it('converts the ammunitions', () => {
+    it('converts the trinkets', () => {
         expect(inventoryTemplate.trinkets).toEqual([
-            { name: 'watch', description: 'battered and old' },
+            {
+                name: 'watch',
+                description: 'battered and old',
+                skillsModifiers: { perception: 0.05 },
+            },
         ]);
     });
 

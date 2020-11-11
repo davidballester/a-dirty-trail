@@ -75,6 +75,10 @@ class Actor extends ThingWithId {
     removeFlag(flag: string): void {
         this.flags = this.flags.filter((candidate) => candidate !== flag);
     }
+
+    getFlags(): string[] {
+        return this.flags;
+    }
 }
 
 export default Actor;

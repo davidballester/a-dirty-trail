@@ -1,3 +1,5 @@
+import { NarrationTemplate } from '../templateSystem/NarrationTemplate';
+import NarrationTemplateBuilder from '../templateSystem/NarrationTemplateBuilder';
 import Scene from './Scene';
 
 class Narration {
@@ -22,6 +24,16 @@ class Narration {
 
     loadNextScene(nextScene: Scene): void {
         this.currentScene = nextScene;
+    }
+
+    save(): NarrationTemplate | undefined {
+        if (!this.currentScene || this.currentScene.isCombat()) {
+            return undefined;
+        }
+        const narrationTemplateBuilder = new NarrationTemplateBuilder({
+            narration: this,
+        });
+        return narrationTemplateBuilder.build();
     }
 }
 

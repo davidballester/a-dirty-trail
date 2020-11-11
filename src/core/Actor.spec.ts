@@ -153,5 +153,16 @@ describe('Actor', () => {
                 actor.removeFlag('solemn');
             });
         });
+
+        describe('getFlags', () => {
+            beforeEach(() => {
+                actor.addFlag('charismatic');
+            });
+
+            it('gets the flags', () => {
+                const flags = actor.getFlags();
+                expect(flags).toEqual(['charismatic']);
+            });
+        });
     });
 });

@@ -36,6 +36,10 @@ class Scene extends ThingWithId {
         return this.player;
     }
 
+    setPlayer(player: Actor): void {
+        this.player = player;
+    }
+
     getTitle(): MarkdownText {
         return this.title;
     }

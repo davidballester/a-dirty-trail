@@ -12,19 +12,21 @@ class Scene extends ThingWithId {
     private actions: Action<any>[];
 
     constructor({
+        id,
         player,
         title,
         setup,
         actors,
         actions,
     }: {
+        id: string;
         player: Actor;
         title: MarkdownText;
         setup?: MarkdownText;
         actors: NonPlayableActor[];
         actions: Action<any>[];
     }) {
-        super();
+        super(id);
         this.title = title;
         this.player = player;
         this.setup = setup;

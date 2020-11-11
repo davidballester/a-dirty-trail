@@ -16,8 +16,9 @@ describe('ScapeAction', () => {
             skillSet: new SkillSet({}),
         });
         scene = new Scene({
+            id: 'foo',
+            title: 'Foo',
             player: janeDoe,
-            setup: [],
             actors: [janeDoe],
             actions: [],
         });

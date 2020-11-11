@@ -60,6 +60,7 @@ class SceneBuilder {
         );
         const actors = this.buildActors();
         return new Scene({
+            id: this.sceneTemplate.metadata.id,
             title,
             actors,
             player: this.player,

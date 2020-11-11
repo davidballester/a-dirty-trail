@@ -24,6 +24,7 @@ const instrumentScene = (
     const actors = scene.getActors();
     const instrumentedActors = instrumentActors(actors);
     const instrumentedScene = new Scene({
+        id: scene.getId(),
         title: scene.getTitle(),
         setup: scene.getSetup(),
         player: instrumentedPlayer,

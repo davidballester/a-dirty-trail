@@ -17,6 +17,7 @@ describe(NarrationTemplateBuilder.name, () => {
             skillSet: new SkillSet({}),
         });
         const scene = new Scene({
+            id: 'foo',
             actions: [],
             actors: [],
             player,

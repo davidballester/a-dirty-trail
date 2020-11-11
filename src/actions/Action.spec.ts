@@ -26,8 +26,10 @@ describe('Action', () => {
             skillSet: new SkillSet({}),
         });
         scene = new Scene({
+            id: 'foo',
+            title: 'Foo',
             player: actor,
-            setup: [],
+            setup: '',
             actors: [],
             actions: [],
         });

@@ -29,9 +29,10 @@ describe('LootAction', () => {
             skillSet: new SkillSet({}),
         });
         scene = new Scene({
+            id: 'foo',
+            title: 'Foo',
             player: janeDoe,
             actors: [johnDoe],
-            setup: [],
             actions: [],
         });
     });

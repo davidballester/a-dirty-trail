@@ -8,6 +8,7 @@ export interface SceneTemplate {
 }
 
 export interface SceneTemplateMetadata {
+    id: string;
     title: MarkdownText;
     player?: ActorTemplate;
     actions?: { [key: string]: SceneActionTemplate };

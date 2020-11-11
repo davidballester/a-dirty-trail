@@ -41,6 +41,7 @@ describe('Scene', () => {
         actors = [manInBlack];
         title = '19';
         scene = new Scene({
+            id: title,
             title,
             player: gunslinger,
             setup,
@@ -60,6 +61,7 @@ describe('Scene', () => {
 
         it('returns undefined if not setup is provided', () => {
             scene = new Scene({
+                id: title,
                 title,
                 player: gunslinger,
                 actors,
@@ -106,6 +108,7 @@ describe('Scene', () => {
                 skillSet: new SkillSet({}),
             });
             scene = new Scene({
+                id: title,
                 title,
                 player: gunslinger,
                 setup,
@@ -132,6 +135,7 @@ describe('Scene', () => {
                 skillSet: new SkillSet({}),
             });
             scene = new Scene({
+                id: title,
                 title,
                 player: gunslinger,
                 setup,

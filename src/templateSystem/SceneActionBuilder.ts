@@ -151,9 +151,7 @@ class SceneActionBuilder {
         const skill = checkTemplate.skill;
         const modifier = checkTemplate.modifier || 0;
         const player = scene.getPlayer();
-        const success = player
-            .getSkill(skill)
-            .rollSuccessWithModifier(modifier);
+        const success = player.rollSkill(skill, modifier);
         return this.sceneTemplateResolver.fetchScene(
             this.narration,
             success

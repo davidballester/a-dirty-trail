@@ -165,4 +165,38 @@ describe('Actor', () => {
             });
         });
     });
+
+    describe('roll skill', () => {
+        let random: jest.SpyInstance;
+        beforeEach(() => {
+            random = jest.spyOn(Math, 'random');
+            skillSet = new SkillSet({
+                skills: [new Skill({ name: 'aim', probabilityOfSuccess: 0.5 })],
+            });
+            actor = new Actor({
+                name: 'Jane Doe',
+                health,
+                inventory,
+                skillSet,
+            });
+        });
+
+        it('succeeds if the random number is lower than the probability of success minus the opposition', () => {
+            random.mockReturnValue(0.1);
+            const result = actor.rollSkill('aim', -0.1);
+            expect(result).toBeTruthy();
+        });
+
+        it('succeeds if the random number is equal than the probability of success minus the opposition', () => {
+            random.mockReturnValue(0.4);
+            const result = actor.rollSkill('aim', -0.1);
+            expect(result).toBeTruthy();
+        });
+
+        it('fails if the random number is higher than the probability of success minus the opposition', () => {
+            random.mockReturnValue(0.4);
+            const result = actor.rollSkill('aim', -0.2);
+            expect(result).toBeFalsy();
+        });
+    });
 });

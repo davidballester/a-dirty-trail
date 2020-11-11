@@ -108,7 +108,7 @@ describe('Weapon', () => {
         let actor: Actor;
         let oponent: Actor;
         let damageGetRandomDamage: jest.SpyInstance;
-        let skillRollSuccess: jest.SpyInstance;
+        let rollSkill: jest.SpyInstance;
         beforeEach(() => {
             aiming = new Skill({ name: 'aiming', probabilityOfSuccess: 0.4 });
             skillSet = new SkillSet({ skills: [aiming] });
@@ -126,14 +126,14 @@ describe('Weapon', () => {
                 skillSet: new SkillSet({}),
             });
             damageGetRandomDamage = jest.spyOn(damage, 'getRandomDamage');
-            skillRollSuccess = jest.spyOn(aiming, 'rollSuccess');
+            rollSkill = jest.spyOn(actor, 'rollSkill');
         });
 
         describe('weapon with ammunition', () => {
             describe('successful attack', () => {
                 beforeEach(() => {
                     damageGetRandomDamage.mockReturnValue(1);
-                    skillRollSuccess.mockReturnValue(true);
+                    rollSkill.mockReturnValue(true);
                 });
 
                 it('reduces the ammunition of the weapon by 1', () => {
@@ -162,7 +162,7 @@ describe('Weapon', () => {
             describe('unsuccessful attack', () => {
                 beforeEach(() => {
                     damageGetRandomDamage.mockReturnValue(2);
-                    skillRollSuccess.mockReturnValue(false);
+                    rollSkill.mockReturnValue(false);
                 });
 
                 it('reduces the ammunition of the weapon by 1', () => {
@@ -199,7 +199,7 @@ describe('Weapon', () => {
                         damage,
                     });
                     damageGetRandomDamage.mockReturnValue(1);
-                    skillRollSuccess.mockReturnValue(true);
+                    rollSkill.mockReturnValue(true);
                 });
 
                 it('reduces the health of the oponent by the damage', () => {
@@ -222,7 +222,7 @@ describe('Weapon', () => {
             describe('unsuccessful attack', () => {
                 beforeEach(() => {
                     damageGetRandomDamage.mockReturnValue(2);
-                    skillRollSuccess.mockReturnValue(false);
+                    rollSkill.mockReturnValue(false);
                 });
 
                 it('does not reduce the health of the oponent by the damage', () => {

@@ -172,16 +172,12 @@ describe(SceneActionBuilder.name, () => {
         });
 
         describe('check', () => {
-            let rollSuccessWithModifier: jest.SpyInstance;
-            let getSkill: jest.SpyInstance;
+            let rollSkill: jest.SpyInstance;
             let nextSceneDeciderScene: Scene;
             beforeEach(() => {
-                rollSuccessWithModifier = jest.fn().mockReturnValue(true);
-                getSkill = jest.fn().mockReturnValue({
-                    rollSuccessWithModifier,
-                });
+                rollSkill = jest.fn().mockReturnValue(true);
                 const player = ({
-                    getSkill,
+                    rollSkill,
                 } as unknown) as Actor;
                 nextSceneDeciderScene = ({
                     getPlayer: jest.fn().mockReturnValue(player),
@@ -242,20 +238,12 @@ describe(SceneActionBuilder.name, () => {
                     )[0].nextSceneDecider;
                 });
 
-                it('gets the skill specified by the template from the player', async () => {
-                    await nextSceneDecider.call(
-                        sceneActionBuilder,
-                        nextSceneDeciderScene
-                    );
-                    expect(getSkill).toHaveBeenCalledWith('perception');
-                });
-
                 it('rolls the skill with the template modifier', async () => {
                     await nextSceneDecider.call(
                         sceneActionBuilder,
                         nextSceneDeciderScene
                     );
-                    expect(rollSuccessWithModifier).toHaveBeenCalledWith(-0.1);
+                    expect(rollSkill).toHaveBeenCalledWith('perception', -0.1);
                 });
 
                 it('returns the successful scene if the check succeeds', async () => {
@@ -267,7 +255,7 @@ describe(SceneActionBuilder.name, () => {
                 });
 
                 it('returns the failure scene if the check fails', async () => {
-                    rollSuccessWithModifier.mockReturnValue(false);
+                    rollSkill.mockReturnValue(false);
                     const nextScene = await nextSceneDecider.call(
                         sceneActionBuilder,
                         nextSceneDeciderScene

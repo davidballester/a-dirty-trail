@@ -40,36 +40,6 @@ describe('Skill', () => {
         });
     });
 
-    describe('rollSuccess', () => {
-        let randomGetRandom: jest.SpyInstance;
-        let skill: Skill;
-        beforeEach(() => {
-            randomGetRandom = jest.spyOn(Random, 'getRandom');
-            skill = new Skill({
-                name: 'charisma',
-                probabilityOfSuccess: 0.5,
-            });
-        });
-
-        it('succeeds if the random number is lower than the probability of success', () => {
-            randomGetRandom.mockReturnValue(0.4);
-            const result = skill.rollSuccess();
-            expect(result).toBeTruthy();
-        });
-
-        it('succeeds if the random number is equal than the probability of success', () => {
-            randomGetRandom.mockReturnValue(0.5);
-            const result = skill.rollSuccess();
-            expect(result).toBeTruthy();
-        });
-
-        it('fails if the random number is higher than the probability of success', () => {
-            randomGetRandom.mockReturnValue(0.6);
-            const result = skill.rollSuccess();
-            expect(result).toBeFalsy();
-        });
-    });
-
     describe('rollSuccessWithModifier', () => {
         let randomGetRandom: jest.SpyInstance;
         let skill: Skill;

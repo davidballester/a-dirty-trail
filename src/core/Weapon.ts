@@ -98,8 +98,8 @@ class Weapon extends ThingWithId {
     }
 
     private isSkillCheckSuccessful(actor: Actor) {
-        const skill = actor.getSkill(this.getSkill());
-        return skill.rollSuccess();
+        const skillName = this.getSkill();
+        return actor.rollSkill(skillName);
     }
 }
 

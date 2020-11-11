@@ -79,6 +79,11 @@ class Actor extends ThingWithId {
     getFlags(): string[] {
         return this.flags;
     }
+
+    rollSkill(skillName: string, modifier = 0): boolean {
+        const skill = this.getSkill(skillName);
+        return skill.rollSuccessWithModifier(modifier);
+    }
 }
 
 export default Actor;

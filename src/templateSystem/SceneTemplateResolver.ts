@@ -8,14 +8,11 @@ import Scene from '../core/Scene';
 abstract class SceneTemplateResolver {
     private narration?: Narration;
 
-    async fetchScene(
-        narration: Narration,
-        sceneTitle?: string
-    ): Promise<Scene> {
+    async fetchScene(narration: Narration, sceneId?: string): Promise<Scene> {
         this.narration = narration;
         const markdownSceneTemplate = await this.fetchMarkdownSceneTemplate(
             this.narration.getTitle(),
-            sceneTitle
+            sceneId
         );
         const sceneTemplate = this.convertToSceneTemplate(
             markdownSceneTemplate
@@ -25,7 +22,7 @@ abstract class SceneTemplateResolver {
 
     protected abstract fetchMarkdownSceneTemplate(
         narrationTitle: string,
-        sceneTitle?: string
+        sceneId?: string
     ): Promise<string>;
 
     private convertToSceneTemplate(

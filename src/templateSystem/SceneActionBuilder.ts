@@ -127,11 +127,11 @@ class SceneActionBuilder {
     private buildNextSceneDecider(
         sceneTemplateAction: SceneActionTemplate
     ): NextSceneDecider {
-        if (sceneTemplateAction.nextSceneTitle) {
+        if (sceneTemplateAction.nextSceneId) {
             return () => {
                 return this.sceneTemplateResolver.fetchScene(
                     this.narration,
-                    sceneTemplateAction.nextSceneTitle
+                    sceneTemplateAction.nextSceneId
                 );
             };
         }
@@ -157,8 +157,8 @@ class SceneActionBuilder {
         return this.sceneTemplateResolver.fetchScene(
             this.narration,
             success
-                ? checkTemplate.success.nextSceneTitle
-                : checkTemplate.failure.nextSceneTitle
+                ? checkTemplate.success.nextSceneId
+                : checkTemplate.failure.nextSceneId
         );
     }
 

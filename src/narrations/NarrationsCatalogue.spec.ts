@@ -62,7 +62,7 @@ describe('NarrationsCatalogue', () => {
             });
             const narrationTemplate = ({
                 title: 'The gunslinger',
-                currentSceneTitle: 'The desert',
+                currentSceneId: 'The desert',
                 actor: 'roland',
             } as unknown) as NarrationTemplate;
             narration = await narrationsCatalogue.loadNarration(

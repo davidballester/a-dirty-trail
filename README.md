@@ -39,10 +39,10 @@ import { SceneTemplateResolver } from 'a-dirty-trail';
 class MySceneTemplateResolver extends SceneTemplateResolver {
     protected abstract fetchMarkdownSceneTemplate(
         narrationTitle: string,
-        sceneTitle?: string
+        sceneId?: string
     ): Promise<string> {
         return fetch(
-            `https://mysite.tech/narrations/${narrationTitle}/${sceneTitle}.md`
+            `https://mysite.tech/narrations/${narrationTitle}/${sceneId}.md`
         );
     }
 }

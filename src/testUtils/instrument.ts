@@ -256,11 +256,11 @@ const instrumentSceneTemplateResolver = (
     const fetchScene = sceneTemplateResolverAsAny.fetchScene as jest.SpyInstance;
     fetchScene.mockReset();
     fetchScene.mockImplementation(
-        async (narration: Narration, sceneTitle?: string): Promise<Scene> => {
+        async (narration: Narration, sceneId?: string): Promise<Scene> => {
             sceneTemplateResolverAsAny.narration = instrumentedNarration;
             const markdownSceneTemplate = await sceneTemplateResolverAsAny.fetchMarkdownSceneTemplate(
                 instrumentedNarration.getTitle(),
-                sceneTitle
+                sceneId
             );
             const sceneTemplate = sceneTemplateResolverAsAny.convertToSceneTemplate(
                 markdownSceneTemplate

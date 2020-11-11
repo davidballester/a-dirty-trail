@@ -17,7 +17,7 @@ describe(NarrationTemplateBuilder.name, () => {
             skillSet: new SkillSet({}),
         });
         const scene = new Scene({
-            id: 'foo',
+            id: 'theDesert',
             actions: [],
             actors: [],
             player,
@@ -37,7 +37,7 @@ describe(NarrationTemplateBuilder.name, () => {
         expect(narrationTemplate.title).toEqual('The gunslinger');
     });
 
-    it('sets the scene title', () => {
-        expect(narrationTemplate.currentSceneTitle).toEqual('The desert');
+    it('sets the scene id', () => {
+        expect(narrationTemplate.currentSceneId).toEqual('theDesert');
     });
 });

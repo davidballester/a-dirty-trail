@@ -3,7 +3,7 @@ import { InventoryTemplate } from './InventoryTemplate';
 export interface SceneActionTemplate {
     sideEffect?: SideEffectTemplate;
     check?: CheckTemplate;
-    nextSceneTitle?: string;
+    nextSceneId?: string;
     condition?: ConditionTemplate;
 }
 
@@ -25,7 +25,7 @@ export interface CheckTemplate {
 }
 
 export interface CheckTemplateResolution {
-    nextSceneTitle: string;
+    nextSceneId: string;
 }
 
 export interface ConditionTemplate {

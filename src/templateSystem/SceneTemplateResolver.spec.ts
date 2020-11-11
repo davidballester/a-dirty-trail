@@ -16,7 +16,7 @@ describe(SceneTemplateResolver.name, () => {
     }
 
     let narration: Narration;
-    let sceneTitle: string;
+    let sceneId: string;
     let parseMarkdownMock: jest.SpyInstance;
     let sceneTemplate: SceneTemplate;
     let player: Actor;
@@ -59,18 +59,18 @@ describe(SceneTemplateResolver.name, () => {
         it('returns the scene', async () => {
             const returnedScene = await sceneTemplateResolver.fetchScene(
                 narration,
-                sceneTitle
+                sceneId
             );
             expect(returnedScene).toEqual(scene);
         });
 
         it('parses the markdown returned by the fetch operation', async () => {
-            await sceneTemplateResolver.fetchScene(narration, sceneTitle);
+            await sceneTemplateResolver.fetchScene(narration, sceneId);
             expect(parseMarkdownMock).toHaveBeenCalledWith('# Hello, world!');
         });
 
         it('instantiates a scene builder', async () => {
-            await sceneTemplateResolver.fetchScene(narration, sceneTitle);
+            await sceneTemplateResolver.fetchScene(narration, sceneId);
             expect(sceneBuilderMock).toHaveBeenCalledWith({
                 sceneTemplateResolver: sceneTemplateResolver,
                 sceneTemplate,

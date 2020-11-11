@@ -32,11 +32,11 @@ describe(SceneActionBuilder.name, () => {
             metadata: {
                 actions: {
                     'Change name': {
-                        nextSceneTitle: 'bar.md',
+                        nextSceneId: 'bar.md',
                         sideEffect: sideEffectTemplate,
                     },
                     'Drink water': {
-                        nextSceneTitle: 'baz.md',
+                        nextSceneId: 'baz.md',
                     },
                 },
             },
@@ -200,10 +200,10 @@ describe(SceneActionBuilder.name, () => {
                                     skill: 'perception',
                                     modifier: -0.1,
                                     success: {
-                                        nextSceneTitle: 'qux.md',
+                                        nextSceneId: 'qux.md',
                                     },
                                     failure: {
-                                        nextSceneTitle: 'quux.md',
+                                        nextSceneId: 'quux.md',
                                     },
                                 },
                             },
@@ -289,10 +289,10 @@ describe(SceneActionBuilder.name, () => {
                                         skill: 'perception',
                                         modifier: -0.1,
                                         success: {
-                                            nextSceneTitle: 'qux.md',
+                                            nextSceneId: 'qux.md',
                                         },
                                         failure: {
-                                            nextSceneTitle: 'quux.md',
+                                            nextSceneId: 'quux.md',
                                         },
                                     },
                                 },
@@ -300,32 +300,32 @@ describe(SceneActionBuilder.name, () => {
                                     condition: {
                                         hasTrinket: 'watch',
                                     },
-                                    nextSceneTitle: 'corge.md',
+                                    nextSceneId: 'corge.md',
                                 },
                                 'Give the matches': {
                                     condition: {
                                         hasTrinket: 'matches',
                                     },
-                                    nextSceneTitle: 'graulpy.md',
+                                    nextSceneId: 'graulpy.md',
                                 },
                                 '"Sorry, I have no watch"': {
                                     condition: {
                                         doesNotHaveTrinket: 'watch',
                                     },
-                                    nextSceneTitle: 'grault.md',
+                                    nextSceneId: 'grault.md',
                                 },
                                 '"Sorry, I have no matches"': {
                                     condition: {
                                         doesNotHaveTrinket: 'matches',
                                     },
-                                    nextSceneTitle: 'grault.md',
+                                    nextSceneId: 'grault.md',
                                 },
                                 'Work something out': {
                                     condition: {
                                         doesNotHaveTrinket: 'matches',
                                         hasTrinket: 'watch',
                                     },
-                                    nextSceneTitle: 'grault.md',
+                                    nextSceneId: 'grault.md',
                                 },
                             },
                         },
@@ -412,25 +412,25 @@ describe(SceneActionBuilder.name, () => {
                                     condition: {
                                         hasFlag: 'liar',
                                     },
-                                    nextSceneTitle: 'corge.md',
+                                    nextSceneId: 'corge.md',
                                 },
                                 'Lie a lot': {
                                     condition: {
                                         hasFlags: ['liar', 'comedian'],
                                     },
-                                    nextSceneTitle: 'graulpy.md',
+                                    nextSceneId: 'graulpy.md',
                                 },
                                 'Tell the truth': {
                                     condition: {
                                         hasNotFlag: 'liar',
                                     },
-                                    nextSceneTitle: 'corge.md',
+                                    nextSceneId: 'corge.md',
                                 },
                                 'Tell the truth seriously': {
                                     condition: {
                                         hasNotFlags: ['liar', 'comedian'],
                                     },
-                                    nextSceneTitle: 'corge.md',
+                                    nextSceneId: 'corge.md',
                                 },
                             },
                         },

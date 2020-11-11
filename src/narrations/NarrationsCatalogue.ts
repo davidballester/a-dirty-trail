@@ -30,7 +30,7 @@ abstract class NarrationsCatalogue {
         const narration = new Narration({ title: narrationTemplate.title });
         const scene = await this.sceneTemplateResolver.fetchScene(
             narration,
-            narrationTemplate.currentSceneTitle
+            narrationTemplate.currentSceneId
         );
         const actorBuilder = new ActorBuilder({
             actorTemplate: narrationTemplate.actor,

@@ -19,7 +19,7 @@ class NarrationTemplateBuilder {
         return {
             title: this.narration.getTitle(),
             actor: actorTemplate,
-            currentSceneTitle: currentScene.getTitle(),
+            currentSceneId: currentScene.getId(),
         };
     }
 

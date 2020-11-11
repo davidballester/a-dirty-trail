@@ -31,8 +31,6 @@ const instrumentScene = (
         actors: instrumentedActors,
         actions: [],
     });
-    const instrumentedSceneAsAny = instrumentedScene as any;
-    instrumentedSceneAsAny.id = instrumentedScene.getTitle();
     const actions = scene.getActions();
     const instrumentedNarration = instrumentNarration(
         narration,

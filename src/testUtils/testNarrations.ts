@@ -52,7 +52,7 @@ const testNarrations = ({
         log: Log,
         depth: number
     ): Promise<ErrorMessages> => {
-        log(`${pad(depth)}${scene.getTitle()}`);
+        log(`${pad(depth)}${scene.getTitle()}(${scene.getId()})`);
         if (scene.isCombat()) {
             return testCombatScene(scene, narration, log, depth);
         } else {

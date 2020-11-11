@@ -15,12 +15,9 @@ describe('NarrationsCatalogue', () => {
 
     let scene: Scene;
     let narrationsCatalogue: NarrationsCatalogue;
-    let setPlayer: jest.SpyInstance;
     beforeEach(() => {
-        setPlayer = jest.fn();
         scene = ({
             id: 'scene',
-            setPlayer,
         } as unknown) as Scene;
         const sceneTemplateResolver = ({
             fetchScene: jest.fn().mockReturnValue(scene),
@@ -76,10 +73,6 @@ describe('NarrationsCatalogue', () => {
 
         it('sets the current scene', () => {
             expect(narration.getCurrentScene()).toEqual(scene);
-        });
-
-        it('sets the actor in the scene to the result of the actor builder', () => {
-            expect(setPlayer).toHaveBeenCalledWith({ id: 'actor' });
         });
     });
 });

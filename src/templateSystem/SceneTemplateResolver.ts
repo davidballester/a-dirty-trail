@@ -4,11 +4,16 @@ import parseMarkdown from 'markdown-yaml-metadata-parser';
 import SceneBuilder from './SceneBuilder';
 import Narration from '../core/Narration';
 import Scene from '../core/Scene';
+import Actor from '../core/Actor';
 
 abstract class SceneTemplateResolver {
     private narration?: Narration;
 
-    async fetchScene(narration: Narration, sceneId?: string): Promise<Scene> {
+    async fetchScene(
+        narration: Narration,
+        sceneId?: string,
+        player?: Actor
+    ): Promise<Scene> {
         this.narration = narration;
         const markdownSceneTemplate = await this.fetchMarkdownSceneTemplate(
             this.narration.getTitle(),
@@ -17,7 +22,7 @@ abstract class SceneTemplateResolver {
         const sceneTemplate = this.convertToSceneTemplate(
             markdownSceneTemplate
         );
-        return this.buildScene(sceneTemplate);
+        return this.buildScene(sceneTemplate, player);
     }
 
     protected abstract fetchMarkdownSceneTemplate(
@@ -34,9 +39,11 @@ abstract class SceneTemplateResolver {
         return { metadata, setup };
     }
 
-    private buildScene(sceneTemplate: SceneTemplate): Scene {
+    private buildScene(sceneTemplate: SceneTemplate, player?: Actor): Scene {
         const currentScene = this.narration!.getCurrentScene();
-        const player = currentScene ? currentScene.getPlayer() : undefined;
+        if (!player && currentScene) {
+            player = currentScene.getPlayer();
+        }
         const sceneBuilder = new SceneBuilder({
             sceneTemplateResolver: this,
             sceneTemplate,

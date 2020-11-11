@@ -27,16 +27,16 @@ abstract class NarrationsCatalogue {
     async loadNarration(
         narrationTemplate: NarrationTemplate
     ): Promise<Narration> {
-        const narration = new Narration({ title: narrationTemplate.title });
-        const scene = await this.sceneTemplateResolver.fetchScene(
-            narration,
-            narrationTemplate.currentSceneId
-        );
         const actorBuilder = new ActorBuilder({
             actorTemplate: narrationTemplate.actor,
         });
         const actor = actorBuilder.build();
-        scene.setPlayer(actor);
+        const narration = new Narration({ title: narrationTemplate.title });
+        const scene = await this.sceneTemplateResolver.fetchScene(
+            narration,
+            narrationTemplate.currentSceneId,
+            actor
+        );
         narration.setCurrentScene(scene);
         return narration;
     }

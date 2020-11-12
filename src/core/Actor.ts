@@ -87,6 +87,16 @@ class Actor extends ThingWithId {
         );
         return skill.rollSuccessWithModifier(modifier + trinketsModifier);
     }
+
+    getProbabilityOfSuccess(skillName: string, modifier = 0): number {
+        const skill = this.getSkill(skillName);
+        const trinketsModifier = this.getInventory().getTrinketsModifiersOnSkill(
+            skillName
+        );
+        const probabilityOfSuccess =
+            skill.getProbabilityOfSuccess() + trinketsModifier + modifier;
+        return Math.max(0, Math.min(1, probabilityOfSuccess));
+    }
 }
 
 export default Actor;

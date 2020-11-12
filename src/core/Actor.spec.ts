@@ -235,4 +235,54 @@ describe('Actor', () => {
             });
         });
     });
+
+    describe('getProbabilityOfSuccess', () => {
+        beforeEach(() => {
+            skillSet = new SkillSet({
+                skills: [new Skill({ name: 'aim', probabilityOfSuccess: 0.5 })],
+            });
+            actor = new Actor({
+                name: 'Jane Doe',
+                health,
+                inventory,
+                skillSet,
+            });
+            actor.getInventory().loot(
+                new Inventory({
+                    trinkets: [
+                        new Trinket({
+                            name: 'scope',
+                            skillsModifiers: {
+                                aim: 0.2,
+                            },
+                        }),
+                    ],
+                })
+            );
+        });
+
+        it('returns the calculated probability of success', () => {
+            const probabilityOfSuccess = actor.getProbabilityOfSuccess(
+                'aim',
+                -0.4
+            );
+            expect(probabilityOfSuccess).toEqual(0.5 + 0.2 - 0.4);
+        });
+
+        it('returns 0 if the calculated probability of success is lower than 0', () => {
+            const probabilityOfSuccess = actor.getProbabilityOfSuccess(
+                'aim',
+                -0.9
+            );
+            expect(probabilityOfSuccess).toEqual(0);
+        });
+
+        it('returns 1 if the calculated probability of success is higher than 0', () => {
+            const probabilityOfSuccess = actor.getProbabilityOfSuccess(
+                'aim',
+                0.9
+            );
+            expect(probabilityOfSuccess).toEqual(1);
+        });
+    });
 });

@@ -1,0 +1,221 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ActorTemplate": {
+            "properties": {
+                "flags": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "health": {
+                    "type": "string"
+                },
+                "inventory": {
+                    "$ref": "#/definitions/InventoryTemplate"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "skills": {
+                    "additionalProperties": {
+                        "type": "number"
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "CheckTemplate": {
+            "properties": {
+                "failure": {
+                    "$ref": "#/definitions/CheckTemplateResolution"
+                },
+                "modifier": {
+                    "type": "number"
+                },
+                "skill": {
+                    "type": "string"
+                },
+                "success": {
+                    "$ref": "#/definitions/CheckTemplateResolution"
+                }
+            },
+            "type": "object"
+        },
+        "CheckTemplateResolution": {
+            "properties": {
+                "nextSceneId": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ConditionTemplate": {
+            "properties": {
+                "doesNotHaveTrinket": {
+                    "type": "string"
+                },
+                "hasFlag": {
+                    "type": "string"
+                },
+                "hasFlags": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "hasNotFlag": {
+                    "type": "string"
+                },
+                "hasNotFlags": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "hasTrinket": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "InventoryTemplate": {
+            "properties": {
+                "ammunitions": {
+                    "additionalProperties": {
+                        "type": "number"
+                    },
+                    "type": "object"
+                },
+                "trinkets": {
+                    "items": {
+                        "$ref": "#/definitions/TrinketTemplate"
+                    },
+                    "type": "array"
+                },
+                "weapons": {
+                    "additionalProperties": {
+                        "$ref": "#/definitions/WeaponTemplate"
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "SceneActionTemplate": {
+            "properties": {
+                "check": {
+                    "$ref": "#/definitions/CheckTemplate"
+                },
+                "condition": {
+                    "$ref": "#/definitions/ConditionTemplate"
+                },
+                "nextSceneId": {
+                    "type": "string"
+                },
+                "sideEffect": {
+                    "$ref": "#/definitions/SideEffectTemplate"
+                }
+            },
+            "type": "object"
+        },
+        "SideEffectTemplate": {
+            "properties": {
+                "addFlag": {
+                    "type": "string"
+                },
+                "addFlags": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "loot": {
+                    "$ref": "#/definitions/InventoryTemplate"
+                },
+                "modifyHealth": {
+                    "type": "number"
+                },
+                "removeFlag": {
+                    "type": "string"
+                },
+                "removeFlags": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "rename": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "TrinketTemplate": {
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "skillsModifiers": {
+                    "additionalProperties": {
+                        "type": "number"
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "WeaponTemplate": {
+            "properties": {
+                "ammunition": {
+                    "type": "string"
+                },
+                "ammunitionType": {
+                    "type": "string"
+                },
+                "canBeLooted": {
+                    "type": "boolean"
+                },
+                "damage": {
+                    "type": "string"
+                },
+                "skill": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "actions": {
+            "additionalProperties": {
+                "$ref": "#/definitions/SceneActionTemplate"
+            },
+            "type": "object"
+        },
+        "actors": {
+            "additionalProperties": {
+                "$ref": "#/definitions/ActorTemplate"
+            },
+            "type": "object"
+        },
+        "id": {
+            "type": "string"
+        },
+        "player": {
+            "$ref": "#/definitions/ActorTemplate"
+        },
+        "title": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

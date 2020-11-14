@@ -4,7 +4,7 @@ import Narration from '../core/Narration';
 import Scene from '../core/Scene';
 import SceneActionBuilder from './SceneActionBuilder';
 import { SceneTemplate } from './SceneTemplate';
-import { SideEffectTemplate } from './SceneActionTemplate';
+import { SideEffectTemplate } from './SideEffectTemplate';
 import SideEffectBuilder from './SideEffectBuilder';
 import AdvanceAction from '../actions/AdvanceAction';
 import SceneTemplateResolver from './SceneTemplateResolver';
@@ -18,6 +18,7 @@ describe(SceneActionBuilder.name, () => {
     let sideEffectTemplate: SideEffectTemplate;
     let actor: Actor;
     let hasFlag: jest.SpyInstance;
+    let getFlag: jest.SpyInstance;
     let scene: Scene;
     let narration: Narration;
     let resolvePlaceholders: jest.SpyInstance;
@@ -53,10 +54,12 @@ describe(SceneActionBuilder.name, () => {
             .calledWith('watch')
             .mockReturnValue(true);
         hasFlag = jest.fn();
+        getFlag = jest.fn();
         actor = ({
             id: 'actor',
             getFlags: jest.fn().mockReturnValue({
                 hasFlag,
+                getFlag,
             }),
             getInventory: jest.fn().mockReturnValue({
                 hasTrinket,
@@ -393,100 +396,237 @@ describe(SceneActionBuilder.name, () => {
             });
 
             describe('flags', () => {
-                beforeEach(() => {
-                    sceneTemplate = ({
-                        title: 'Foo',
-                        metadata: {
-                            actions: {
-                                Lie: {
-                                    condition: {
-                                        hasFlag: 'liar',
+                describe('boolean conditions', () => {
+                    beforeEach(() => {
+                        sceneTemplate = ({
+                            title: 'Foo',
+                            metadata: {
+                                actions: {
+                                    Lie: {
+                                        condition: {
+                                            hasFlag: 'liar',
+                                        },
+                                        nextSceneId: 'corge.md',
                                     },
-                                    nextSceneId: 'corge.md',
-                                },
-                                'Lie a lot': {
-                                    condition: {
-                                        hasFlags: ['liar', 'comedian'],
+                                    'Lie a lot': {
+                                        condition: {
+                                            hasFlags: ['liar', 'comedian'],
+                                        },
+                                        nextSceneId: 'graulpy.md',
                                     },
-                                    nextSceneId: 'graulpy.md',
-                                },
-                                'Tell the truth': {
-                                    condition: {
-                                        hasNotFlag: 'liar',
+                                    'Tell the truth': {
+                                        condition: {
+                                            hasNotFlag: 'liar',
+                                        },
+                                        nextSceneId: 'corge.md',
                                     },
-                                    nextSceneId: 'corge.md',
-                                },
-                                'Tell the truth seriously': {
-                                    condition: {
-                                        hasNotFlags: ['liar', 'comedian'],
+                                    'Tell the truth seriously': {
+                                        condition: {
+                                            hasNotFlags: ['liar', 'comedian'],
+                                        },
+                                        nextSceneId: 'corge.md',
                                     },
-                                    nextSceneId: 'corge.md',
                                 },
                             },
-                        },
-                    } as unknown) as SceneTemplate;
-                    when(hasFlag)
-                        .mockReturnValue(false)
-                        .calledWith('liar')
-                        .mockReturnValue(true);
-                    sceneActionBuilder = new SceneActionBuilder({
-                        sceneTemplateResolver,
-                        sceneTemplate,
-                        narration,
-                        resolvePlaceholders: (resolvePlaceholders as unknown) as (
-                            string: string
-                        ) => string,
-                        scene,
+                        } as unknown) as SceneTemplate;
+                        when(hasFlag)
+                            .mockReturnValue(false)
+                            .calledWith('liar')
+                            .mockReturnValue(true);
+                        sceneActionBuilder = new SceneActionBuilder({
+                            sceneTemplateResolver,
+                            sceneTemplate,
+                            narration,
+                            resolvePlaceholders: (resolvePlaceholders as unknown) as (
+                                string: string
+                            ) => string,
+                            scene,
+                        });
+                    });
+
+                    it('creates the action that requires a flag the player has', () => {
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                actor,
+                                narration,
+                                scene,
+                                name: 'Lie',
+                            })
+                        );
+                    });
+
+                    it('does not create the action that requires a flag the player does not have', () => {
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).not.toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                actor,
+                                narration,
+                                scene,
+                                name: 'Lie a lot',
+                            })
+                        );
+                    });
+
+                    it('creates the action that requires not having a flag the player does not have', () => {
+                        when(hasFlag).calledWith('liar').mockReturnValue(false);
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                actor,
+                                narration,
+                                scene,
+                                name: 'Tell the truth seriously',
+                            })
+                        );
+                    });
+
+                    it('does not create the action if the player has a flag that is required not to have', () => {
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).not.toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                actor,
+                                narration,
+                                scene,
+                                name: 'Tell the truth',
+                            })
+                        );
                     });
                 });
 
-                it('creates the action that requires a flag the player has', () => {
-                    sceneActionBuilder.build();
-                    expect(advanceActionMock).toHaveBeenCalledWith(
-                        expect.objectContaining({
-                            actor,
+                describe('numeric conditions', () => {
+                    beforeEach(() => {
+                        sceneTemplate = ({
+                            title: 'Foo',
+                            metadata: {
+                                actions: {
+                                    Foo: {
+                                        condition: {
+                                            flagIsGreaterThan: {
+                                                name: 'strength',
+                                                value: 5,
+                                            },
+                                            flagsAreGreaterThan: [
+                                                {
+                                                    name: 'charisma',
+                                                    value: 5,
+                                                },
+                                            ],
+                                            flagIsLowerThan: {
+                                                name: 'dexterity',
+                                                value: 5,
+                                            },
+                                            flagsAreLowerThan: [
+                                                {
+                                                    name: 'perception',
+                                                    value: 5,
+                                                },
+                                            ],
+                                            flagIsEqualTo: {
+                                                name: 'wisdom',
+                                                value: 5,
+                                            },
+                                            flagsAreEqualTo: [
+                                                {
+                                                    name: 'intelligence',
+                                                    value: 5,
+                                                },
+                                            ],
+                                            flagIsDifferentTo: {
+                                                name: 'stealth',
+                                                value: 5,
+                                            },
+                                            flagsAreDifferentTo: [
+                                                {
+                                                    name: 'prowess',
+                                                    value: 5,
+                                                },
+                                            ],
+                                        },
+                                        nextSceneId: 'corge.md',
+                                    },
+                                },
+                            },
+                        } as unknown) as SceneTemplate;
+                        when(getFlag)
+                            .mockReturnValue(0)
+                            .calledWith('strength')
+                            .mockReturnValue(7)
+                            .calledWith('charisma')
+                            .mockReturnValue(7)
+                            .calledWith('dexterity')
+                            .mockReturnValue(3)
+                            .calledWith('perception')
+                            .mockReturnValue(3)
+                            .calledWith('wisdom')
+                            .mockReturnValue(5)
+                            .calledWith('intelligence')
+                            .mockReturnValue(5)
+                            .calledWith('stealth')
+                            .mockReturnValue(10)
+                            .calledWith('prowess')
+                            .mockReturnValue(10);
+                        sceneActionBuilder = new SceneActionBuilder({
+                            sceneTemplateResolver,
+                            sceneTemplate,
                             narration,
+                            resolvePlaceholders: (resolvePlaceholders as unknown) as (
+                                string: string
+                            ) => string,
                             scene,
-                            name: 'Lie',
-                        })
-                    );
-                });
+                        });
+                    });
 
-                it('does not create the action that requires a flag the player does not have', () => {
-                    sceneActionBuilder.build();
-                    expect(advanceActionMock).not.toHaveBeenCalledWith(
-                        expect.objectContaining({
-                            actor,
-                            narration,
-                            scene,
-                            name: 'Lie a lot',
-                        })
-                    );
-                });
+                    it('creates the action when all conditions are met', () => {
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                name: 'Foo',
+                            })
+                        );
+                    });
 
-                it('creates the action that requires not having a flag the player does not have', () => {
-                    when(hasFlag).calledWith('liar').mockReturnValue(false);
-                    sceneActionBuilder.build();
-                    expect(advanceActionMock).toHaveBeenCalledWith(
-                        expect.objectContaining({
-                            actor,
-                            narration,
-                            scene,
-                            name: 'Tell the truth seriously',
-                        })
-                    );
-                });
+                    it('does not create the action when an equal condition fails', () => {
+                        when(getFlag).calledWith('wisdom').mockReturnValue(6);
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).not.toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                name: 'Foo',
+                            })
+                        );
+                    });
 
-                it('does not create the action if the player has a flag that is required not to have', () => {
-                    sceneActionBuilder.build();
-                    expect(advanceActionMock).not.toHaveBeenCalledWith(
-                        expect.objectContaining({
-                            actor,
-                            narration,
-                            scene,
-                            name: 'Tell the truth',
-                        })
-                    );
+                    it('does not create the action when a greater than condition fails', () => {
+                        when(getFlag).calledWith('charisma').mockReturnValue(4);
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).not.toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                name: 'Foo',
+                            })
+                        );
+                    });
+
+                    it('does not create the action when a lower than condition fails', () => {
+                        when(getFlag)
+                            .calledWith('dexterity')
+                            .mockReturnValue(4);
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).not.toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                name: 'Foo',
+                            })
+                        );
+                    });
+
+                    it('does not create the action when a diferent to condition fails', () => {
+                        when(getFlag).calledWith('prowess').mockReturnValue(5);
+                        sceneActionBuilder.build();
+                        expect(advanceActionMock).not.toHaveBeenCalledWith(
+                            expect.objectContaining({
+                                name: 'Foo',
+                            })
+                        );
+                    });
                 });
             });
         });

@@ -72,12 +72,7 @@ class SceneActionBuilder {
         const forbiddenTrinket = condition.doesNotHaveTrinket;
         const hasForbiddenTrinket =
             !!forbiddenTrinket && this.playerHasTrinket(forbiddenTrinket);
-        const isFlagsCheckSuccessful = this.meetsFlagsConditions(
-            condition.hasFlag,
-            condition.hasFlags,
-            condition.hasNotFlag,
-            condition.hasNotFlags
-        );
+        const isFlagsCheckSuccessful = this.meetsFlagsConditions(condition);
         return (
             (!mandatoryTrinket || hasMandatoryTrinket) &&
             (!hasForbiddenTrinket || !hasForbiddenTrinket) &&
@@ -160,12 +155,22 @@ class SceneActionBuilder {
         );
     }
 
-    private meetsFlagsConditions(
-        hasFlag?: string,
-        hasFlags: string[] = [],
-        hasNotFlag?: string,
-        hasNotFlags: string[] = []
-    ): boolean {
+    private meetsFlagsConditions(condition: ConditionTemplate): boolean {
+        const meetsFlagsPresenceCondition = this.meetsFlagsPresenceCondition(
+            condition
+        );
+        if (!meetsFlagsPresenceCondition) {
+            return false;
+        }
+        return this.meetsFlagsNumericConditions(condition);
+    }
+
+    private meetsFlagsPresenceCondition({
+        hasFlag,
+        hasFlags = [],
+        hasNotFlag,
+        hasNotFlags = [],
+    }: ConditionTemplate): boolean {
         if (hasFlag) {
             hasFlags.push(hasFlag);
         }
@@ -180,6 +185,49 @@ class SceneActionBuilder {
             (flag) => !player.getFlags().hasFlag(flag)
         );
         return isHasFlagsSuccessful && isHasNotFlagsSuccessful;
+    }
+
+    private meetsFlagsNumericConditions({
+        flagIsEqualTo,
+        flagsAreEqualTo = [],
+        flagIsGreaterThan,
+        flagsAreGreaterThan = [],
+        flagIsLowerThan,
+        flagsAreLowerThan = [],
+        flagIsDifferentTo,
+        flagsAreDifferentTo = [],
+    }: ConditionTemplate): boolean {
+        if (flagIsEqualTo) {
+            flagsAreEqualTo.push(flagIsEqualTo);
+        }
+        if (flagIsGreaterThan) {
+            flagsAreGreaterThan.push(flagIsGreaterThan);
+        }
+        if (flagIsLowerThan) {
+            flagsAreLowerThan.push(flagIsLowerThan);
+        }
+        if (flagIsDifferentTo) {
+            flagsAreDifferentTo.push(flagIsDifferentTo);
+        }
+        const flags = this.scene.getPlayer().getFlags();
+        const flagsAreEqualToIsMet = flagsAreEqualTo.every(
+            ({ name, value }) => flags.getFlag(name) === value
+        );
+        const flagsAreGreaterThanIsMet = flagsAreGreaterThan.every(
+            ({ name, value }) => flags.getFlag(name) > value
+        );
+        const flagsAreLowerThanIsMet = flagsAreLowerThan.every(
+            ({ name, value }) => flags.getFlag(name) < value
+        );
+        const flagsAreDifferentToIsMet = flagsAreDifferentTo.every(
+            ({ name, value }) => flags.getFlag(name) !== value
+        );
+        return (
+            flagsAreEqualToIsMet &&
+            flagsAreGreaterThanIsMet &&
+            flagsAreLowerThanIsMet &&
+            flagsAreDifferentToIsMet
+        );
     }
 }
 

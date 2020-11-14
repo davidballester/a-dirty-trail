@@ -25,4 +25,17 @@ export interface ConditionTemplate {
     hasFlags?: string[];
     hasNotFlag?: string;
     hasNotFlags?: string[];
+    flagIsGreaterThan?: FlagNumericCondition;
+    flagsAreGreaterThan?: FlagNumericCondition[];
+    flagIsLowerThan?: FlagNumericCondition;
+    flagsAreLowerThan?: FlagNumericCondition[];
+    flagIsEqualTo?: FlagNumericCondition;
+    flagsAreEqualTo?: FlagNumericCondition[];
+    flagIsDifferentTo?: FlagNumericCondition;
+    flagsAreDifferentTo?: FlagNumericCondition[];
+}
+
+export interface FlagNumericCondition {
+    name: string;
+    value: number;
 }

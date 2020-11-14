@@ -4,10 +4,7 @@
         "ActorTemplate": {
             "properties": {
                 "flags": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
+                    "$ref": "#/definitions/FlagsTemplate"
                 },
                 "health": {
                     "type": "string"
@@ -57,6 +54,42 @@
                 "doesNotHaveTrinket": {
                     "type": "string"
                 },
+                "flagIsDifferentTo": {
+                    "$ref": "#/definitions/FlagNumericCondition"
+                },
+                "flagIsEqualTo": {
+                    "$ref": "#/definitions/FlagNumericCondition"
+                },
+                "flagIsGreaterThan": {
+                    "$ref": "#/definitions/FlagNumericCondition"
+                },
+                "flagIsLowerThan": {
+                    "$ref": "#/definitions/FlagNumericCondition"
+                },
+                "flagsAreDifferentTo": {
+                    "items": {
+                        "$ref": "#/definitions/FlagNumericCondition"
+                    },
+                    "type": "array"
+                },
+                "flagsAreEqualTo": {
+                    "items": {
+                        "$ref": "#/definitions/FlagNumericCondition"
+                    },
+                    "type": "array"
+                },
+                "flagsAreGreaterThan": {
+                    "items": {
+                        "$ref": "#/definitions/FlagNumericCondition"
+                    },
+                    "type": "array"
+                },
+                "flagsAreLowerThan": {
+                    "items": {
+                        "$ref": "#/definitions/FlagNumericCondition"
+                    },
+                    "type": "array"
+                },
                 "hasFlag": {
                     "type": "string"
                 },
@@ -81,6 +114,23 @@
             },
             "type": "object"
         },
+        "FlagNumericCondition": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "FlagsTemplate": {
+            "additionalProperties": {
+                "type": "number"
+            },
+            "type": "object"
+        },
         "InventoryTemplate": {
             "properties": {
                 "ammunitions": {
@@ -100,6 +150,17 @@
                         "$ref": "#/definitions/WeaponTemplate"
                     },
                     "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "ModifyFlag": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
                 }
             },
             "type": "object"
@@ -134,6 +195,15 @@
                 },
                 "loot": {
                     "$ref": "#/definitions/InventoryTemplate"
+                },
+                "modifyFlag": {
+                    "$ref": "#/definitions/ModifyFlag"
+                },
+                "modifyFlags": {
+                    "items": {
+                        "$ref": "#/definitions/ModifyFlag"
+                    },
+                    "type": "array"
                 },
                 "modifyHealth": {
                     "type": "number"

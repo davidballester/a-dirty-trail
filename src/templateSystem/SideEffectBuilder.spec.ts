@@ -3,7 +3,7 @@ import InventoryBuilder from './InventoryBuilder';
 import Inventory from '../core/Inventory';
 import Actor from '../core/Actor';
 import Scene from '../core/Scene';
-import { SideEffectTemplate } from './SceneActionTemplate';
+import { SideEffectTemplate } from './SideEffectTemplate';
 jest.mock('./InventoryBuilder');
 
 describe(SideEffectBuilder.name, () => {
@@ -18,6 +18,7 @@ describe(SideEffectBuilder.name, () => {
     let sideEffectBuilder: SideEffectBuilder;
     let addFlag: jest.SpyInstance;
     let removeFlag: jest.SpyInstance;
+    let modifyFlag: jest.SpyInstance;
     beforeEach(() => {
         changeName = jest.fn();
         loot = jest.fn();
@@ -27,13 +28,17 @@ describe(SideEffectBuilder.name, () => {
         modifyHealth = jest.fn();
         addFlag = jest.fn();
         removeFlag = jest.fn();
+        modifyFlag = jest.fn();
         player = ({
             id: 'player',
             changeName,
             getInventory,
             getHealth: jest.fn().mockReturnValue({ modify: modifyHealth }),
-            addFlag,
-            removeFlag,
+            getFlags: jest.fn().mockReturnValue({
+                addFlag,
+                removeFlag,
+                modifyFlag,
+            }),
         } as unknown) as Actor;
         const getPlayer = jest.fn().mockReturnValue(player);
         scene = ({
@@ -81,6 +86,16 @@ describe(SideEffectBuilder.name, () => {
                     addFlags: ['approachable', 'fun'],
                     removeFlag: 'sulky',
                     removeFlags: ['solemn', 'sad'],
+                    modifyFlag: {
+                        name: 'karma',
+                        value: 1,
+                    },
+                    modifyFlags: [
+                        {
+                            name: 'coins',
+                            value: 2,
+                        },
+                    ],
                 };
                 sideEffectBuilder = new SideEffectBuilder({
                     scene,
@@ -101,6 +116,12 @@ describe(SideEffectBuilder.name, () => {
                 expect(removeFlag).toHaveBeenCalledWith('solemn');
                 expect(removeFlag).toHaveBeenCalledWith('sad');
                 expect(removeFlag).toHaveBeenCalledTimes(3);
+            });
+
+            it('modifies the flags', () => {
+                expect(modifyFlag).toHaveBeenCalledWith('karma', 1);
+                expect(modifyFlag).toHaveBeenCalledWith('coins', 2);
+                expect(modifyFlag).toHaveBeenCalledTimes(2);
             });
         });
     });

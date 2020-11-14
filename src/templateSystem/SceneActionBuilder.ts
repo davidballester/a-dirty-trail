@@ -9,8 +9,8 @@ import {
     CheckTemplate,
     ConditionTemplate,
     SceneActionTemplate,
-    SideEffectTemplate,
 } from './SceneActionTemplate';
+import { SideEffectTemplate } from './SideEffectTemplate';
 import SideEffectBuilder from './SideEffectBuilder';
 import SceneTemplateResolver from './SceneTemplateResolver';
 

@@ -1,20 +1,10 @@
-import { InventoryTemplate } from './InventoryTemplate';
+import { SideEffectTemplate } from './SideEffectTemplate';
 
 export interface SceneActionTemplate {
     sideEffect?: SideEffectTemplate;
     check?: CheckTemplate;
     nextSceneId?: string;
     condition?: ConditionTemplate;
-}
-
-export interface SideEffectTemplate {
-    loot?: InventoryTemplate;
-    rename?: string;
-    modifyHealth?: number;
-    addFlag?: string;
-    addFlags?: string[];
-    removeFlag?: string;
-    removeFlags?: string[];
 }
 
 export interface CheckTemplate {

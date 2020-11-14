@@ -2,7 +2,7 @@
 import Scene from '../core/Scene';
 import { InventoryTemplate } from './InventoryTemplate';
 import InventoryBuilder from './InventoryBuilder';
-import { SideEffectTemplate } from './SceneActionTemplate';
+import { ModifyFlag, SideEffectTemplate } from './SideEffectTemplate';
 
 class SideEffectBuilder {
     private scene: Scene;
@@ -52,23 +52,36 @@ class SideEffectBuilder {
     }
 
     private flagsSideEffects(): void {
-        const player = this.scene.getPlayer();
+        const flags = this.scene.getPlayer().getFlags();
         if (this.sideEffectTemplate.addFlag) {
-            player.addFlag(this.sideEffectTemplate.addFlag);
+            flags.addFlag(this.sideEffectTemplate.addFlag);
         }
         if (this.sideEffectTemplate.addFlags) {
             this.sideEffectTemplate.addFlags.forEach((flag) =>
-                player.addFlag(flag)
+                flags.addFlag(flag)
             );
         }
         if (this.sideEffectTemplate.removeFlag) {
-            player.removeFlag(this.sideEffectTemplate.removeFlag);
+            flags.removeFlag(this.sideEffectTemplate.removeFlag);
         }
         if (this.sideEffectTemplate.removeFlags) {
             this.sideEffectTemplate.removeFlags.forEach((flag) =>
-                player.removeFlag(flag)
+                flags.removeFlag(flag)
             );
         }
+        if (this.sideEffectTemplate.modifyFlag) {
+            this.modifyFlags([this.sideEffectTemplate.modifyFlag]);
+        }
+        if (this.sideEffectTemplate.modifyFlags) {
+            this.modifyFlags(this.sideEffectTemplate.modifyFlags);
+        }
+    }
+
+    private modifyFlags(modifyFlags: ModifyFlag[]): void {
+        const flags = this.scene.getPlayer().getFlags();
+        modifyFlags.forEach(({ name, value }) => {
+            flags.modifyFlag(name, value);
+        });
     }
 }
 

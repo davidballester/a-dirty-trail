@@ -1,3 +1,4 @@
+import Flags from './Flags';
 import Health from './Health';
 import Inventory from './Inventory';
 import Skill from './Skill';
@@ -9,25 +10,27 @@ class Actor extends ThingWithId {
     private health: Health;
     private inventory: Inventory;
     private skillSet: SkillSet;
-    private flags: string[];
+    private flags: Flags;
 
     constructor({
         name,
         health,
         inventory,
         skillSet,
+        flags = new Flags(),
     }: {
         name: string;
         health: Health;
         inventory: Inventory;
         skillSet: SkillSet;
+        flags?: Flags;
     }) {
         super();
         this.name = name;
         this.health = health;
         this.inventory = inventory;
         this.skillSet = skillSet;
-        this.flags = [];
+        this.flags = flags;
     }
 
     getName(): string {
@@ -62,21 +65,7 @@ class Actor extends ThingWithId {
         return this.getSkillSet().getSkill(skillName);
     }
 
-    addFlag(flag: string): void {
-        if (!this.hasFlag(flag)) {
-            this.flags.push(flag);
-        }
-    }
-
-    hasFlag(flag: string): boolean {
-        return this.flags.indexOf(flag) >= 0;
-    }
-
-    removeFlag(flag: string): void {
-        this.flags = this.flags.filter((candidate) => candidate !== flag);
-    }
-
-    getFlags(): string[] {
+    getFlags(): Flags {
         return this.flags;
     }
 

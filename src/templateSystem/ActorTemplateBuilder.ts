@@ -1,7 +1,7 @@
 import Actor from '../core/Actor';
 import { InventoryTemplate } from './InventoryTemplate';
 import InventoryTemplateBuilder from './InventoryTemplateBuilder';
-import { ActorTemplate } from './SceneTemplate';
+import { ActorTemplate, FlagsTemplate } from './ActorTemplate';
 
 class ActorTemplateBuilder {
     private actor: Actor;
@@ -16,7 +16,7 @@ class ActorTemplateBuilder {
             health: this.buildHealthTemplate(),
             inventory: this.buildInventoryTemplate(),
             skills: this.buildSkillsTemplate(),
-            flags: this.actor.getFlags(),
+            flags: this.buildFlagsTemplate(),
         };
     }
 
@@ -42,6 +42,10 @@ class ActorTemplateBuilder {
             }),
             {}
         );
+    }
+
+    private buildFlagsTemplate(): FlagsTemplate {
+        return this.actor.getFlags().getFlagMap();
     }
 }
 

@@ -1,5 +1,5 @@
 import ActorBuilder from './ActorBuilder';
-import { ActorTemplate } from './SceneTemplate';
+import { ActorTemplate } from './ActorTemplate';
 import { v4 as uuidv4 } from 'uuid';
 import Health from '../core/Health';
 import Inventory from '../core/Inventory';
@@ -7,6 +7,7 @@ import SkillSet from '../core/SkillSet';
 import Skill from '../core/Skill';
 import InventoryBuilder from './InventoryBuilder';
 import Actor from '../core/Actor';
+import Flags from '../core/Flags';
 jest.mock('./InventoryBuilder');
 jest.mock('uuid');
 
@@ -27,7 +28,9 @@ describe(ActorBuilder.name, () => {
             skills: {
                 aim: 1,
             },
-            flags: ['gunslinger'],
+            flags: {
+                gunslinger: 1,
+            },
         } as unknown) as ActorTemplate;
         inventory = ({
             id: 'inventory',
@@ -58,8 +61,8 @@ describe(ActorBuilder.name, () => {
                         }),
                     ],
                 }),
+                flags: new Flags({ gunslinger: 1 }),
             });
-            expectedRoland.addFlag('gunslinger');
             expect(roland).toEqual(expectedRoland);
         });
     });

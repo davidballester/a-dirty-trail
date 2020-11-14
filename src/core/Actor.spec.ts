@@ -1,4 +1,5 @@
 import Actor from './Actor';
+import Flags from './Flags';
 import Health from './Health';
 import Inventory from './Inventory';
 import Skill from './Skill';
@@ -104,66 +105,22 @@ describe('Actor', () => {
         });
     });
 
-    describe('flags', () => {
-        describe('addFlag', () => {
-            it('adds a flag without issues', () => {
-                actor.addFlag('charismatic');
-            });
-
-            it('does not add the same flag twice', () => {
-                actor.addFlag('charismatic');
-                actor.addFlag('charismatic');
-                actor.removeFlag('charismatic');
-                const hasFlag = actor.hasFlag('charismatic');
-                expect(hasFlag).toBeFalsy();
+    describe('getFlags', () => {
+        let flags: Flags;
+        beforeEach(() => {
+            flags = new Flags();
+            actor = new Actor({
+                name: 'Jane Doe',
+                health,
+                inventory,
+                skillSet,
+                flags,
             });
         });
 
-        describe('hasFlag', () => {
-            beforeEach(() => {
-                actor.addFlag('charismatic');
-            });
-
-            it('returns true for the added flag', () => {
-                const hasFlag = actor.hasFlag('charismatic');
-                expect(hasFlag).toBeTruthy();
-            });
-
-            it('returns false for an unknown flag', () => {
-                const hasFlag = actor.hasFlag('solemn');
-                expect(hasFlag).toBeFalsy();
-            });
-        });
-
-        describe('removeFlag', () => {
-            beforeEach(() => {
-                actor.addFlag('charismatic');
-            });
-
-            it('removes the flag without issues', () => {
-                actor.removeFlag('charismatic');
-            });
-
-            it('cannot get a removed flag', () => {
-                actor.removeFlag('charismatic');
-                const hasFlag = actor.hasFlag('charismatic');
-                expect(hasFlag).toBeFalsy();
-            });
-
-            it('does not fail to remove an unknown flag', () => {
-                actor.removeFlag('solemn');
-            });
-        });
-
-        describe('getFlags', () => {
-            beforeEach(() => {
-                actor.addFlag('charismatic');
-            });
-
-            it('gets the flags', () => {
-                const flags = actor.getFlags();
-                expect(flags).toEqual(['charismatic']);
-            });
+        it('retuns the flags', () => {
+            const returnedFlags = actor.getFlags();
+            expect(returnedFlags).toEqual(flags);
         });
     });
 

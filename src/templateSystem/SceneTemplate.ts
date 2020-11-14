@@ -1,5 +1,5 @@
 import MarkdownText from '../core/MarkdownText';
-import { InventoryTemplate } from './InventoryTemplate';
+import { ActorTemplate } from './ActorTemplate';
 import { SceneActionTemplate } from './SceneActionTemplate';
 
 export interface SceneTemplate {
@@ -13,14 +13,4 @@ export interface SceneTemplateMetadata {
     player?: ActorTemplate;
     actions?: { [key: string]: SceneActionTemplate };
     actors?: { [key: string]: ActorTemplate };
-}
-
-export interface ActorTemplate {
-    name?: string;
-    health: string;
-    inventory: InventoryTemplate;
-    skills: {
-        [name: string]: number;
-    };
-    flags?: string[];
 }

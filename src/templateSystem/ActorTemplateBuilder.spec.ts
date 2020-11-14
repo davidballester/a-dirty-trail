@@ -1,10 +1,11 @@
 import Actor from '../core/Actor';
+import Flags from '../core/Flags';
 import Health from '../core/Health';
 import Inventory from '../core/Inventory';
 import Skill from '../core/Skill';
 import SkillSet from '../core/SkillSet';
 import ActorTemplateBuilder from './ActorTemplateBuilder';
-import { ActorTemplate } from './SceneTemplate';
+import { ActorTemplate } from './ActorTemplate';
 
 describe(ActorTemplateBuilder.name, () => {
     let actorTemplate: ActorTemplate;
@@ -18,8 +19,8 @@ describe(ActorTemplateBuilder.name, () => {
                     new Skill({ name: 'aim', probabilityOfSuccess: 0.99 }),
                 ],
             }),
+            flags: new Flags({ gunslinger: 1 }),
         });
-        actor.addFlag('gunslinger');
         const actorTemplateBuilder = new ActorTemplateBuilder({ actor });
         actorTemplate = actorTemplateBuilder.build();
     });
@@ -39,6 +40,6 @@ describe(ActorTemplateBuilder.name, () => {
     });
 
     it('sets the flags', () => {
-        expect(actorTemplate.flags).toEqual(['gunslinger']);
+        expect(actorTemplate.flags).toEqual({ gunslinger: 1 });
     });
 });

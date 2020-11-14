@@ -1,4 +1,4 @@
-import { ActorTemplate } from './SceneTemplate';
+import { ActorTemplate, FlagsTemplate } from './ActorTemplate';
 import { InventoryTemplate } from './InventoryTemplate';
 import Health from '../core/Health';
 import Inventory from '../core/Inventory';
@@ -6,6 +6,7 @@ import SkillSet from '../core/SkillSet';
 import Skill from '../core/Skill';
 import InventoryBuilder from './InventoryBuilder';
 import Actor from '../core/Actor';
+import Flags from '../core/Flags';
 
 class ActorBuilder {
     private actorTemplate: ActorTemplate;
@@ -15,14 +16,13 @@ class ActorBuilder {
     }
 
     build(): Actor {
-        let actor = new Actor({
+        return new Actor({
             name: this.actorTemplate.name || 'Unknown',
             health: this.buildHealth(this.actorTemplate.health),
             inventory: this.buildInventory(this.actorTemplate.inventory),
             skillSet: this.buildSkillSet(this.actorTemplate.skills),
+            flags: this.buildFlags(this.actorTemplate.flags),
         });
-        actor = this.addFlags(actor);
-        return actor;
     }
 
     private buildHealth(rule: string): Health {
@@ -47,10 +47,8 @@ class ActorBuilder {
         });
     }
 
-    private addFlags(actor: Actor): Actor {
-        const flags = this.actorTemplate.flags || [];
-        flags.forEach((flag) => actor.addFlag(flag));
-        return actor;
+    private buildFlags(flagsTemplate: FlagsTemplate = {}): Flags {
+        return new Flags(flagsTemplate);
     }
 }
 

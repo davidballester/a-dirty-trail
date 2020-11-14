@@ -1,4 +1,4 @@
-import { ActorTemplate } from './SceneTemplate';
+import { ActorTemplate } from './ActorTemplate';
 
 export interface NarrationTemplate {
     title: string;

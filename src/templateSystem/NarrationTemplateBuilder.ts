@@ -1,7 +1,7 @@
 import Narration from '../core/Narration';
 import ActorTemplateBuilder from './ActorTemplateBuilder';
 import { NarrationTemplate } from './NarrationTemplate';
-import { ActorTemplate } from './SceneTemplate';
+import { ActorTemplate } from './ActorTemplate';
 
 class NarrationTemplateBuilder {
     private narration: Narration;

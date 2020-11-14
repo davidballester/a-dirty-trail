@@ -1,6 +1,7 @@
 import Actor from '../core/Actor';
 import Scene from '../core/Scene';
-import { SceneTemplate, ActorTemplate } from './SceneTemplate';
+import { SceneTemplate } from './SceneTemplate';
+import { ActorTemplate } from './ActorTemplate';
 import Narration from '../core/Narration';
 import AdvanceAction from '../actions/AdvanceAction';
 import SceneActionBuilder from './SceneActionBuilder';

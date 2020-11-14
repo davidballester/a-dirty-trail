@@ -174,10 +174,10 @@ class SceneActionBuilder {
         }
         const player = this.scene.getPlayer();
         const isHasFlagsSuccessful = hasFlags.every((flag) =>
-            player.hasFlag(flag)
+            player.getFlags().hasFlag(flag)
         );
         const isHasNotFlagsSuccessful = hasNotFlags.every(
-            (flag) => !player.hasFlag(flag)
+            (flag) => !player.getFlags().hasFlag(flag)
         );
         return isHasFlagsSuccessful && isHasNotFlagsSuccessful;
     }

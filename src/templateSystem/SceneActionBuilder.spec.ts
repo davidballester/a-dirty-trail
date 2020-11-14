@@ -55,7 +55,9 @@ describe(SceneActionBuilder.name, () => {
         hasFlag = jest.fn();
         actor = ({
             id: 'actor',
-            hasFlag,
+            getFlags: jest.fn().mockReturnValue({
+                hasFlag,
+            }),
             getInventory: jest.fn().mockReturnValue({
                 hasTrinket,
             }),

@@ -5,8 +5,10 @@ import SceneBuilder from './SceneBuilder';
 import Narration from '../core/Narration';
 import Scene from '../core/Scene';
 import Actor from '../core/Actor';
+import SceneTemplateEvaluator from './SceneTemplateEvaluator';
 jest.mock('markdown-yaml-metadata-parser');
 jest.mock('./SceneBuilder');
+jest.mock('./SceneTemplateEvaluator');
 
 describe(SceneTemplateResolver.name, () => {
     class CustomSceneTemplateResolver extends SceneTemplateResolver {
@@ -25,6 +27,11 @@ describe(SceneTemplateResolver.name, () => {
     let scene: Scene;
     let sceneTemplateResolver: SceneTemplateResolver;
     beforeEach(() => {
+        const sceneTemplateEvaluatorMock = (SceneTemplateEvaluator as unknown) as jest.Mock;
+        sceneTemplateEvaluatorMock.mockImplementation(({ template }) => ({
+            evaluate: jest.fn().mockReturnValue(template),
+        }));
+
         player = ({
             id: 'player',
         } as unknown) as Actor;

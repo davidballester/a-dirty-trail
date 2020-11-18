@@ -137,3 +137,21 @@ npm run build
 ## Template language
 
 The creation of the narratives is based on templates written in Markdown files. These contain not only the narration itself, but the actions available on each scene, enemies even the definition of the player.
+
+In this URL you have the JSON schema for the metadata of the Markdown files: https://raw.githubusercontent.com/davidballester/a-dirty-trail/master/sceneTemplateSchema.json
+
+In the metadata you can:
+
+-   Define the name of the scene.
+-   Define the possible actions the user can take.
+    -   Actions availability can be conditioned by trinkets posession and flags.
+    -   Actions can involve a skill check.
+    -   They can involve getting or using items.
+    -   They can modify the player health of their name.
+    -   They can modify flags the player has.
+-   Define the player initially.
+-   Define the enemies the player will face.
+
+For the body of the Markdown file, that is, the actual text, you have [Handlebars](https://handlebarsjs.com/) support!
+
+**TODO**

@@ -21,7 +21,6 @@ describe(SceneActionBuilder.name, () => {
     let getFlag: jest.SpyInstance;
     let scene: Scene;
     let narration: Narration;
-    let resolvePlaceholders: jest.SpyInstance;
     let sceneTemplateResolver: SceneTemplateResolver;
     let nextScene: Scene;
     let fetchScene: jest.SpyInstance;
@@ -45,9 +44,6 @@ describe(SceneActionBuilder.name, () => {
         narration = ({
             id: 'narration',
         } as unknown) as Narration;
-        resolvePlaceholders = jest
-            .fn()
-            .mockImplementation((source: string) => source);
         hasTrinket = jest.fn();
         when(hasTrinket)
             .mockReturnValue(false)
@@ -80,9 +76,6 @@ describe(SceneActionBuilder.name, () => {
             sceneTemplateResolver,
             sceneTemplate,
             narration,
-            resolvePlaceholders: (resolvePlaceholders as unknown) as (
-                string: string
-            ) => string,
             scene,
         });
     });
@@ -215,9 +208,6 @@ describe(SceneActionBuilder.name, () => {
                     sceneTemplateResolver,
                     sceneTemplate,
                     narration,
-                    resolvePlaceholders: (resolvePlaceholders as unknown) as (
-                        string: string
-                    ) => string,
                     scene,
                 });
             });
@@ -327,9 +317,6 @@ describe(SceneActionBuilder.name, () => {
                         sceneTemplateResolver,
                         sceneTemplate,
                         narration,
-                        resolvePlaceholders: (resolvePlaceholders as unknown) as (
-                            string: string
-                        ) => string,
                         scene,
                     });
                 });
@@ -437,9 +424,6 @@ describe(SceneActionBuilder.name, () => {
                             sceneTemplateResolver,
                             sceneTemplate,
                             narration,
-                            resolvePlaceholders: (resolvePlaceholders as unknown) as (
-                                string: string
-                            ) => string,
                             scene,
                         });
                     });
@@ -570,9 +554,6 @@ describe(SceneActionBuilder.name, () => {
                             sceneTemplateResolver,
                             sceneTemplate,
                             narration,
-                            resolvePlaceholders: (resolvePlaceholders as unknown) as (
-                                string: string
-                            ) => string,
                             scene,
                         });
                     });

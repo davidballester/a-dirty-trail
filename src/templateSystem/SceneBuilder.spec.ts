@@ -1,7 +1,7 @@
 import Actor from '../core/Actor';
 import Narration from '../core/Narration';
 import SceneBuilder from './SceneBuilder';
-import { SceneTemplate, ActorTemplate } from './SceneTemplate';
+import { SceneTemplate } from './SceneTemplate';
 import Scene from '../core/Scene';
 import SceneActionBuilder from './SceneActionBuilder';
 import AdvanceAction from '../actions/AdvanceAction';
@@ -9,6 +9,7 @@ import NonPlayableActorBuilder from './NonPlayableActorBuilder';
 import ActorBuilder from './ActorBuilder';
 import NonPlayableActor from '../core/NonPlayableActor';
 import SceneTemplateResolver from './SceneTemplateResolver';
+import { ActorTemplate } from './ActorTemplate';
 jest.mock('../core/Scene');
 jest.mock('./SceneActionBuilder');
 jest.mock('./NonPlayableActorBuilder');
@@ -29,8 +30,8 @@ describe(SceneBuilder.name, () => {
             getName: jest.fn().mockReturnValue('Jane Doe'),
         } as unknown) as Actor;
         sceneTemplate = ({
-            title: 'The misfortunes of {{playerName}}',
-            setup: 'Setup for {{playerName}}',
+            title: 'The misfortunes of Jane Doe',
+            setup: 'Setup for Jane Doe',
             metadata: {
                 actors: [],
                 actions: [],
@@ -60,8 +61,8 @@ describe(SceneBuilder.name, () => {
                 id: 'player-template',
             } as unknown) as ActorTemplate;
             sceneTemplate = ({
-                title: 'The misfortunes of {{playerName}}',
-                setup: 'Setup for {{playerName}}',
+                title: 'The misfortunes of Jane Doe',
+                setup: 'Setup for Jane Doe',
                 metadata: {
                     player: actorTemplate,
                     actors: [],
@@ -125,9 +126,9 @@ describe(SceneBuilder.name, () => {
                 build: jest.fn().mockReturnValue(actors),
             });
             sceneTemplate = ({
-                setup: 'Setup for {{playerName}}',
+                setup: 'Setup for Jane Doe',
                 metadata: {
-                    title: 'The misfortunes of {{playerName}}',
+                    title: 'The misfortunes of Jane Doe',
                     actors: [],
                     actions: [],
                 },
@@ -163,9 +164,9 @@ describe(SceneBuilder.name, () => {
                 id: 'player-template',
             } as unknown) as ActorTemplate;
             sceneTemplate = ({
-                setup: 'Setup for {{playerName}}',
+                setup: 'Setup for Jane Doe',
                 metadata: {
-                    title: 'The misfortunes of {{playerName}}',
+                    title: 'The misfortunes of Jane Doe',
                     player: actorTemplate,
                     actors: [],
                     actions: [],
@@ -202,7 +203,6 @@ describe(SceneBuilder.name, () => {
             expect(sceneActionBuilderMock).toHaveBeenCalledWith({
                 narration,
                 scene,
-                resolvePlaceholders: expect.anything(),
                 sceneTemplate,
                 sceneTemplateResolver,
             });

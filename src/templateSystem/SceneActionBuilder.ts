@@ -19,26 +19,22 @@ class SceneActionBuilder {
     private sceneTemplate: SceneTemplate;
     private scene: Scene;
     private narration: Narration;
-    private resolvePlaceholders: (string: string) => string;
 
     constructor({
         sceneTemplateResolver,
         sceneTemplate,
         scene,
         narration,
-        resolvePlaceholders,
     }: {
         sceneTemplateResolver: SceneTemplateResolver;
         sceneTemplate: SceneTemplate;
         scene: Scene;
         narration: Narration;
-        resolvePlaceholders: (string: string) => string;
     }) {
         this.sceneTemplateResolver = sceneTemplateResolver;
         this.sceneTemplate = sceneTemplate;
         this.scene = scene;
         this.narration = narration;
-        this.resolvePlaceholders = resolvePlaceholders;
     }
 
     build(): AdvanceAction[] {
@@ -90,7 +86,6 @@ class SceneActionBuilder {
         text: string,
         sceneTemplateAction: SceneActionTemplate
     ): AdvanceAction {
-        const markdownText = this.resolvePlaceholders(text);
         const sideEffectScript = sceneTemplateAction.sideEffect;
         let sideEffect: SideEffect | undefined = undefined;
         if (sideEffectScript) {
@@ -105,7 +100,7 @@ class SceneActionBuilder {
             actor: this.scene.getPlayer(),
             narration: this.narration,
             scene: this.scene,
-            name: markdownText,
+            name: text,
             nextSceneDecider,
             sideEffect,
         });

@@ -55,17 +55,13 @@ class SceneBuilder {
     }
 
     private buildSceneBase(): Scene {
-        const setup = this.resolvePlaceholders(this.sceneTemplate.setup);
-        const title = this.resolvePlaceholders(
-            this.sceneTemplate.metadata.title
-        );
         const actors = this.buildActors();
         return new Scene({
             id: this.sceneTemplate.metadata.id,
-            title,
+            title: this.sceneTemplate.metadata.title,
             actors,
             player: this.player,
-            setup: setup,
+            setup: this.sceneTemplate.setup,
             actions: [],
         });
     }
@@ -78,30 +74,9 @@ class SceneBuilder {
             sceneTemplateResolver: this.sceneTemplateResolver,
             narration: this.narration,
             scene: scene,
-            resolvePlaceholders: (string: string) =>
-                this.resolvePlaceholders(string),
             sceneTemplate: this.sceneTemplate,
         });
         return sceneActionBuilder.build();
-    }
-
-    private resolvePlaceholders(string = ''): string {
-        return this.replacePlaceholderByInputs(string, {
-            playerName: this.player.getName(),
-        });
-    }
-
-    private replacePlaceholderByInputs(
-        string: string,
-        input: { [key: string]: string }
-    ): string {
-        return Object.keys(input).reduce((newContent, inputKey) => {
-            const inputValue = input[inputKey];
-            return newContent.replace(
-                new RegExp(`\{\{${inputKey}\}\}`, 'g'),
-                inputValue
-            );
-        }, string.trim());
     }
 
     private buildActors(): NonPlayableActor[] {

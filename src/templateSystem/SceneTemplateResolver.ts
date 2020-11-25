@@ -20,7 +20,10 @@ abstract class SceneTemplateResolver {
             this.narration.getTitle(),
             sceneId
         );
-        markdownSceneTemplate = this.evaluateAsTemplate(markdownSceneTemplate);
+        markdownSceneTemplate = this.evaluateAsTemplate(
+            markdownSceneTemplate,
+            player
+        );
         const sceneTemplate = this.convertToSceneTemplate(
             markdownSceneTemplate
         );
@@ -32,9 +35,13 @@ abstract class SceneTemplateResolver {
         sceneId?: string
     ): Promise<string>;
 
-    private evaluateAsTemplate(markdownSceneTemplate: string): string {
+    private evaluateAsTemplate(
+        markdownSceneTemplate: string,
+        player?: Actor
+    ): string {
         const currentScene = this.narration!.getCurrentScene();
-        const player = currentScene ? currentScene.getPlayer() : undefined;
+        player =
+            player || (currentScene ? currentScene.getPlayer() : undefined);
         const sceneTemplateEvaluator = new SceneTemplateEvaluator({
             template: markdownSceneTemplate,
             player,

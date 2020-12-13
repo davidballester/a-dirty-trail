@@ -4,6 +4,7 @@ import Inventory from '../core/Inventory';
 import Actor from '../core/Actor';
 import Scene from '../core/Scene';
 import { SideEffectTemplate } from './SideEffectTemplate';
+import Skill from '../core/Skill';
 jest.mock('./InventoryBuilder');
 
 describe(SideEffectBuilder.name, () => {
@@ -19,6 +20,9 @@ describe(SideEffectBuilder.name, () => {
     let addFlag: jest.SpyInstance;
     let removeFlag: jest.SpyInstance;
     let modifyFlag: jest.SpyInstance;
+    let getSkill: jest.SpyInstance;
+    let setProbabilityOfSuccess: jest.SpyInstance;
+    let modifyProbabilityOfSuccess: jest.SpyInstance;
     beforeEach(() => {
         changeName = jest.fn();
         loot = jest.fn();
@@ -29,6 +33,13 @@ describe(SideEffectBuilder.name, () => {
         addFlag = jest.fn();
         removeFlag = jest.fn();
         modifyFlag = jest.fn();
+        setProbabilityOfSuccess = jest.fn();
+        modifyProbabilityOfSuccess = jest.fn();
+        const skill = ({
+            setProbabilityOfSuccess,
+            modifyProbabilityOfSuccess,
+        } as unknown) as Skill;
+        getSkill = jest.fn().mockReturnValue(skill);
         player = ({
             id: 'player',
             changeName,
@@ -39,6 +50,7 @@ describe(SideEffectBuilder.name, () => {
                 removeFlag,
                 modifyFlag,
             }),
+            getSkill,
         } as unknown) as Actor;
         const getPlayer = jest.fn().mockReturnValue(player);
         scene = ({
@@ -122,6 +134,42 @@ describe(SideEffectBuilder.name, () => {
                 expect(modifyFlag).toHaveBeenCalledWith('karma', 1);
                 expect(modifyFlag).toHaveBeenCalledWith('coins', 2);
                 expect(modifyFlag).toHaveBeenCalledTimes(2);
+            });
+        });
+
+        describe('skills', () => {
+            beforeEach(() => {
+                sideEffectTemplate = {
+                    ...sideEffectTemplate,
+                    modifySkill: {
+                        name: 'myFirstSkill',
+                        value: 0.1,
+                    },
+                    modifySkills: [
+                        {
+                            name: 'mySecondSkill',
+                            modifier: 0.2,
+                        },
+                    ],
+                };
+                sideEffectBuilder = new SideEffectBuilder({
+                    scene,
+                    sideEffectTemplate,
+                });
+                sideEffectBuilder.build();
+            });
+
+            it('accesses the skill', () => {
+                expect(getSkill).toHaveBeenCalledWith('myFirstSkill');
+                expect(getSkill).toHaveBeenCalledWith('mySecondSkill');
+            });
+
+            it('sets the value of the the skill', () => {
+                expect(setProbabilityOfSuccess).toHaveBeenCalledWith(0.1);
+            });
+
+            it('modifies the value of the the skill', () => {
+                expect(modifyProbabilityOfSuccess).toHaveBeenCalledWith(0.2);
             });
         });
     });

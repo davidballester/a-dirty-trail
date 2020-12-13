@@ -2,7 +2,11 @@
 import Scene from '../core/Scene';
 import { InventoryTemplate } from './InventoryTemplate';
 import InventoryBuilder from './InventoryBuilder';
-import { ModifyFlag, SideEffectTemplate } from './SideEffectTemplate';
+import {
+    ModifyFlag,
+    ModifySkill,
+    SideEffectTemplate,
+} from './SideEffectTemplate';
 
 class SideEffectBuilder {
     private scene: Scene;
@@ -30,6 +34,7 @@ class SideEffectBuilder {
             this.modifyHealth(this.sideEffectTemplate.modifyHealth);
         }
         this.flagsSideEffects();
+        this.modifySkills();
     }
 
     private rename(newName: string): void {
@@ -82,6 +87,28 @@ class SideEffectBuilder {
         modifyFlags.forEach(({ name, value }) => {
             flags.modifyFlag(name, value);
         });
+    }
+
+    private modifySkills(): void {
+        const modifySkill = this.sideEffectTemplate.modifySkill;
+        const modifySkills = this.sideEffectTemplate.modifySkills || [];
+        if (modifySkill) {
+            modifySkills.push(modifySkill);
+        }
+        modifySkills.forEach((modifySkill) => {
+            this.modifySkill(modifySkill);
+        });
+    }
+
+    private modifySkill(modifySkill: ModifySkill): void {
+        const player = this.scene.getPlayer();
+        const name = modifySkill.name;
+        const skill = player.getSkill(name);
+        if (modifySkill.modifier) {
+            skill.modifyProbabilityOfSuccess(modifySkill.modifier);
+        } else if (modifySkill.value) {
+            skill.setProbabilityOfSuccess(modifySkill.value);
+        }
     }
 }
 

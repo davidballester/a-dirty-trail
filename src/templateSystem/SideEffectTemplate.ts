@@ -10,9 +10,17 @@ export interface SideEffectTemplate {
     removeFlags?: string[];
     modifyFlag?: ModifyFlag;
     modifyFlags?: ModifyFlag[];
+    modifySkill?: ModifySkill;
+    modifySkills?: ModifySkill[];
 }
 
 export interface ModifyFlag {
     name: string;
     value: number;
+}
+
+export interface ModifySkill {
+    name: string;
+    modifier?: number;
+    value?: number;
 }

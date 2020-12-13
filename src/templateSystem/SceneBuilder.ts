@@ -3,12 +3,13 @@ import Scene from '../core/Scene';
 import { SceneTemplate } from './SceneTemplate';
 import { ActorTemplate } from './ActorTemplate';
 import Narration from '../core/Narration';
-import AdvanceAction from '../actions/AdvanceAction';
+import AdvanceAction, { SideEffect } from '../actions/AdvanceAction';
 import SceneActionBuilder from './SceneActionBuilder';
 import NonPlayableActor from '../core/NonPlayableActor';
 import NonPlayableActorBuilder from './NonPlayableActorBuilder';
 import ActorBuilder from './ActorBuilder';
 import SceneTemplateResolver from './SceneTemplateResolver';
+import SideEffectBuilder from './SideEffectBuilder';
 
 class SceneBuilder {
     private sceneTemplateResolver: SceneTemplateResolver;
@@ -56,6 +57,7 @@ class SceneBuilder {
 
     private buildSceneBase(): Scene {
         const actors = this.buildActors();
+        const sideEffect = this.buildSideEffect();
         return new Scene({
             id: this.sceneTemplate.metadata.id,
             title: this.sceneTemplate.metadata.title,
@@ -63,6 +65,7 @@ class SceneBuilder {
             player: this.player,
             setup: this.sceneTemplate.setup,
             actions: [],
+            sideEffect,
         });
     }
 
@@ -87,6 +90,20 @@ class SceneBuilder {
             sceneTemplate: this.sceneTemplate,
         });
         return actorBuilder.build();
+    }
+
+    private buildSideEffect(): SideEffect | undefined {
+        const sideEffectTemplate = this.sceneTemplate.metadata.sideEffect;
+        if (!sideEffectTemplate) {
+            return undefined;
+        }
+        return (scene: Scene): void => {
+            const sideEffectBuilder = new SideEffectBuilder({
+                scene,
+                sideEffectTemplate,
+            });
+            sideEffectBuilder.build();
+        };
     }
 }
 

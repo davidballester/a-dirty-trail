@@ -1,6 +1,7 @@
 import MarkdownText from '../core/MarkdownText';
 import { ActorTemplate } from './ActorTemplate';
 import { SceneActionTemplate } from './SceneActionTemplate';
+import { SideEffectTemplate } from './SideEffectTemplate';
 
 export interface SceneTemplate {
     metadata: SceneTemplateMetadata;
@@ -13,4 +14,5 @@ export interface SceneTemplateMetadata {
     player?: ActorTemplate;
     actions?: { [key: string]: SceneActionTemplate };
     actors?: { [key: string]: ActorTemplate };
+    sideEffect?: SideEffectTemplate;
 }

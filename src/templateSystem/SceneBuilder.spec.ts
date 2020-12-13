@@ -14,6 +14,7 @@ jest.mock('../core/Scene');
 jest.mock('./SceneActionBuilder');
 jest.mock('./NonPlayableActorBuilder');
 jest.mock('./ActorBuilder');
+jest.mock('./SideEffectBuilder');
 
 describe(SceneBuilder.name, () => {
     let sceneBuilder: SceneBuilder;
@@ -131,6 +132,7 @@ describe(SceneBuilder.name, () => {
                     title: 'The misfortunes of Jane Doe',
                     actors: [],
                     actions: [],
+                    sideEffect: {},
                 },
             } as unknown) as SceneTemplate;
             sceneBuilder = new SceneBuilder({
@@ -156,6 +158,7 @@ describe(SceneBuilder.name, () => {
                 actors,
                 player,
                 actions: [],
+                sideEffect: expect.anything(),
             });
         });
 

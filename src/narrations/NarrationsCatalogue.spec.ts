@@ -18,6 +18,7 @@ describe('NarrationsCatalogue', () => {
     beforeEach(() => {
         scene = ({
             id: 'scene',
+            executeSideEffect: jest.fn(),
         } as unknown) as Scene;
         const sceneTemplateResolver = ({
             fetchScene: jest.fn().mockReturnValue(scene),

@@ -18,8 +18,15 @@ describe('Narration', () => {
 
     describe('getCurrentScene | setCurrentScene', () => {
         let narration: Narration;
+        let scene: Scene;
+        let executeSideEffect: jest.SpyInstance;
         beforeEach(() => {
             narration = new Narration({ title: 'My narration' });
+            executeSideEffect = jest.fn();
+            scene = ({
+                id: 'foo',
+                executeSideEffect,
+            } as unknown) as Scene;
         });
 
         it('returns undefined', () => {
@@ -27,23 +34,46 @@ describe('Narration', () => {
             expect(currentScene).toBeUndefined();
         });
 
-        it('retunrs the scene just set', () => {
-            const scene = ({ id: 'foo' } as unknown) as Scene;
+        it('returns the scene just set', () => {
             narration.setCurrentScene(scene);
             const returnedScene = narration.getCurrentScene();
             expect(returnedScene).toEqual(scene);
         });
+
+        it('executes the side effect of the scene', () => {
+            narration.setCurrentScene(scene);
+            expect(executeSideEffect).toHaveBeenCalled();
+        });
+
+        it('executes the side effect just once', () => {
+            narration.setCurrentScene(scene);
+            narration.setCurrentScene(scene);
+            expect(executeSideEffect).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe('loadNextScene', () => {
-        it('sets the current scene to the new one', () => {
-            const scene = ({
-                id: 'scene',
+        let narration: Narration;
+        let scene: Scene;
+        let executeSideEffect: jest.SpyInstance;
+        beforeEach(() => {
+            narration = new Narration({ title: 'My narration' });
+            executeSideEffect = jest.fn();
+            scene = ({
+                id: 'foo',
+                executeSideEffect,
             } as unknown) as Scene;
-            const narration = new Narration({ title: 'My narration' });
+        });
+
+        it('sets the current scene to the new one', () => {
             narration.loadNextScene(scene);
             const returnedScene = narration.getCurrentScene();
             expect(returnedScene).toEqual(scene);
+        });
+
+        it('executes the side effect of the scene', () => {
+            narration.loadNextScene(scene);
+            expect(executeSideEffect).toHaveBeenCalled();
         });
     });
 
@@ -62,6 +92,7 @@ describe('Narration', () => {
             isCombat = jest.fn().mockReturnValue(false);
             const scene = ({
                 isCombat,
+                executeSideEffect: jest.fn(),
             } as unknown) as Scene;
             narration = new Narration({ title: 'My narration' });
             narration.setCurrentScene(scene);

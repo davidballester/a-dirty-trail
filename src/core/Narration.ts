@@ -19,11 +19,16 @@ class Narration {
     }
 
     setCurrentScene(scene: Scene): void {
+        const executeSideEffect = !this.currentScene;
         this.currentScene = scene;
+        if (executeSideEffect) {
+            this.currentScene.executeSideEffect();
+        }
     }
 
     loadNextScene(nextScene: Scene): void {
         this.currentScene = nextScene;
+        this.currentScene.executeSideEffect();
     }
 
     save(): NarrationTemplate | undefined {

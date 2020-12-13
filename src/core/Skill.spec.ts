@@ -29,14 +29,53 @@ describe('Skill', () => {
         });
     });
 
-    describe('getProbabilityOfSuccess', () => {
-        it('returns the name', () => {
-            const skill = new Skill({
+    describe('getProbabilityOfSuccess | setProbabilityOfSuccess | modifyProbabilityOfSuccess', () => {
+        let skill: Skill;
+        beforeEach(() => {
+            skill = new Skill({
                 name: 'charisma',
                 probabilityOfSuccess: 0.5,
             });
+        });
+
+        it('returns the probability of success', () => {
             const probabilityOfSuccess = skill.getProbabilityOfSuccess();
             expect(probabilityOfSuccess).toEqual(0.5);
+        });
+
+        it('sets the probability of success', () => {
+            skill.setProbabilityOfSuccess(0.1);
+            const probabilityOfSuccess = skill.getProbabilityOfSuccess();
+            expect(probabilityOfSuccess).toEqual(0.1);
+        });
+
+        it('returns the modified the probability of success', () => {
+            const modifiedProbabilityOfSuccess = skill.modifyProbabilityOfSuccess(
+                0.1
+            );
+            const probabilityOfSuccess = skill.getProbabilityOfSuccess();
+            expect(modifiedProbabilityOfSuccess).toEqual(probabilityOfSuccess);
+        });
+
+        it('modifies probability of success', () => {
+            const modifiedProbabilityOfSuccess = skill.modifyProbabilityOfSuccess(
+                0.1
+            );
+            expect(modifiedProbabilityOfSuccess).toEqual(0.6);
+        });
+
+        it('sets the probability of success to 1 if it exceeds 1', () => {
+            const modifiedProbabilityOfSuccess = skill.modifyProbabilityOfSuccess(
+                5
+            );
+            expect(modifiedProbabilityOfSuccess).toEqual(1);
+        });
+
+        it('sets the probability of success to 0 if it is lower than 0', () => {
+            const modifiedProbabilityOfSuccess = skill.modifyProbabilityOfSuccess(
+                -5
+            );
+            expect(modifiedProbabilityOfSuccess).toEqual(0);
         });
     });
 

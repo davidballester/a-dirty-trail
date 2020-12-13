@@ -28,6 +28,21 @@ class Skill extends ThingWithId {
         return this.probabilityOfSuccess;
     }
 
+    setProbabilityOfSuccess(newProbabilityOfSuccess: number): void {
+        this.probabilityOfSuccess = newProbabilityOfSuccess;
+    }
+
+    modifyProbabilityOfSuccess(delta: number): number {
+        let newProbabilityOfSucess = this.probabilityOfSuccess + delta;
+        if (newProbabilityOfSucess > 1) {
+            newProbabilityOfSucess = 1;
+        } else if (newProbabilityOfSucess < 0) {
+            newProbabilityOfSucess = 0;
+        }
+        this.setProbabilityOfSuccess(newProbabilityOfSucess);
+        return this.probabilityOfSuccess;
+    }
+
     rollSuccessWithModifier(modifier: number): boolean {
         const level = this.getProbabilityOfSuccess() + modifier;
         const random = Random.getRandom();

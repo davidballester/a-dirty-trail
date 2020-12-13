@@ -1,4 +1,5 @@
 import Action from '../actions/Action';
+import { SideEffect } from '../actions/AdvanceAction';
 import Actor from './Actor';
 import Health from './Health';
 import Inventory from './Inventory';
@@ -23,6 +24,7 @@ describe('Scene', () => {
     let actions: Action<any>[];
     let scene: Scene;
     let title: string;
+    let sideEffect: SideEffect;
     beforeEach(() => {
         setup =
             'The man in black fled across the desert, and the gunslinger followed';
@@ -40,6 +42,7 @@ describe('Scene', () => {
         });
         actors = [manInBlack];
         title = '19';
+        sideEffect = jest.fn();
         scene = new Scene({
             id: title,
             title,
@@ -47,6 +50,7 @@ describe('Scene', () => {
             setup,
             actors,
             actions: [],
+            sideEffect,
         });
         actions = [
             new CustomAction({ scene, type: 'custom', actor: gunslinger }),
@@ -196,6 +200,13 @@ describe('Scene', () => {
             scene.removeActor(manInBlack);
             const actors = scene.getActors();
             expect(actors).toEqual([]);
+        });
+    });
+
+    describe('executeSideEffect', () => {
+        it('executes the side effect', () => {
+            scene.executeSideEffect();
+            expect(sideEffect).toHaveBeenCalledWith(scene);
         });
     });
 });

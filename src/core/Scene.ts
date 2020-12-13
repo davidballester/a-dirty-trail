@@ -3,6 +3,7 @@ import Action from '../actions/Action';
 import NonPlayableActor from './NonPlayableActor';
 import Actor from './Actor';
 import MarkdownText from './MarkdownText';
+import { SideEffect } from '../actions/AdvanceAction';
 
 class Scene extends ThingWithId {
     private player: Actor;
@@ -10,6 +11,7 @@ class Scene extends ThingWithId {
     private setup?: MarkdownText;
     private actors: NonPlayableActor[];
     private actions: Action<any>[];
+    private sideEffect?: SideEffect;
 
     constructor({
         id,
@@ -18,6 +20,7 @@ class Scene extends ThingWithId {
         setup,
         actors,
         actions,
+        sideEffect,
     }: {
         id: string;
         player: Actor;
@@ -25,6 +28,7 @@ class Scene extends ThingWithId {
         setup?: MarkdownText;
         actors: NonPlayableActor[];
         actions: Action<any>[];
+        sideEffect?: SideEffect;
     }) {
         super(id);
         this.title = title;
@@ -32,6 +36,7 @@ class Scene extends ThingWithId {
         this.setup = setup;
         this.actors = actors;
         this.actions = actions;
+        this.sideEffect = sideEffect;
     }
 
     getPlayer(): Actor {
@@ -84,6 +89,12 @@ class Scene extends ThingWithId {
             return true;
         }
         return !!this.getActors().find((candidate) => candidate.equals(actor));
+    }
+
+    executeSideEffect(): void {
+        if (this.sideEffect) {
+            this.sideEffect(this);
+        }
     }
 }
 

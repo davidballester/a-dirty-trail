@@ -26,7 +26,10 @@ describe(ActorBuilder.name, () => {
             health: '8-10',
             inventory: inventoryTemplate,
             skills: {
-                aim: 1,
+                aim: {
+                    probabilityOfSuccess: 0.95,
+                    levelUpDelta: 0.01,
+                },
             },
             flags: {
                 gunslinger: 1,
@@ -57,7 +60,8 @@ describe(ActorBuilder.name, () => {
                     skills: [
                         new Skill({
                             name: 'aim',
-                            probabilityOfSuccess: 1,
+                            probabilityOfSuccess: 0.95,
+                            levelUpDelta: 0.01,
                         }),
                     ],
                 }),

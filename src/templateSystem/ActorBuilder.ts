@@ -1,4 +1,8 @@
-import { ActorTemplate, FlagsTemplate } from './ActorTemplate';
+import {
+    ActorTemplate,
+    FlagsTemplate,
+    SkillSetTemplate,
+} from './ActorTemplate';
 import { InventoryTemplate } from './InventoryTemplate';
 import Health from '../core/Health';
 import Inventory from '../core/Inventory';
@@ -35,15 +39,16 @@ class ActorBuilder {
         return inventoryBuilder.build();
     }
 
-    private buildSkillSet(skills: { [name: string]: number }): SkillSet {
+    private buildSkillSet(skillSetTemplate: SkillSetTemplate): SkillSet {
         return new SkillSet({
-            skills: Object.keys(skills).map(
-                (skillName) =>
-                    new Skill({
-                        name: skillName,
-                        probabilityOfSuccess: skills[skillName],
-                    })
-            ),
+            skills: Object.keys(skillSetTemplate).map((skillName) => {
+                const skillTemplate = skillSetTemplate[skillName];
+                return new Skill({
+                    name: skillName,
+                    probabilityOfSuccess: skillTemplate.probabilityOfSuccess,
+                    levelUpDelta: skillTemplate.levelUpDelta,
+                });
+            }),
         });
     }
 

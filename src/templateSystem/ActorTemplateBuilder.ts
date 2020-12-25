@@ -1,7 +1,11 @@
 import Actor from '../core/Actor';
 import { InventoryTemplate } from './InventoryTemplate';
 import InventoryTemplateBuilder from './InventoryTemplateBuilder';
-import { ActorTemplate, FlagsTemplate } from './ActorTemplate';
+import {
+    ActorTemplate,
+    FlagsTemplate,
+    SkillSetTemplate,
+} from './ActorTemplate';
 
 class ActorTemplateBuilder {
     private actor: Actor;
@@ -32,15 +36,18 @@ class ActorTemplateBuilder {
         return inventoryTemplateBuilder.build();
     }
 
-    private buildSkillsTemplate(): { [skillName: string]: number } {
+    private buildSkillsTemplate(): SkillSetTemplate {
         const skillSet = this.actor.getSkillSet();
         const skills = skillSet.getAll();
         return skills.reduce(
             (skillsTemplate, skill) => ({
                 ...skillsTemplate,
-                [skill.getName()]: skill.getProbabilityOfSuccess(),
+                [skill.getName()]: {
+                    probabilityOfSuccess: skill.getProbabilityOfSuccess(),
+                    levelUpDelta: skill.getLevelUpDelta(),
+                },
             }),
-            {}
+            {} as SkillSetTemplate
         );
     }
 

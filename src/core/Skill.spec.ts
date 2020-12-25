@@ -87,6 +87,7 @@ describe('Skill', () => {
             skill = new Skill({
                 name: 'charisma',
                 probabilityOfSuccess: 0.5,
+                levelUpDelta: 0.1,
             });
         });
 
@@ -99,9 +100,7 @@ describe('Skill', () => {
         it('levels up if random is higher than skill level', () => {
             randomGetRandom.mockReturnValueOnce(0.1).mockReturnValueOnce(0.9);
             skill.rollSuccessWithModifier(-0.1);
-            expect(skill.getProbabilityOfSuccess()).toEqual(
-                0.5 + Skill.LEVEL_UP
-            );
+            expect(skill.getProbabilityOfSuccess()).toEqual(0.6);
         });
 
         it('does not level up if random is equal to skill level', () => {

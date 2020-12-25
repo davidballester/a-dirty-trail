@@ -2,17 +2,18 @@ import Random from './Random';
 import ThingWithId from './ThingWithId';
 
 class Skill extends ThingWithId {
-    public static readonly LEVEL_UP = 0.02;
-
     private name: string;
     private probabilityOfSuccess: number;
+    private levelUpDelta: number;
 
     constructor({
         name,
         probabilityOfSuccess,
+        levelUpDelta = 0.02,
     }: {
         name: string;
         probabilityOfSuccess: number;
+        levelUpDelta?: number;
     }) {
         super();
         if (!Skill.isLevelValid(probabilityOfSuccess)) {
@@ -20,6 +21,7 @@ class Skill extends ThingWithId {
         }
         this.name = name;
         this.probabilityOfSuccess = probabilityOfSuccess;
+        this.levelUpDelta = levelUpDelta;
     }
 
     getName(): string {
@@ -50,16 +52,21 @@ class Skill extends ThingWithId {
         const random = Random.getRandom();
         const isSuccess = random <= level;
         if (isSuccess) {
-            this.levelUpIfLucky();
+            this.levelUp();
         }
         return isSuccess;
     }
 
-    private levelUpIfLucky(): void {
+    getLevelUpDelta(): number {
+        return this.levelUpDelta;
+    }
+
+    private levelUp(): void {
         const random = Random.getRandom();
         const isLucky = random > this.probabilityOfSuccess;
         if (isLucky) {
-            this.probabilityOfSuccess += Skill.LEVEL_UP;
+            this.probabilityOfSuccess += this.levelUpDelta;
+            this.probabilityOfSuccess = Math.min(this.probabilityOfSuccess, 1);
         }
     }
 

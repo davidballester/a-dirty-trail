@@ -4,12 +4,19 @@ export interface ActorTemplate {
     name?: string;
     health: string;
     inventory: InventoryTemplate;
-    skills: {
-        [name: string]: number;
-    };
+    skills: SkillSetTemplate;
     flags?: FlagsTemplate;
 }
 
 export interface FlagsTemplate {
     [name: string]: number;
+}
+
+export interface SkillSetTemplate {
+    [name: string]: SkillTemplate;
+}
+
+export interface SkillTemplate {
+    probabilityOfSuccess: number;
+    levelUpDelta?: number;
 }

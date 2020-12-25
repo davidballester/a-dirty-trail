@@ -16,7 +16,11 @@ describe(ActorTemplateBuilder.name, () => {
             inventory: new Inventory({}),
             skillSet: new SkillSet({
                 skills: [
-                    new Skill({ name: 'aim', probabilityOfSuccess: 0.99 }),
+                    new Skill({
+                        name: 'aim',
+                        probabilityOfSuccess: 0.99,
+                        levelUpDelta: 0.01,
+                    }),
                 ],
             }),
             flags: new Flags({ gunslinger: 1 }),
@@ -35,7 +39,10 @@ describe(ActorTemplateBuilder.name, () => {
 
     it('sets the skillset', () => {
         expect(actorTemplate.skills).toEqual({
-            aim: 0.99,
+            aim: {
+                probabilityOfSuccess: 0.99,
+                levelUpDelta: 0.01,
+            },
         });
     });
 

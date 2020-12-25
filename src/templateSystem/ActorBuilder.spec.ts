@@ -30,6 +30,7 @@ describe(ActorBuilder.name, () => {
                     probabilityOfSuccess: 0.95,
                     levelUpDelta: 0.01,
                 },
+                stab: 0.5,
             },
             flags: {
                 gunslinger: 1,
@@ -62,6 +63,11 @@ describe(ActorBuilder.name, () => {
                             name: 'aim',
                             probabilityOfSuccess: 0.95,
                             levelUpDelta: 0.01,
+                        }),
+                        new Skill({
+                            name: 'stab',
+                            probabilityOfSuccess: 0.5,
+                            levelUpDelta: 0.02,
                         }),
                     ],
                 }),

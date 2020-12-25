@@ -43,6 +43,12 @@ class ActorBuilder {
         return new SkillSet({
             skills: Object.keys(skillSetTemplate).map((skillName) => {
                 const skillTemplate = skillSetTemplate[skillName];
+                if (typeof skillTemplate === 'number') {
+                    return new Skill({
+                        name: skillName,
+                        probabilityOfSuccess: skillTemplate,
+                    });
+                }
                 return new Skill({
                     name: skillName,
                     probabilityOfSuccess: skillTemplate.probabilityOfSuccess,

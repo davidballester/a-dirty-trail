@@ -13,7 +13,7 @@ export interface FlagsTemplate {
 }
 
 export interface SkillSetTemplate {
-    [name: string]: SkillTemplate;
+    [name: string]: SkillTemplate | number;
 }
 
 export interface SkillTemplate {

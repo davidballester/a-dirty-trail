@@ -245,7 +245,14 @@
         },
         "SkillSetTemplate": {
             "additionalProperties": {
-                "$ref": "#/definitions/SkillTemplate"
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/SkillTemplate"
+                    },
+                    {
+                        "type": "number"
+                    }
+                ]
             },
             "type": "object"
         },

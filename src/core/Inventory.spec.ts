@@ -2,6 +2,7 @@ import Damage from './Damage';
 import Inventory from './Inventory';
 import Trinket from './Trinket';
 import Weapon from './Weapon';
+import WeaponAmmunition from './WeaponAmmunition';
 
 describe('Inventory', () => {
     let revolver: Weapon;
@@ -20,6 +21,11 @@ describe('Inventory', () => {
             type: 'rifle',
             skill: 'aiming',
             damage: new Damage({ min: 1, max: 2 }),
+            ammunition: new WeaponAmmunition({
+                type: 'bullets',
+                current: 5,
+                max: 10,
+            }),
         });
         watch = new Trinket({
             name: 'watch',
@@ -106,6 +112,15 @@ describe('Inventory', () => {
             inventory.loot(lootInventory);
             const weapons = inventory.getWeapons();
             expect(weapons).toEqual([revolver, rifle]);
+        });
+
+        it('loots the ammunition of the owned weapon', () => {
+            inventory = new Inventory({
+                weapons: [revolver, rifle],
+            });
+            inventory.loot(lootInventory);
+            const bullets = inventory.getAmmunitionsByType()['bullets'];
+            expect(bullets).toEqual(10);
         });
 
         it('now has 10 bullets', () => {

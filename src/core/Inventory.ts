@@ -17,8 +17,8 @@ class Inventory extends ThingWithId {
         trinkets?: Trinket[];
     }) {
         super();
-        this.weapons = new WeaponsInventory(weapons);
         this.ammunitions = new AmmunitionsInventory(ammunitionsByType);
+        this.weapons = new WeaponsInventory(weapons);
         this.trinkets = new TrinketInventory(trinkets);
     }
 
@@ -46,10 +46,13 @@ class Inventory extends ThingWithId {
         const lootableWeapons = inventory
             .getWeapons()
             .filter((weapon) => weapon.canBeLooted());
+        const { weaponsOwned, weaponsNotOwned } = this.classifyWeaponsByOwned(
+            lootableWeapons
+        );
         const ammunitionsByType = inventory.getAmmunitionsByType();
         const trinkets = inventory.getTrinkets();
-        this.weapons.loot(lootableWeapons);
-        this.ammunitions.loot(ammunitionsByType);
+        this.weapons.loot(weaponsNotOwned);
+        this.ammunitions.loot(ammunitionsByType, weaponsOwned);
         this.trinkets.loot(trinkets);
         const loot = new Inventory({
             weapons: lootableWeapons,
@@ -61,6 +64,30 @@ class Inventory extends ThingWithId {
 
     hasTrinket(trinketName: string): boolean {
         return this.trinkets.has(trinketName);
+    }
+
+    private classifyWeaponsByOwned(
+        weapons: Weapon[]
+    ): { weaponsOwned: Weapon[]; weaponsNotOwned: Weapon[] } {
+        return weapons.reduce(
+            ({ weaponsOwned, weaponsNotOwned }, weapon) => {
+                const isOwned = this.weapons
+                    .getAll()
+                    .some(
+                        (candidate) => candidate.getName() === weapon.getName()
+                    );
+                if (isOwned) {
+                    weaponsOwned.push(weapon);
+                } else {
+                    weaponsNotOwned.push(weapon);
+                }
+                return { weaponsOwned, weaponsNotOwned };
+            },
+            {
+                weaponsOwned: [] as Weapon[],
+                weaponsNotOwned: [] as Weapon[],
+            }
+        );
     }
 }
 
@@ -77,18 +104,8 @@ class WeaponsInventory {
         return this.weapons;
     }
 
-    loot(weapons: Weapon[] = []) {
-        const weaponsToLoot = this.getWeaponsNotYetOwned(weapons);
-        this.weapons = [...this.weapons, ...weaponsToLoot];
-    }
-
-    private getWeaponsNotYetOwned(weapons: Weapon[]): Weapon[] {
-        return weapons.filter((weapon) => {
-            const isInInventory = !!this.weapons.find(
-                (candidate) => candidate.getName() === weapon.getName()
-            );
-            return !isInInventory;
-        });
+    loot(weapons: Weapon[] = []): void {
+        this.weapons = [...this.weapons, ...weapons];
     }
 
     remove(weapon: Weapon): void {
@@ -109,13 +126,24 @@ class AmmunitionsInventory {
         return this.ammunitionsByType;
     }
 
-    loot(ammunitionsByType: AmmunitionByType) {
+    loot(ammunitionsByType: AmmunitionByType, weapons: Weapon[]): void {
         Object.keys(ammunitionsByType).forEach((type) => {
             const ammunitions = ammunitionsByType[type];
             if (!this.ammunitionsByType[type]) {
                 this.ammunitionsByType[type] = 0;
             }
             this.ammunitionsByType[type] += ammunitions;
+        });
+        weapons.forEach((weapon) => {
+            const ammunition = weapon.getAmmunition();
+            if (!ammunition) {
+                return;
+            }
+            const type = ammunition.getType();
+            if (!this.ammunitionsByType[type]) {
+                this.ammunitionsByType[type] = 0;
+            }
+            this.ammunitionsByType[type] += ammunition.getCurrent();
         });
     }
 }

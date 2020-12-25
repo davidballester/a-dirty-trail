@@ -16,10 +16,7 @@
                     "type": "string"
                 },
                 "skills": {
-                    "additionalProperties": {
-                        "type": "number"
-                    },
-                    "type": "object"
+                    "$ref": "#/definitions/SkillSetTemplate"
                 }
             },
             "type": "object"
@@ -242,6 +239,23 @@
                 },
                 "rename": {
                     "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SkillSetTemplate": {
+            "additionalProperties": {
+                "$ref": "#/definitions/SkillTemplate"
+            },
+            "type": "object"
+        },
+        "SkillTemplate": {
+            "properties": {
+                "levelUpDelta": {
+                    "type": "number"
+                },
+                "probabilityOfSuccess": {
+                    "type": "number"
                 }
             },
             "type": "object"

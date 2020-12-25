@@ -96,6 +96,26 @@ describe('Skill', () => {
             expect(result).toBeTruthy();
         });
 
+        it('levels up if random is higher than skill level', () => {
+            randomGetRandom.mockReturnValueOnce(0.1).mockReturnValueOnce(0.9);
+            skill.rollSuccessWithModifier(-0.1);
+            expect(skill.getProbabilityOfSuccess()).toEqual(
+                0.5 + Skill.LEVEL_UP
+            );
+        });
+
+        it('does not level up if random is equal to skill level', () => {
+            randomGetRandom.mockReturnValueOnce(0.1).mockReturnValueOnce(0.5);
+            skill.rollSuccessWithModifier(-0.1);
+            expect(skill.getProbabilityOfSuccess()).toEqual(0.5);
+        });
+
+        it('does not level up if random is lower than skill level', () => {
+            randomGetRandom.mockReturnValueOnce(0.1).mockReturnValueOnce(0.4);
+            skill.rollSuccessWithModifier(-0.1);
+            expect(skill.getProbabilityOfSuccess()).toEqual(0.5);
+        });
+
         it('succeeds if the random number is equal than the probability of success minus the opposition', () => {
             randomGetRandom.mockReturnValue(0.4);
             const result = skill.rollSuccessWithModifier(-0.1);
@@ -106,6 +126,12 @@ describe('Skill', () => {
             randomGetRandom.mockReturnValue(0.4);
             const result = skill.rollSuccessWithModifier(-0.2);
             expect(result).toBeFalsy();
+        });
+
+        it('does not level up', () => {
+            randomGetRandom.mockReturnValueOnce(0.4).mockReturnValueOnce(0.9);
+            skill.rollSuccessWithModifier(-0.2);
+            expect(skill.getProbabilityOfSuccess()).toEqual(0.5);
         });
     });
 });

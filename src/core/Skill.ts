@@ -2,6 +2,8 @@ import Random from './Random';
 import ThingWithId from './ThingWithId';
 
 class Skill extends ThingWithId {
+    public static readonly LEVEL_UP = 0.02;
+
     private name: string;
     private probabilityOfSuccess: number;
 
@@ -46,7 +48,19 @@ class Skill extends ThingWithId {
     rollSuccessWithModifier(modifier: number): boolean {
         const level = this.getProbabilityOfSuccess() + modifier;
         const random = Random.getRandom();
-        return random <= level;
+        const isSuccess = random <= level;
+        if (isSuccess) {
+            this.levelUpIfLucky();
+        }
+        return isSuccess;
+    }
+
+    private levelUpIfLucky(): void {
+        const random = Random.getRandom();
+        const isLucky = random > this.probabilityOfSuccess;
+        if (isLucky) {
+            this.probabilityOfSuccess += Skill.LEVEL_UP;
+        }
     }
 
     private static isLevelValid(level): boolean {

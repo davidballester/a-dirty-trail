@@ -20,6 +20,7 @@ describe('CombatSceneEngine', () => {
     let janeDoeActionOutcome: AttackOutcome;
     let janeDoeActionExecute: jest.SpyInstance;
     let janeDoeActionCanExecute: jest.SpyInstance;
+    let janeDoeActionGetOponent: jest.SpyInstance;
     let johnDoe: NonPlayableActor;
     let johnDoeIsAlive: jest.SpyInstance;
     let johnDoeAction: AttackAction;
@@ -31,13 +32,6 @@ describe('CombatSceneEngine', () => {
     let janeDoeActions: ActionsMap;
 
     const initializeJaneDoe = () => {
-        janeDoeActionCanExecute = jest.fn().mockReturnValue(true);
-        janeDoeActionOutcome = {} as AttackOutcome;
-        janeDoeActionExecute = jest.fn().mockReturnValue(janeDoeActionOutcome);
-        janeDoeAction = ({
-            canExecute: janeDoeActionCanExecute,
-            execute: janeDoeActionExecute,
-        } as unknown) as AttackAction;
         const janeDoeIsAlive = jest.fn().mockReturnValue(true);
         const janeDoeEquals = jest.fn();
         janeDoe = ({
@@ -45,6 +39,22 @@ describe('CombatSceneEngine', () => {
             isAlive: janeDoeIsAlive,
             equals: janeDoeEquals,
         } as unknown) as Actor;
+        janeDoeAction = new AttackAction({
+            actor: janeDoe,
+            scene,
+            oponent: undefined,
+            weapon: undefined,
+        });
+        janeDoeActionCanExecute = jest
+            .spyOn(janeDoeAction, 'canExecute')
+            .mockReturnValue(true);
+        janeDoeActionOutcome = {} as AttackOutcome;
+        janeDoeActionExecute = jest
+            .spyOn(janeDoeAction, 'execute')
+            .mockReturnValue(janeDoeActionOutcome);
+        janeDoeActionGetOponent = jest
+            .spyOn(janeDoeAction, 'getOponent')
+            .mockImplementation(() => johnDoe);
         when(janeDoeEquals)
             .mockReturnValue(false)
             .calledWith(janeDoe)
@@ -83,6 +93,11 @@ describe('CombatSceneEngine', () => {
             id: 'jill bloggs',
             isAlive: jillBloggsIsAlive,
             equals: jillBloggsEquals,
+            getNextAction: () => ({
+                canExecute: () => true,
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                execute: () => {},
+            }),
         } as unknown) as NonPlayableActor;
         when(jillBloggsEquals)
             .mockReturnValue(false)
@@ -233,8 +248,10 @@ describe('CombatSceneEngine', () => {
 
     describe('next oponent is killed', () => {
         beforeEach(() => {
-            sceneGetAliveActors.mockReturnValue([jillBloggs]);
-            johnDoeIsAlive.mockReturnValue(false);
+            janeDoeActionExecute.mockImplementation(() => {
+                johnDoeIsAlive.mockReturnValue(false);
+                sceneGetAliveActors.mockReturnValue([jillBloggs]);
+            });
         });
 
         it('is the player turn again', async () => {
@@ -245,6 +262,7 @@ describe('CombatSceneEngine', () => {
 
         it('is the second oponent turn after the player', async () => {
             await combatSceneEngine.executePlayerAction(janeDoeAction);
+            janeDoeActionGetOponent.mockReturnValue(jillBloggs);
             await combatSceneEngine.executePlayerAction(janeDoeAction);
             const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(jillBloggs);
@@ -259,8 +277,11 @@ describe('CombatSceneEngine', () => {
 
     describe('last oponent is killed', () => {
         beforeEach(() => {
-            sceneGetAliveActors.mockReturnValue([johnDoe]);
-            jillBloggsIsAlive.mockReturnValue(false);
+            janeDoeActionGetOponent.mockReturnValue(jillBloggs);
+            janeDoeActionExecute.mockImplementation(() => {
+                jillBloggsIsAlive.mockReturnValue(false);
+                sceneGetAliveActors.mockReturnValue([johnDoe]);
+            });
         });
 
         it('is john doe turn', async () => {
@@ -279,6 +300,7 @@ describe('CombatSceneEngine', () => {
         it('is john doe turn again after the player', async () => {
             await combatSceneEngine.executePlayerAction(janeDoeAction);
             await combatSceneEngine.executeNextOponentAction();
+            janeDoeActionGetOponent.mockReturnValue(johnDoe);
             await combatSceneEngine.executePlayerAction(janeDoeAction);
             const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
             expect(actorCurrentTurn).toEqual(johnDoe);
@@ -288,6 +310,37 @@ describe('CombatSceneEngine', () => {
             await combatSceneEngine.executePlayerAction(janeDoeAction);
             const oponentsInActionOrder = combatSceneEngine.getOponentsInActionOrder();
             expect(oponentsInActionOrder).toEqual([johnDoe]);
+        });
+    });
+
+    describe('previous oponent is killed', () => {
+        beforeEach(async () => {
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            await combatSceneEngine.executeNextOponentAction();
+            janeDoeActionExecute.mockImplementation(() => {
+                johnDoeIsAlive.mockReturnValue(false);
+                sceneGetAliveActors.mockReturnValue([jillBloggs]);
+            });
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            janeDoeActionGetOponent.mockReturnValue(jillBloggs);
+        });
+
+        it('is the next actor turn', async () => {
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
+            expect(actorCurrentTurn).toEqual(jillBloggs);
+        });
+
+        it('is the player turn again', async () => {
+            await combatSceneEngine.executeNextOponentAction();
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
+            expect(actorCurrentTurn).toEqual(janeDoe);
+        });
+
+        it('is the next actor turn again', async () => {
+            await combatSceneEngine.executeNextOponentAction();
+            await combatSceneEngine.executePlayerAction(janeDoeAction);
+            const actorCurrentTurn = combatSceneEngine.getActorCurrentTurn();
+            expect(actorCurrentTurn).toEqual(jillBloggs);
         });
     });
 

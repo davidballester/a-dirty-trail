@@ -1,5 +1,7 @@
 import Action from '../actions/Action';
 import ActionBuilder from '../actions/ActionBuilder';
+import AttackAction from '../actions/AttackAction';
+import ScapeAction from '../actions/ScapeAction';
 import ActionsMap from '../core/ActionsMap';
 import Actor from '../core/Actor';
 import NonPlayableActor from '../core/NonPlayableActor';
@@ -7,32 +9,20 @@ import Scene from '../core/Scene';
 
 class CombatSceneEngine {
     private scene: Scene;
-    private actorsTurns: Actor[];
-    private currentTurn: number;
+    private actorTurnIndex: number;
+    private _isPlayerTurn: boolean;
 
     constructor({ scene }: { scene: Scene }) {
         this.scene = scene;
-        this.actorsTurns = [];
-        this.currentTurn = 0;
-        this.buildTurns();
-    }
-
-    private buildTurns() {
-        this.actorsTurns = [];
-        const aliveActors = this.scene.getAliveActors();
-        const player = this.scene.getPlayer();
-        if (!aliveActors.length) {
-            this.actorsTurns.push(player);
-        } else {
-            aliveActors.forEach((oponent) => {
-                this.actorsTurns.push(player);
-                this.actorsTurns.push(oponent);
-            });
-        }
+        this._isPlayerTurn = true;
+        this.actorTurnIndex = 0;
     }
 
     getActorCurrentTurn(): Actor {
-        return this.actorsTurns[this.currentTurn];
+        if (this._isPlayerTurn || !this.scene.getAliveActors().length) {
+            return this.scene.getPlayer();
+        }
+        return this.scene.getAliveActors()[this.actorTurnIndex];
     }
 
     getOponentsInActionOrder(): NonPlayableActor[] {
@@ -40,8 +30,7 @@ class CombatSceneEngine {
     }
 
     async executePlayerAction<T>(action: Action<T>): Promise<T> {
-        const player = this.scene.getPlayer();
-        if (!this.isActorTurn(player)) {
+        if (!this._isPlayerTurn) {
             throw new Error('Not the turn of the player!');
         }
         if (!action.canExecute()) {
@@ -68,39 +57,69 @@ class CombatSceneEngine {
     }
 
     private async executeAction<T>(action: Action<T>): Promise<T> {
+        const affectedActor = this.getAffectedActor(action);
+        const affectedActorIndex = this.getAffectedActorIndex(affectedActor);
         const outcome = await action.execute();
-        this.updateTurn();
-        if (this.isActorsCountChanged()) {
-            this.rebuildTurns();
+        if (
+            this._isPlayerTurn &&
+            action instanceof AttackAction &&
+            affectedActor &&
+            !affectedActor.isAlive()
+        ) {
+            if (affectedActorIndex < this.actorTurnIndex) {
+                this.actorTurnIndex--;
+                this._isPlayerTurn = false;
+                return outcome;
+            } else if (affectedActorIndex === this.actorTurnIndex) {
+                // Extra turn!
+                this.updateTurn();
+                this._isPlayerTurn = true;
+                return outcome;
+            }
+        } else if (action instanceof ScapeAction && affectedActor) {
+            if (affectedActorIndex < this.actorTurnIndex) {
+                this.actorTurnIndex--;
+            }
+            this._isPlayerTurn = true;
+            return outcome;
         }
+        this.updateTurn();
         return outcome;
     }
 
+    private getAffectedActor<T>(action: Action<T>): Actor | undefined {
+        if (action instanceof AttackAction) {
+            if (action.getOponent().equals(this.scene.getPlayer())) {
+                return undefined;
+            }
+            return action.getOponent();
+        } else if (action instanceof ScapeAction) {
+            return action.getActor();
+        }
+        return undefined;
+    }
+
+    private getAffectedActorIndex(affectedActor?: Actor): number {
+        if (!affectedActor) {
+            return -1;
+        }
+        return this.scene
+            .getAliveActors()
+            .findIndex((actor) => actor.equals(affectedActor));
+    }
+
     private updateTurn() {
-        this.currentTurn = (this.currentTurn + 1) % this.actorsTurns.length;
-    }
-
-    private isActorsCountChanged(): boolean {
-        const aliveActors = this.scene.getAliveActors();
-        const player = this.scene.getPlayer();
-        const actorsInTurns = this.actorsTurns.filter(
-            (actor) => !actor.equals(player)
-        );
-        const isActorsCountChanged =
-            aliveActors.length !== actorsInTurns.length;
-        return isActorsCountChanged;
-    }
-
-    private rebuildTurns() {
-        const nextActor = this.getActorCurrentTurn();
-        const nextActorIsPlayer = nextActor.equals(this.scene.getPlayer());
-        const nextOponentCanAct =
-            nextActor.isAlive() && this.scene.containsActor(nextActor);
-        this.buildTurns();
-        if (nextOponentCanAct && !nextActorIsPlayer) {
-            this.currentTurn = 1;
+        if (this.isCombatOver()) {
+            return;
+        }
+        if (this._isPlayerTurn) {
+            this._isPlayerTurn = false;
+            this.actorTurnIndex =
+                this.actorTurnIndex % this.scene.getAliveActors().length;
         } else {
-            this.currentTurn = 0;
+            this.actorTurnIndex =
+                (this.actorTurnIndex + 1) % this.scene.getAliveActors().length;
+            this._isPlayerTurn = true;
         }
     }
 
@@ -124,13 +143,14 @@ class CombatSceneEngine {
     }
 
     isPlayerTurn(): boolean {
-        const player = this.scene.getPlayer();
-        return this.getActorCurrentTurn().equals(player);
+        return this._isPlayerTurn;
     }
 
     getActorNextTurn(): Actor {
-        const nextTurn = (this.currentTurn + 1) % this.actorsTurns.length;
-        return this.actorsTurns[nextTurn];
+        if (!this._isPlayerTurn || !this.scene.getAliveActors().length) {
+            return this.scene.getPlayer();
+        }
+        return this.scene.getAliveActors()[this.actorTurnIndex];
     }
 }
 

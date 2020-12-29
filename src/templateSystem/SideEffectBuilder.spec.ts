@@ -12,6 +12,7 @@ describe(SideEffectBuilder.name, () => {
     let player: Actor;
     let getInventory: jest.SpyInstance;
     let loot: jest.SpyInstance;
+    let remove: jest.SpyInstance;
     let inventory: Inventory;
     let changeName: jest.SpyInstance;
     let modifyHealth: jest.SpyInstance;
@@ -26,8 +27,10 @@ describe(SideEffectBuilder.name, () => {
     beforeEach(() => {
         changeName = jest.fn();
         loot = jest.fn();
+        remove = jest.fn();
         getInventory = jest.fn().mockReturnValue({
             loot,
+            remove,
         });
         modifyHealth = jest.fn();
         addFlag = jest.fn();
@@ -65,6 +68,7 @@ describe(SideEffectBuilder.name, () => {
         });
         sideEffectTemplate = {
             loot: {},
+            removeItems: {},
             rename: 'Roland Deschain',
             modifyHealth: -2,
         };
@@ -83,6 +87,11 @@ describe(SideEffectBuilder.name, () => {
         it('loots the inventory returned by the inventory builder', () => {
             sideEffectBuilder.build();
             expect(loot).toHaveBeenCalledWith(inventory);
+        });
+
+        it('removes the inventory returned by the inventory builder', () => {
+            sideEffectBuilder.build();
+            expect(remove).toHaveBeenCalledWith(inventory);
         });
 
         it('modifies the health of the player', () => {

@@ -1,8 +1,10 @@
 import Actor from '../core/Actor';
+import Damage from '../core/Damage';
 import Firearm from '../core/Firearm';
 import Inventory from '../core/Inventory';
 import Scene from '../core/Scene';
 import Weapon from '../core/Weapon';
+import WeaponAmmunition from '../core/WeaponAmmunition';
 import DiscardWeaponAction from './DiscardWeaponAction';
 
 describe(DiscardWeaponAction.name, () => {
@@ -21,20 +23,31 @@ describe(DiscardWeaponAction.name, () => {
             containsActor: sceneContainsActor,
         } as unknown) as Scene;
 
-        revolver = ({
-            getAmmunition: jest.fn().mockReturnValue({}),
-            equals: (candidate) => candidate === revolver,
-        } as unknown) as Firearm;
+        revolver = new Firearm({
+            name: 'revolver',
+            type: 'revolver',
+            skill: 'aim',
+            damage: new Damage({ min: 1, max: 2 }),
+            ammunition: new WeaponAmmunition({
+                type: 'bullets',
+                current: 4,
+                max: 6,
+            }),
+        });
 
-        club = ({
-            getAmmunition: jest.fn().mockReturnValue(undefined),
-            equals: (candidate) => candidate === club,
-        } as unknown) as Weapon;
+        club = new Weapon({
+            name: 'club',
+            type: 'club',
+            skill: 'swing',
+            damage: new Damage({ min: 1, max: 1 }),
+        });
 
-        knife = ({
-            getAmmunition: jest.fn().mockReturnValue(undefined),
-            equals: (candidate) => candidate === knife,
-        } as unknown) as Weapon;
+        knife = new Weapon({
+            name: 'knife',
+            type: 'knife',
+            skill: 'stab',
+            damage: new Damage({ min: 1, max: 1 }),
+        });
 
         inventory = new Inventory({ weapons: [revolver, club, knife] });
         playerIsAlive = jest.fn().mockReturnValue(true);

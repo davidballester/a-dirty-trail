@@ -62,6 +62,14 @@ class Inventory extends ThingWithId {
         return loot;
     }
 
+    remove(inventory: Inventory): void {
+        inventory.getWeapons().forEach((weapon) => this.weapons.remove(weapon));
+        inventory
+            .getTrinkets()
+            .forEach((trinket) => this.trinkets.remove(trinket.getName()));
+        this.ammunitions.remove(inventory.getAmmunitionsByType());
+    }
+
     hasTrinket(trinketName: string): boolean {
         return this.trinkets.has(trinketName);
     }
@@ -110,7 +118,7 @@ class WeaponsInventory {
 
     remove(weapon: Weapon): void {
         this.weapons = this.weapons.filter(
-            (candidate) => !candidate.equals(weapon)
+            (candidate) => candidate.getName() !== weapon.getName()
         );
     }
 }
@@ -146,6 +154,18 @@ class AmmunitionsInventory {
             this.ammunitionsByType[type] += ammunition.getCurrent();
         });
     }
+
+    remove(ammunitionsByType: AmmunitionByType): void {
+        Object.keys(ammunitionsByType).forEach((type) => {
+            const ammunitions = ammunitionsByType[type];
+            if (this.ammunitionsByType[type]) {
+                this.ammunitionsByType[type] = Math.max(
+                    0,
+                    this.ammunitionsByType[type] - ammunitions
+                );
+            }
+        });
+    }
 }
 
 export interface AmmunitionByType {
@@ -172,6 +192,12 @@ class TrinketInventory {
             (trinket) =>
                 trinket.getName().trim().toLowerCase() ===
                 trinketName.trim().toLowerCase()
+        );
+    }
+
+    remove(trinketName): void {
+        this.trinkets = this.trinkets.filter(
+            (trinket) => trinket.getName() !== trinketName
         );
     }
 

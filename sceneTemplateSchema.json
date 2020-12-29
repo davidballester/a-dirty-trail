@@ -237,6 +237,9 @@
                     },
                     "type": "array"
                 },
+                "removeItems": {
+                    "$ref": "#/definitions/InventoryTemplate"
+                },
                 "rename": {
                     "type": "string"
                 }

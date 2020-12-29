@@ -27,6 +27,9 @@ class SideEffectBuilder {
         if (this.sideEffectTemplate.loot) {
             this.loot(this.sideEffectTemplate.loot);
         }
+        if (this.sideEffectTemplate.removeItems) {
+            this.removeItems(this.sideEffectTemplate.removeItems);
+        }
         if (this.sideEffectTemplate.rename) {
             this.rename(this.sideEffectTemplate.rename);
         }
@@ -49,6 +52,15 @@ class SideEffectBuilder {
         const lootInventory = inventoryBuilder.build();
         const player = this.scene.getPlayer();
         player.getInventory().loot(lootInventory);
+    }
+
+    private removeItems(inventoryTemplate: InventoryTemplate): void {
+        const inventoryBuilder = new InventoryBuilder({
+            inventoryTemplate,
+        });
+        const removeInventory = inventoryBuilder.build();
+        const player = this.scene.getPlayer();
+        player.getInventory().remove(removeInventory);
     }
 
     private modifyHealth(modifyHealth: number): void {

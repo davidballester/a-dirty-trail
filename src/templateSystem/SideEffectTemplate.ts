@@ -2,6 +2,7 @@ import { InventoryTemplate } from './InventoryTemplate';
 
 export interface SideEffectTemplate {
     loot?: InventoryTemplate;
+    removeItems?: InventoryTemplate;
     rename?: string;
     modifyHealth?: number;
     addFlag?: string;

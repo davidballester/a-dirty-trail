@@ -2,6 +2,7 @@ import Damage from './Damage';
 import Inventory from './Inventory';
 import Trinket from './Trinket';
 import Weapon from './Weapon';
+import Firearm from './Firearm';
 import WeaponAmmunition from './WeaponAmmunition';
 
 describe('Inventory', () => {
@@ -227,6 +228,98 @@ describe('Inventory', () => {
         it('returns 0 for a skill without modifiers', () => {
             const modifier = inventory.getTrinketsModifiersOnSkill('aim');
             expect(modifier).toEqual(0);
+        });
+    });
+
+    describe('remove', () => {
+        let inventory: Inventory;
+        beforeEach(() => {
+            inventory = new Inventory({
+                weapons: [
+                    new Weapon({
+                        name: 'knife',
+                        type: 'knife',
+                        skill: 'stab',
+                        damage: new Damage({ min: 1, max: 1 }),
+                    }),
+                    new Firearm({
+                        name: 'revolver',
+                        type: 'gun',
+                        skill: 'aim',
+                        damage: new Damage({ min: 1, max: 2 }),
+                        ammunition: new WeaponAmmunition({
+                            type: 'bullets',
+                            current: 5,
+                            max: 6,
+                        }),
+                    }),
+                ],
+                ammunitionsByType: {
+                    bullets: 5,
+                    shells: 3,
+                },
+                trinkets: [
+                    new Trinket({
+                        name: 'firestarter',
+                        description: 'to start fires, you see',
+                    }),
+                    new Trinket({ name: 'watch' }),
+                ],
+            });
+            const remove = new Inventory({
+                weapons: [
+                    new Firearm({
+                        name: 'revolver',
+                        type: 'gun',
+                        skill: 'aim',
+                        damage: new Damage({ min: 1, max: 2 }),
+                        ammunition: new WeaponAmmunition({
+                            type: 'bullets',
+                            current: 5,
+                            max: 6,
+                        }),
+                    }),
+                    new Firearm({
+                        name: 'rifle',
+                        type: 'rifle',
+                        skill: 'aim',
+                        damage: new Damage({ min: 1, max: 2 }),
+                        ammunition: new WeaponAmmunition({
+                            type: 'bullets',
+                            current: 8,
+                            max: 8,
+                        }),
+                    }),
+                ],
+                ammunitionsByType: {
+                    bullets: 8,
+                    bombs: 3,
+                },
+                trinkets: [
+                    new Trinket({ name: 'watch' }),
+                    new Trinket({ name: 'medallion' }),
+                ],
+            });
+            inventory.remove(remove);
+        });
+
+        it('contains the remaning weapon', () => {
+            const weapons = inventory.getWeapons();
+            expect(weapons.map((weapon) => weapon.getName())).toEqual([
+                'knife',
+            ]);
+        });
+
+        it('contains the expected ammunition', () => {
+            const ammunitionsByType = inventory.getAmmunitionsByType();
+            expect(ammunitionsByType).toEqual({ bullets: 0, shells: 3 });
+        });
+
+        it('contains the remaining trinkets', () => {
+            const trinkets = inventory.getTrinkets();
+            expect(trinkets.map((trinket) => trinket.getName())).toEqual([
+                'firestarter',
+            ]);
         });
     });
 });

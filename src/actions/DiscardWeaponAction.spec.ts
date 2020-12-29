@@ -52,7 +52,7 @@ describe(DiscardWeaponAction.name, () => {
         inventory = new Inventory({ weapons: [revolver, club, knife] });
         playerIsAlive = jest.fn().mockReturnValue(true);
         actor = ({
-            getInventory: jest.fn().mockReturnValue(inventory),
+            getInventory: () => inventory,
             isAlive: playerIsAlive,
         } as unknown) as Actor;
         discardWeaponAction = new DiscardWeaponAction({
@@ -82,7 +82,7 @@ describe(DiscardWeaponAction.name, () => {
             expect(canExecute).toEqual(false);
         });
 
-        it('returns false if the weapon does not use ammunition and the inventory does not have any other weapon that does not use ammunition', () => {
+        it('returns false if the weapon is the last weapon without ammunition', () => {
             inventory = new Inventory({ weapons: [revolver, knife] });
             discardWeaponAction = new DiscardWeaponAction({
                 scene,
@@ -91,6 +91,17 @@ describe(DiscardWeaponAction.name, () => {
             });
             const canExecute = discardWeaponAction.canExecute();
             expect(canExecute).toEqual(false);
+        });
+
+        it('returns true if there are other weapons without ammunition', () => {
+            inventory = new Inventory({ weapons: [club, knife] });
+            discardWeaponAction = new DiscardWeaponAction({
+                scene,
+                actor,
+                weapon: knife,
+            });
+            const canExecute = discardWeaponAction.canExecute();
+            expect(canExecute).toEqual(true);
         });
 
         it('returns true otherwise', () => {

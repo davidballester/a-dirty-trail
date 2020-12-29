@@ -36,19 +36,10 @@ class DiscardWeaponAction extends Action<void> {
         if (!inventoryContainsWeapon) {
             return false;
         }
-        if (!!this.getWeapon().getAmmunition()) {
-            return true;
-        }
-        const weaponsThatDoNotUseAmmunition = inventory
-            .getWeapons()
-            .filter((weapon) => !weapon.getAmmunition());
-        if (weaponsThatDoNotUseAmmunition.length === 0) {
-            return false;
-        }
-        const isLastWeaponThatDoNotUseAmmunition =
-            weaponsThatDoNotUseAmmunition.length > 1 ||
-            weaponsThatDoNotUseAmmunition[0].equals(this.getWeapon());
-        if (isLastWeaponThatDoNotUseAmmunition) {
+        if (
+            !this.weapon.getAmmunition() &&
+            !this.areThereTwoOrMoreWeaponsWithoutAmmunition()
+        ) {
             return false;
         }
         return true;
@@ -57,6 +48,14 @@ class DiscardWeaponAction extends Action<void> {
     execute(): void {
         const inventory = this.getActor().getInventory();
         inventory.removeWeapon(this.getWeapon());
+    }
+
+    private areThereTwoOrMoreWeaponsWithoutAmmunition(): boolean {
+        const weaponsWithoutAmmunition = this.getActor()
+            .getInventory()
+            .getWeapons()
+            .filter((weapon) => !weapon.getAmmunition());
+        return weaponsWithoutAmmunition.length > 1;
     }
 }
 

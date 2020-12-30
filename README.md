@@ -140,11 +140,18 @@ The creation of the narratives is based on templates written in Markdown files. 
 
 In this URL you have the JSON schema for the metadata of the Markdown files: https://raw.githubusercontent.com/davidballester/a-dirty-trail/master/sceneTemplateSchema.json
 
+Whenever the template language changes, the schema can be regenerated with this script:
+
+```
+npm run generateSceneTemplateJsonSchema
+```
+
 In the metadata you can:
 
 -   Define the name of the scene.
+-   Define the side effects of visiting it.
 -   Define the possible actions the user can take.
-    -   Actions availability can be conditioned by trinkets posession and flags.
+    -   Actions availability can be conditioned by trinkets possession and flags.
     -   Actions can involve a skill check.
     -   They can involve getting or using items.
     -   They can modify the player health of their name.
@@ -154,4 +161,102 @@ In the metadata you can:
 
 For the body of the Markdown file, that is, the actual text, you have [Handlebars](https://handlebarsjs.com/) support!
 
-**TODO**
+### Handlebars helpers
+
+These custom helpers are available in your scenes.
+
+#### `if-has-trinket`
+
+Works with the name of the trinket.
+
+```
+{{#if-has-trinket "rope"}}
+"I can use that rope I got back there!" she said.
+{{else}}
+"There is nothing we can do here," she said.
+{{/if-has-trinket}}
+```
+
+#### `if-has-not-trinket`
+
+Works with the name of the trinket.
+
+```
+{{#if-has-not-trinket "ring"}}
+"Sam, you're going to laugh when I tell you, but..."
+{{else}}
+"Throw it, Mr. Frodo," said Sam.
+{{/if-has-trinket}}
+```
+
+### `if-has-flag`
+
+Works with the name of the flag.
+
+```
+{{#if-has-flag "visitedLodge"}}
+He just had a déjà-vu.
+{{else}}
+"Never been here," he said.
+{{/if-has-trinket}}
+```
+
+### `if-has-not-flag`
+
+Works with the name of the flag.
+
+```
+{{#if-has-not-flag "hadCoffee"}}
+She yawned so hard her jaw dislodged.
+{{else}}
+Eyes peeled, she looked around.
+{{/if-has-trinket}}
+```
+
+### `if-flag-greater-than`
+
+Works with the name of the flag and a number.
+
+```
+{{#if-flag-greater-than "coins" 5}}
+You rich chap.
+{{else}}
+You poor fellow.
+{{/if-flag-greater-than}}
+```
+
+### `if-flag-lower-than`
+
+Works with the name of the flag and a number.
+
+```
+{{#if-flag-lower-than "coins" 5}}
+You poor fellow.
+{{else}}
+You rich chap.
+{{/if-flag-lower-than}}
+```
+
+### `if-flag-equal`
+
+Works with the name of the flag and a number.
+
+```
+{{#if-flag-equal "shards" 7}}
+"You got the seven shards!"
+{{else}}
+"Come back when you find all the shards."
+{{/if-flag-lower-than}}
+```
+
+### `if-flag-different`
+
+Works with the name of the flag and a number.
+
+```
+{{#if-flag-equal "shards" 7}}
+"You got the seven shards!"
+{{else}}
+"Come back when you find all the shards."
+{{/if-flag-lower-than}}
+```
